@@ -2,9 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { Tabs, useShellLang } from '@fasl-work/caos-app-shell';
 import { analyze, type Economics } from '../lane/index.ts';
 import { CASES, caseById, type CGCase } from '../lane/cases.ts';
-import { runSurrogate } from '../lib/ort.ts';
-import { loadLearned, loadManifest, type LearnedFile } from '../lib/artifacts.ts';
-import type { CaseManifest } from '../lib/contract.types.ts';
+import { runOod, runSurrogate } from '../lib/ort.ts';
+import { loadLearned, type LearnedFile } from '../lib/artifacts.ts';
 import { GTChart } from '../viz/GTChart.tsx';
 import { TrajChart } from '../viz/TrajChart.tsx';
 import { CashChart } from '../viz/CashChart.tsx';
@@ -27,11 +26,11 @@ export default function Tool() {
   const [costMul, setCostMul] = useState(1);
   const [millMul, setMillMul] = useState(1);
   const [discMul, setDiscMul] = useState(1);
-  const [useSurrogate, setUseSurrogate] = useState(false);
-  const [manifest, setManifest] = useState<CaseManifest | null>(null);
   const [learned, setLearned] = useState<LearnedFile | null>(null);
   const [surr, setSurr] = useState<{ cutoff: number; npv: number; life: number } | null>(null);
   const [surrPending, setSurrPending] = useState(true);
+  const [ood, setOod] = useState<number | null>(null);
+  const oodThr = learned?.ood?.thr ?? null;
 
   const theCase = useMemo<CGCase>(() => caseById(caseId), [caseId]);
   const econ = useMemo<Economics>(() => ({
@@ -45,12 +44,12 @@ export default function Tool() {
   const a = useMemo(() => analyze(econ, theCase.deposit), [econ, theCase]);
 
   useEffect(() => { setPriceMul(1); setCostMul(1); setMillMul(1); setDiscMul(1); }, [caseId]);
-  useEffect(() => { loadManifest(caseId).then(setManifest).catch(() => setManifest(null)); }, [caseId]);
   useEffect(() => { loadLearned().then(setLearned).catch(() => setLearned(null)); }, []);
   useEffect(() => {
     let cancel = false;
     setSurrPending(true);
     runSurrogate(econ, theCase.deposit).then((r) => { if (cancel) return; setSurr(r); setSurrPending(r === null); });
+    runOod(econ, theCase.deposit).then((m) => { if (!cancel) setOod(m); });
     return () => { cancel = true; };
   }, [econ, theCase]);
 
@@ -157,68 +156,57 @@ export default function Tool() {
       ),
     },
     {
-      id: 'learned', label: es ? 'Modelos aprendidos' : 'Learned models',
+      id: 'whatif', label: es ? 'What-if (ONNX)' : 'What-if (ONNX)',
       content: (
         <div className="pf-vizstack">
-          {learned ? (
-            <>
-              <table className="cmp-table">
-                <thead><tr><th>{es ? 'modelo' : 'model'}</th><th>{es ? 'métrica (held-out)' : 'metric (held-out)'}</th><th>{es ? 'valor' : 'value'}</th></tr></thead>
-                <tbody>
-                  <tr><td>{es ? 'surrogate corte/VAN' : 'cut-off/NPV surrogate'}</td><td>{es ? 'error VAN vs exacto' : 'NPV err vs exact'}</td><td><b>{(learned.surrogate.npv_err * 100).toFixed(1)}%</b></td></tr>
-                  <tr><td>{es ? 'OOD de escenarios' : 'scenario OOD-AE'}</td><td>AUC</td><td><b>{learned.ood.auc.toFixed(3)}</b></td></tr>
-                </tbody>
-              </table>
-              <p className="pf-note">{surrPending
-                ? (es ? 'El ONNX del surrogate aún no está cargado en esta sesión — el App usa el optimizador EXACTO de Lane (barato, corre en vivo).' : 'The surrogate ONNX is not loaded this session — the App uses the EXACT Lane optimizer (cheap, runs live).')
-                : (es ? `Surrogate cargado: corte ${surr ? pct(surr.cutoff) : '-'}, VAN ${surr ? money(surr.npv) : '-'} (vs exacto: corte ${pct(cut.effective)}, VAN ${money(a.optimal.npv)}).` : `Surrogate loaded: cut-off ${surr ? pct(surr.cutoff) : '-'}, NPV ${surr ? money(surr.npv) : '-'} (vs exact: cut-off ${pct(cut.effective)}, NPV ${money(a.optimal.npv)}).`)}</p>
-              <p className="pf-cap">{learned.honesty}</p>
-            </>
-          ) : (
+          <div className="pf-plot-t">{es ? 'El surrogate de corte/VAN (ONNX) emula el optimizador de Lane para barridos instantáneos del envolvente económico.' : 'The cut-off/NPV surrogate (ONNX) emulates the Lane optimizer for instant economic-envelope sweeps.'}</div>
+          {surrPending ? (
             <div className="pf-pending">
-              <strong>{es ? 'Modelos aprendidos: pendientes de entrenamiento' : 'Learned models: pending training'}</strong>
-              <p>{es ? 'Corre `python -m cglab.pipeline all --retrain` para entrenar el surrogate de corte/VAN + el OOD-AE (torch -> ONNX). El App usa el optimizador EXACTO de Lane EN VIVO mientras tanto.' : 'Run `python -m cglab.pipeline all --retrain` to train the cut-off/NPV surrogate + the OOD-AE (torch -> ONNX). The App uses the EXACT Lane optimizer LIVE meanwhile.'}</p>
+              <strong>{es ? 'Surrogate: pendiente de entrenamiento' : 'Surrogate: pending training'}</strong>
+              <p>{es ? 'Corre `python -m cglab.pipeline all --retrain` para entrenar el surrogate (torch → ONNX). El optimizador EXACTO de Lane corre en vivo mientras tanto.' : 'Run `python -m cglab.pipeline all --retrain` to train the surrogate (torch → ONNX). The EXACT Lane optimizer runs live meanwhile.'}</p>
             </div>
+          ) : (
+            <>
+              <div className="pf-kpis">
+                <Kpi label={es ? 'corte (surrogate)' : 'cut-off (surrogate)'} value={surr ? pct(surr.cutoff) : '—'} />
+                <Kpi label={es ? 'corte (exacto)' : 'cut-off (exact)'} value={pct(cut.effective)} />
+                <Kpi label={es ? 'VAN (surrogate)' : 'NPV (surrogate)'} value={surr ? money(surr.npv) : '—'} />
+                <Kpi label={es ? 'VAN (exacto)' : 'NPV (exact)'} value={money(a.optimal.npv)} />
+                <Kpi label={es ? 'error VAN' : 'NPV error'} value={surr ? `${(Math.abs(surr.npv - a.optimal.npv) / Math.max(1, Math.abs(a.optimal.npv)) * 100).toFixed(1)}%` : '—'} />
+              </div>
+              <p className="pf-note">{es ? 'El optimizador exacto de Lane es la autoridad; el surrogate gana su lugar por la velocidad (barridos Monte-Carlo instantáneos sobre miles de escenarios), no por una victoria fabricada.' : 'The exact Lane optimizer is the authority; the surrogate earns its place on speed (instant Monte-Carlo sweeps over thousands of scenarios), not a fabricated win.'}</p>
+            </>
           )}
         </div>
       ),
     },
     {
-      id: 'contract', label: es ? 'Contrato · gate' : 'Contract · gate',
+      id: 'anomaly', label: es ? 'Anomalía (AE)' : 'Anomaly (AE)',
       content: (
         <div className="pf-vizstack">
-          {manifest ? (
+          <div className="pf-plot-t">{es ? 'El autoencoder OOD marca escenarios fuera del envolvente económico entrenado (precios/costos/leyes extremos) — el guardia en vivo de "el surrogate está extrapolando".' : 'The OOD autoencoder flags scenarios outside the trained economic envelope (extreme prices/costs/grades) — the live "the surrogate is extrapolating" guard.'}</div>
+          {ood == null ? (
+            <div className="pf-pending">
+              <strong>{es ? 'Autoencoder OOD: pendiente de entrenamiento' : 'OOD autoencoder: pending training'}</strong>
+              <p>{es ? 'Entrénalo con `--retrain`. Mientras tanto, el optimizador exacto de Lane corre en vivo y las banderas del Contrato 1 (en los docs) son el guardia honesto.' : 'Train it with `--retrain`. Meanwhile the exact Lane optimizer runs live and the Contract-1 flags (in the docs) are the honest guard.'}</p>
+            </div>
+          ) : (
             <>
               <div className="pf-kpis">
-                <Kpi label="lane" value={manifest.lane} />
-                <Kpi label="runtimes" value={manifest.gate.runtimes.join(', ')} />
-                <Kpi label={es ? 'bytes traza' : 'trace bytes'} value={`${manifest.gate.trace_bytes}`} />
+                <Kpi label={es ? 'puntaje de anomalía' : 'anomaly score'} value={ood.toFixed(2)} />
+                {oodThr != null && <Kpi label={es ? 'umbral (p95 in-dist)' : 'threshold (in-dist p95)'} value={oodThr.toFixed(2)} />}
+                {oodThr != null && (
+                  <Kpi label={es ? 'veredicto' : 'verdict'} value={ood > oodThr ? (es ? 'fuera de envolvente' : 'off-envelope') : (es ? 'en envolvente' : 'in-envelope')} />
+                )}
               </div>
-              {manifest.flags.length > 0 && <p className="pf-note">flags: {JSON.stringify(manifest.flags)}</p>}
-              <p className="pf-note">{manifest.honesty}</p>
+              {oodThr != null && (
+                <p className="pf-note">{ood > oodThr
+                  ? (es ? 'El escenario está fuera del envolvente entrenado — el surrogate está extrapolando; confía en el optimizador exacto.' : 'The scenario is outside the trained envelope — the surrogate is extrapolating; trust the exact optimizer.')
+                  : (es ? 'El escenario está dentro del envolvente entrenado — el surrogate es confiable aquí.' : 'The scenario is inside the trained envelope — the surrogate is reliable here.')}</p>
+              )}
             </>
-          ) : <p className="pf-note">{es ? 'cargando manifiesto…' : 'loading manifest…'}</p>}
+          )}
         </div>
-      ),
-    },
-    {
-      id: 'byo', label: es ? 'Tus datos' : 'Bring your own',
-      content: (
-        <div className="pf-vizstack">
-          <p className="pf-note">{es
-            ? 'CutoffGrade optimiza TU depósito + economía, no solo los casos sintéticos. CONTRATO 1 (data/examples/deposits.csv) valida grade_mean, grade_cv, tonnage_mt, price, los costos, recovery, las 3 capacidades y discount_rate: rechaza precio/capacidades/costos no-positivos, recovery fuera de (0,1], delta fuera de [0,1]; marca margen p-k<=0 (nada es mineral), molino>=mina (el molino nunca limita) y descuentos/CV extremos.'
-            : 'CutoffGrade optimizes YOUR deposit + economics, not just the synthetic cases. CONTRACT 1 (data/examples/deposits.csv) validates grade_mean, grade_cv, tonnage_mt, price, the costs, recovery, the 3 capacities and discount_rate: it rejects non-positive price/capacities/costs, recovery outside (0,1], delta outside [0,1]; it flags a p-k<=0 margin (nothing is ore), mill>=mine (the mill never binds) and extreme discount/CV.'}</p>
-        </div>
-      ),
-    },
-    {
-      id: 'raw', label: es ? 'Traza' : 'Trace',
-      content: (
-        <pre className="codeblock" style={{ maxHeight: 360 }}>{JSON.stringify({
-          case: theCase.id, deposit: theCase.deposit, econ,
-          optimal: { npv: a.optimal.npv, lifeYears: a.optimal.lifeYears, meanCutoff: a.optimal.meanCutoff },
-          breakEven: a.breakEven, binding: a.binding, cutoffs: cut, npvUpliftPct: a.npvUpliftPct,
-        }, null, 2)}</pre>
       ),
     },
   ];
@@ -255,12 +243,6 @@ export default function Tool() {
           <label className="pf-ctl">{es ? 'tasa descuento δ' : 'discount rate δ'}: {(econ.discountRate * 100).toFixed(1)}%
             <input className="range" type="range" min={0} max={2} step={0.05} value={discMul} onChange={(e) => setDiscMul(+e.target.value)} />
           </label>
-          <div className="pf-catlabel">{es ? 'optimizador' : 'optimizer'}</div>
-          <div className="pf-chips">
-            <button className={`chip ${!useSurrogate ? 'on' : ''}`} onClick={() => setUseSurrogate(false)}>{es ? 'exacto (Lane)' : 'exact (Lane)'}</button>
-            <button className={`chip ${useSurrogate ? 'on' : ''}`} onClick={() => setUseSurrogate(true)} title={surrPending ? 'surrogate pending' : 'surrogate'}>surrogate{useSurrogate && surrPending ? ' ⏳' : ''}</button>
-          </div>
-          {useSurrogate && surrPending && <div className="pf-cap pf-muted">{es ? 'surrogate pendiente — usando el exacto' : 'surrogate pending — using the exact optimizer'}</div>}
         </div>
       </aside>
       <main className="pf-main">
