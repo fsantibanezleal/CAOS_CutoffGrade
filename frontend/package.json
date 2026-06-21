@@ -9,7 +9,8 @@
     "prebuild": "node copy-data.mjs",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "test": "node --import tsx --test test/lane.test.ts"
+    "test": "node --import tsx --test test/lane.test.ts test/contract.test.ts",
+    "bake": "node --import tsx ../data-pipeline/cglab/science/bake_cases.mjs"
   },
   "dependencies": {
     "react": "^19.0.0",

@@ -1,0 +1,3 @@
+deposit_id,grade_mean,grade_cv,tonnage_mt,price,mining_cost,processing_cost,refining_cost,fixed_cost_yr,recovery,mine_capacity,mill_capacity,market_capacity,discount_rate
+base-porphyry,0.0075,0.6,400,9000,2.5,9.0,900,60,0.88,45,18,0.30,0.10
+high-grade-narrow,0.012,0.35,180,9000,2.8,11.0,900,45,0.9,30,12,0.22,0.10

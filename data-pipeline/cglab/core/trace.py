@@ -1,29 +1,43 @@
-"""The compact TRACE = the web-replay artifact (decimated trajectory + summary). Part of CONTRACT 2: its shape is
-mirrored by frontend/src/lib/contract.types.ts, so a drift fails the web build. Schema id is versioned."""
+"""The compact per-case TRACE = the web-replay artifact. Part of CONTRACT 2: its shape is mirrored by
+frontend/src/lib/contract.types.ts, so a drift fails the web build. Built deterministically from the committed Lane
+outputs (case-results.json, produced by the SAME TS engine the browser runs) + the learned-model metrics
+(cg-learned.json, when present). Carries the deposit + economics SPEC so the browser can re-optimize LIVE, the
+grade-tonnage curve, Lane's six cut-offs, the optimal DECLINING trajectory + NPV + life + cashflow schedule, the
+best-constant baseline it beats, the sensitivity sweep, and the learned-model metrics."""
 from __future__ import annotations
 
-from ..io.schema import SIRResult
+from typing import Any
 
 TRACE_SCHEMA = "cutoffgrade.trace/v1"
-MAX_POINTS = 200  # decimate longer trajectories so the committed artifact stays small (replay, not raw data)
 
 
-def build_trace(result: SIRResult) -> dict:
-    n = len(result.t)
-    if n > MAX_POINTS:
-        idx = [round(i * (n - 1) / (MAX_POINTS - 1)) for i in range(MAX_POINTS)]
-    else:
-        idx = list(range(n))
+def _learned_block(learned: dict | None) -> dict:
+    if not learned:
+        return {"status": "pending-training", "surrogate": None, "ood": None}
+    return {
+        "status": "trained",
+        "surrogate": learned.get("surrogate"),
+        "ood": learned.get("ood"),
+    }
+
+
+def build_trace(case: Any, *, case_result: dict, learned: dict | None) -> dict:
     return {
         "schema": TRACE_SCHEMA,
-        "case_id": result.case_id,
-        "t": [round(result.t[i], 3) for i in idx],
-        "S": [round(result.S[i], 2) for i in idx],
-        "I": [round(result.I[i], 2) for i in idx],
-        "R": [round(result.R[i], 2) for i in idx],
-        "summary": {
-            "peak_I": round(result.peak_I, 2),
-            "t_peak": round(result.t_peak, 2),
-            "attack_rate": round(result.attack_rate, 4),
-        },
+        "case_id": case.id,
+        "name": case.name,
+        "category": case.category,
+        "real_or_synthetic": case.real_or_synthetic,
+        "expected_band": case.expected_band,
+        "deposit": case_result.get("deposit"),
+        "econ": case_result.get("econ"),
+        "break_even": case_result.get("breakEven"),
+        "grade_tonnage": case_result.get("gradeTonnage"),
+        "cutoffs": case_result.get("cutoffs"),
+        "optimal": case_result.get("optimal"),
+        "constant": case_result.get("constant"),
+        "binding": case_result.get("binding"),
+        "npv_uplift_pct": case_result.get("npvUpliftPct"),
+        "sensitivity": case_result.get("sensitivity"),
+        "learned": _learned_block(learned),
     }

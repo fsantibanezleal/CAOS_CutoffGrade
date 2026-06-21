@@ -2,7 +2,7 @@
 cross-case summaries by category."""
 from __future__ import annotations
 
-from .cases.example_case import CASES, Case
+from .cases.lane_cases import CASES, Case
 
 _BY_ID: dict[str, Case] = {c.id: c for c in CASES}
 

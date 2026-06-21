@@ -65,16 +65,35 @@ export function simulateLife(cutoffFn: (year: number, remainingMt: number) => nu
   };
 }
 
-/** The constant cut-off that maximises NPV (1-D grid search). Exact + verifiable. */
-export function optimalConstantCutoff(econ: Economics, deposit: Deposit, nGrid = 160): { cutoff: number; result: LifeResult } {
+/** The constant cut-off that maximises NPV: a coarse grid, then a golden-section refinement around the best grid point
+ * so the argmax is accurate regardless of the grid resolution (the C-BREAKEVEN oracle needs this precision). */
+export function optimalConstantCutoff(econ: Economics, deposit: Deposit, nGrid = 120): { cutoff: number; result: LifeResult } {
   const gMax = gMaxOf(deposit);
-  let best = { cutoff: 0, result: simulateLife(() => 0, econ, deposit) };
+  const npvAt = (g: number): number => simulateLife(() => g, econ, deposit).npv;
+  let bestG = 0;
+  let bestNpv = npvAt(0);
+  const step = gMax / nGrid;
   for (let i = 1; i <= nGrid; i++) {
-    const g = (gMax * i) / nGrid;
-    const r = simulateLife(() => g, econ, deposit);
-    if (r.npv > best.result.npv) best = { cutoff: g, result: r };
+    const g = step * i;
+    const v = npvAt(g);
+    if (v > bestNpv) { bestNpv = v; bestG = g; }
   }
-  return best;
+  // golden-section refine in [bestG−step, bestG+step]
+  const phi = (Math.sqrt(5) - 1) / 2;
+  let a = Math.max(0, bestG - step);
+  let b = bestG + step;
+  let c = b - phi * (b - a);
+  let d = a + phi * (b - a);
+  let fc = npvAt(c);
+  let fd = npvAt(d);
+  for (let i = 0; i < 30 && b - a > 1e-7 * gMax; i++) {
+    if (fc > fd) { b = d; d = c; fd = fc; c = b - phi * (b - a); fc = npvAt(c); }
+    else { a = c; c = d; fc = fd; d = a + phi * (b - a); fd = npvAt(d); }
+  }
+  const g = (a + b) / 2;
+  const refined = npvAt(g);
+  const cutoff = refined >= bestNpv ? g : bestG;
+  return { cutoff, result: simulateLife(() => cutoff, econ, deposit) };
 }
 
 /** Backward F-profile: F[t] = Σ_{s≥t} C_s/(1+δ)^(s−t) = the value of the operation from the start of year t. */

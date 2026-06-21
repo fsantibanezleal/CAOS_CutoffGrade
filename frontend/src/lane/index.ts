@@ -9,3 +9,5 @@ export * from './types.ts';
 export { erf, normCdf, lnParams, oreFraction, avgGradeAbove, metalAbove, gradeTonnageCurve } from './gradetonnage.ts';
 export { breakEven, laneCutoffs } from './lane.ts';
 export { simulateLife, optimalConstantCutoff, laneTrajectory } from './optimize.ts';
+export { analyze } from './analyze.ts';
+export type { Analysis, SensitivityRow } from './analyze.ts';
