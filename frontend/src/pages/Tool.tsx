@@ -212,7 +212,7 @@ export default function Tool() {
   ];
 
   return (
-    <div className="pf-layout">
+    <div className="page-body pf-layout">
       <aside className="pf-side">
         <div className="pf-card">
           <div className="pf-card-t">{es ? 'Caso' : 'Case'}</div>

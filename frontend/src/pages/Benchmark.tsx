@@ -13,15 +13,15 @@ export default function Benchmark() {
   useEffect(() => { loadCaseResults().then(setData).catch(() => setData(null)); }, []);
   useEffect(() => { loadLearned().then(setLearned).catch(() => setLearned(null)); }, []);
 
-  if (!data) return <article className="pf-doc"><h1>Benchmark</h1><p className="pf-note">{es ? 'cargando…' : 'loading…'}</p></article>;
+  if (!data) return <article className="page-body prose"><h1>Benchmark</h1><p className="pf-note">{es ? 'cargando…' : 'loading…'}</p></article>;
 
   const cases = data.cases;
   const scen = ['S-LOWPRICE', 'S-BASE', 'S-HIGHPRICE'];
 
   return (
-    <article className="pf-doc">
+    <article className="page-body prose">
       <h1>Benchmark</h1>
-      <p className="pf-lead">{es ? 'Comparaciones cross-case — las que NO dependen de un solo caso viven aquí (no en el App). Todas vienen del bake del motor TS.' : 'Cross-case comparisons — the ones that do NOT depend on a single case live here (not in the App). All come from the TS-engine bake.'}</p>
+      <p className="lede">{es ? 'Comparaciones cross-case — las que NO dependen de un solo caso viven aquí (no en el App). Todas vienen del bake del motor TS.' : 'Cross-case comparisons — the ones that do NOT depend on a single case live here (not in the App). All come from the TS-engine bake.'}</p>
 
       <h2>{es ? 'VAN vs precio (sensibilidad)' : 'NPV vs price (sensitivity)'}</h2>
       <table className="cmp-table">

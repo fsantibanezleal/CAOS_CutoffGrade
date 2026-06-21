@@ -11,12 +11,12 @@ export default function Experiments() {
   const [data, setData] = useState<CaseResultsFile | null>(null);
   useEffect(() => { loadCaseResults().then(setData).catch(() => setData(null)); }, []);
 
-  if (!data) return <article className="pf-doc"><h1>{es ? 'Experimentos' : 'Experiments'}</h1><p className="pf-note">{es ? 'cargando casos…' : 'loading cases…'}</p></article>;
+  if (!data) return <article className="page-body prose"><h1>{es ? 'Experimentos' : 'Experiments'}</h1><p className="pf-note">{es ? 'cargando casos…' : 'loading cases…'}</p></article>;
 
   return (
-    <article className="pf-doc">
+    <article className="page-body prose">
       <h1>{es ? 'Experimentos' : 'Experiments'}</h1>
-      <p className="pf-lead">{es ? 'Los 10 casos baked por el motor de Lane, por categoría. El App muestra un caso; aquí están todos, con su corte óptimo, VAN, vida y restricción.' : 'The 10 cases baked by the Lane engine, by category. The App shows one case; here are all of them, with their optimal cut-off, NPV, life and binding constraint.'}</p>
+      <p className="lede">{es ? 'Los 10 casos baked por el motor de Lane, por categoría. El App muestra un caso; aquí están todos, con su corte óptimo, VAN, vida y restricción.' : 'The 10 cases baked by the Lane engine, by category. The App shows one case; here are all of them, with their optimal cut-off, NPV, life and binding constraint.'}</p>
       <table className="cmp-table">
         <thead><tr>
           <th>{es ? 'caso' : 'case'}</th><th>{es ? 'categoría' : 'category'}</th>
