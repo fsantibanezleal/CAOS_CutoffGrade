@@ -12,8 +12,19 @@ ort.env.wasm.numThreads = 1;
 const base = () => import.meta.env.BASE_URL || '/';
 const sessions: Record<string, Promise<ort.InferenceSession | null>> = {};
 
+// ONE global serialization chain for ALL onnxruntime-web work (session creation AND inference). The WASM EP runs
+// single-threaded and ships TWO models here (the cut-off surrogate + the scenario OOD autoencoder) that the App queries
+// together on every control change; without a global lock their concurrent create()/run() calls race the single WASM
+// runtime and throw "Session already started" / "Session mismatch". Serialising every op end-to-end removes the race.
+let ortChain: Promise<unknown> = Promise.resolve();
+function serial<T>(fn: () => Promise<T>): Promise<T> {
+  const next = ortChain.then(fn, fn);
+  ortChain = next.catch(() => {});
+  return next;
+}
+
 function get(file: string): Promise<ort.InferenceSession | null> {
-  return (sessions[file] ??= (async () => {
+  return (sessions[file] ??= serial(async () => {
     try {
       const head = await fetch(`${base()}${file}`, { method: 'HEAD' });
       if (!head.ok) return null;
@@ -21,18 +32,13 @@ function get(file: string): Promise<ort.InferenceSession | null> {
     } catch {
       return null;
     }
-  })());
+  }));
 }
 
 export const surrogateAvailable = async () => (await get('cutoff-surrogate.onnx')) != null;
 
-// onnxruntime-web sessions are not re-entrant; serialise runs.
-const runChain: Record<string, Promise<unknown>> = {};
-async function runSerial(file: string, s: ort.InferenceSession, feeds: Record<string, ort.Tensor>) {
-  const prev = runChain[file] ?? Promise.resolve();
-  let release!: () => void;
-  runChain[file] = new Promise<void>((r) => { release = r; });
-  try { await prev.catch(() => {}); return await s.run(feeds); } finally { release(); }
+async function runSerial(_file: string, s: ort.InferenceSession, feeds: Record<string, ort.Tensor>) {
+  return serial(() => s.run(feeds));
 }
 
 /** Build the standardized feature vector (the SOURCE-OF-TRUTH order in cglab/model/learned.py). */
@@ -53,4 +59,13 @@ export async function runSurrogate(econ: Economics, deposit: Deposit): Promise<{
   const out = await runSerial('cutoff-surrogate.onnx', s, { x: new ort.Tensor('float32', featureVec(econ, deposit), [1, FEATURES.length]) });
   const y = out.y.data as Float32Array;
   return { cutoff: y[0], npv: y[1], life: y[2] };
+}
+
+/** OOD autoencoder: returns the standardized-space reconstruction MSE (the anomaly score, computed inside the ONNX).
+ * Low (~<1) in-envelope, high for scenarios outside the trained economic envelope. null if untrained. */
+export async function runOod(econ: Economics, deposit: Deposit): Promise<number | null> {
+  const s = await get('scenario-ood.onnx');
+  if (!s) return null;
+  const out = await runSerial('scenario-ood.onnx', s, { x: new ort.Tensor('float32', featureVec(econ, deposit), [1, FEATURES.length]) });
+  return (out.xr.data as Float32Array)[0];
 }
