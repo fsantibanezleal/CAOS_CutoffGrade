@@ -8,6 +8,7 @@
     "dev": "vite",
     "prebuild": "node copy-data.mjs",
     "build": "tsc --noEmit && vite build",
+    "postbuild": "node spa-404.mjs",
     "preview": "vite preview",
     "test": "node --import tsx --test test/lane.test.ts test/contract.test.ts",
     "bake": "node --import tsx ../data-pipeline/cglab/science/bake_cases.mjs"

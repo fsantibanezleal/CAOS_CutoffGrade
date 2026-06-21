@@ -14,7 +14,7 @@ async function getJSON<T>(rel: string): Promise<T> {
 export interface LearnedFile {
   schema: string;
   surrogate: { npv_err: number; cutoff_err: number; nEval: number };
-  ood: { auc: number; nEval: number };
+  ood: { auc: number; nEval: number; thr?: number };
   honesty: string;
 }
 
