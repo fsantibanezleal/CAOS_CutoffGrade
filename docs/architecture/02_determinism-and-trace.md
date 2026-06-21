@@ -1,10 +1,13 @@
 # Determinism + the trace
 
-**A run is a pure function of `(params, seed)`.** Use `core/rng.py :: make_rng(seed)` — never a global/implicit
-RNG. Same inputs ⇒ byte-identical artifact (asserted in `tests/test_pipeline_smoke.py`). This is what makes the
-committed artifact a trustworthy source-of-truth the SPA merely animates (ADR-0052 / ADR-0054).
+**A run is a pure function of `(params, seed)`.** The TS Lane engine is analytic + deterministic (no global RNG; the
+training-data sampler in `gen_train.mjs` uses a seeded mulberry32). Same inputs ⇒ byte-identical artifact (asserted in
+`tests/test_pipeline_smoke.py` and proven by re-running `python -m cglab.pipeline all`). This is what makes the
+committed artifact a trustworthy source-of-truth the SPA merely replays (ADR-0052 / ADR-0054).
 
-**The trace** (`core/trace.py`, schema `cutoffgrade.trace/v1`) is the compact, decimated replay artifact — not the raw
-solver state. `build_trace()` down-samples long trajectories to `MAX_POINTS` so the committed JSON stays small.
-For a heavy product the offline run also emits the full raw output (kept local/LFS, git-ignored); only the compact
-trace is committed and shipped. Its shape is mirrored by `frontend/src/lib/contract.types.ts` (CONTRACT 2).
+**The trace** (`core/trace.py`, schema `cutoffgrade.trace/v1`) is the compact per-case replay artifact. Per case it
+carries the deposit + economics spec (so the browser can re-optimize LIVE), the grade-tonnage curve, the six Lane
+cut-offs, the optimal declining cut-off trajectory + NPV + life + the annual cashflow schedule, the best-constant
+baseline it beats, the sensitivity sweep, and the learned-model metrics (`status: trained | pending-training`). Its
+shape is mirrored by `frontend/src/lib/contract.types.ts` (CONTRACT 2) so a drift fails `tsc`. The gate's raw wall-clock
+is used for the live/replay decision but **never stored** (it would dirty git on re-run).

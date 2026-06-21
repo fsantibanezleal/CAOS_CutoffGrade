@@ -1,16 +1,18 @@
-# The live-vs-precompute gate
+# The live / precompute gate
 
-`data-pipeline/cglab/core/gate.py :: classify_lane()`. A case runs **live** in the browser (Pyodide) iff —
-by MEASUREMENT, never by hand-wave:
+`cglab/core/gate.py` records, per case, whether it runs **live** (client-side) or falls back to **replay** of the
+committed trace (ADR-0054). It is a **measurement written into the manifest**, never a hand-wave; `scripts/
+check_artifacts.py` + CI fail on a mislabelled lane.
 
-- it is **pure-Python**, AND
-- its wheels are a subset of the Pyodide-safe set (`LIVE_WHEELS`, e.g. `{numpy}`), AND
-- `run_ms ≤ RUN_MS_GATE` (interaction budget), AND
-- `trace_bytes ≤ TRACE_BYTES_GATE` (small artifact).
+```python
+classify_lane(client_side=True,
+              runtimes={"ts-econ", "onnxruntime-web"},
+              run_ms=...,            # a full Lane optimization, measured
+              trace_bytes=...)       # the committed per-case trace size
+```
 
-Otherwise the case is **precompute**: the offline pipeline bakes the artifact and the SPA replays it. Either way,
-a committed artifact always exists, so the site replays instantly on first paint (ADR-0054).
-
-The verdict + the measured numbers are written into the manifest (`gate` field) and CI fails if `manifest.lane`
-disagrees with the gate — so a heavy model can never be mislabeled "live". The EXAMPLE SIR case is pure-Python +
-numpy + small ⇒ classified `live`.
+A case is **live** iff it is client-side, its runtimes are a subset of the deployed client set
+`{ts-econ, onnxruntime-web}` (`LIVE_RUNTIMES`), a full optimization completes within the interaction budget
+(`RUN_MS_GATE = 1500 ms`), and its replay trace stays small (`TRACE_BYTES_GATE = 256 KB`). At teaching scale a full
+Lane fixed-point optimization + sensitivity is tens of milliseconds and the trace is a few KB, so **every case is
+LIVE**. The verdict + budgets go into the manifest; the raw wall-clock is used for the decision but never stored.
