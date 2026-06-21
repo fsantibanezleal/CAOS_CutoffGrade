@@ -1,0 +1,13 @@
+{
+  "schema": "cutoffgrade.learned/v1",
+  "surrogate": {
+    "npv_err": 0.0676,
+    "cutoff_err": 0.1086,
+    "nEval": 400
+  },
+  "ood": {
+    "auc": 0.9992,
+    "nEval": 800
+  },
+  "honesty": "Synthetic deposits + economics across a porphyry-copper-like envelope; the labels ARE the EXACT Lane optimizer's outputs. The surrogate's DOWNSTREAM skill (its predicted cut-off run through the exact simulator, vs the exact optimum NPV) is measured by eval_lane.mjs. The OOD autoencoder flags scenarios outside the training envelope. Reported whichever way the numbers land; the exact optimizer is the authority. No fabricated win."
+}

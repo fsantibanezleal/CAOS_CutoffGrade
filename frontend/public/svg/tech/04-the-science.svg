@@ -1,6 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 460" width="900" class="arch-svg" role="img" aria-label="The science / algorithm flow — placeholder, specialise per product">
-  <!-- PLACEHOLDER (template). Each product REPLACES this with its real algorithm,
-       step by step, with the genuine equations. Keep the shell tokens (themed). -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 470" width="900" class="arch-svg" role="img" aria-label="CutoffGrade science - grade-tonnage, Lane cut-offs, NPV fixed-point, high-grading, the surrogate and OOD-AE">
   <style>
     .arch-svg text { font-family: var(--font-sans, Inter, "Segoe UI", system-ui, sans-serif); }
     .arch-svg .mono { font-family: var(--font-mono, ui-monospace, Consolas, monospace); }
@@ -9,12 +7,13 @@
     .arch-svg .bx-good { stroke: var(--color-good); }
     .arch-svg .ttl { fill: var(--color-fg); font-size: 13px; font-weight: 700; }
     .arch-svg .sub { fill: var(--color-fg-subtle); font-size: 10px; }
+    .arch-svg .st { fill: var(--color-accent); font-size: 11px; font-weight: 700; }
     .arch-svg .it { fill: var(--color-fg); font-size: 10.5px; }
-    .arch-svg .cd { fill: var(--color-accent); font-size: 9.5px; }
-    .arch-svg .eq { fill: var(--color-fg); font-size: 12px; font-style: italic; }
-    .arch-svg .mu { fill: var(--color-fg-subtle); font-size: 10px; }
+    .arch-svg .cd { fill: var(--color-accent); font-size: 9px; }
+    .arch-svg .eq { fill: var(--color-fg); font-size: 12.5px; }
+    .arch-svg .eqi { fill: var(--color-fg); font-size: 12.5px; font-style: italic; }
+    .arch-svg .mu { fill: var(--color-fg-subtle); font-size: 9.5px; }
     .arch-svg .flow { fill: none; stroke: var(--color-fg-faint); stroke-width: 1.6; }
-    .arch-svg .ph { fill: var(--color-warn); font-size: 10px; font-weight: 600; }
   </style>
   <defs>
     <marker id="sc-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
@@ -22,52 +21,71 @@
     </marker>
   </defs>
 
-  <text class="ttl" x="22" y="30">The science / algorithm flow</text>
-  <text class="ph" x="22" y="47">PLACEHOLDER — replace with this product's real stages + equations (e.g. image → watershed → PSD → Rosin–Rammler)</text>
+  <text class="ttl" x="22" y="28">The science - Lane's economic cut-off grade (grade-tonnage to NPV fixed-point)</text>
+  <text class="sub" x="22" y="45">frontend/src/lane/ . the same TypeScript runs live in the browser and under Node in the offline bake</text>
 
-  <!-- staged pipeline -->
-  <rect class="bx bx-hi" x="20" y="78" width="180" height="92" rx="10"/>
-  <text class="it" x="34" y="104">① Ingest + normalise</text>
-  <text class="mu" x="34" y="124">validated input (Contract 1)</text>
-  <text class="cd mono" x="34" y="150">stages/01_*.py</text>
+  <rect class="bx bx-hi" x="16" y="66" width="170" height="104" rx="9"/>
+  <text class="st" x="28" y="88">1 Grade-tonnage</text>
+  <text class="it" x="28" y="108">lognormal phi(g), gbar(g)</text>
+  <text class="mu" x="28" y="124">ore fraction + avg grade</text>
+  <text class="mu" x="28" y="138">above any cut-off</text>
+  <text class="cd mono" x="28" y="160">gradetonnage.ts</text>
 
-  <rect class="bx bx-hi" x="232" y="78" width="180" height="92" rx="10"/>
-  <text class="it" x="246" y="104">② Core transform</text>
-  <text class="mu" x="246" y="124">the real method / model</text>
-  <text class="cd mono" x="246" y="150">stages/02_*.py</text>
+  <rect class="bx bx-hi" x="202" y="66" width="170" height="104" rx="9"/>
+  <text class="st" x="214" y="88">2 Limiting cut-offs</text>
+  <text class="it" x="214" y="108">g_mine / g_mill / g_mkt</text>
+  <text class="mu" x="214" y="124">with the f + F.delta</text>
+  <text class="mu" x="214" y="138">opportunity cost</text>
+  <text class="cd mono" x="214" y="160">lane.ts</text>
 
-  <rect class="bx bx-hi" x="444" y="78" width="180" height="92" rx="10"/>
-  <text class="it" x="458" y="104">③ Estimate + fit</text>
-  <text class="mu" x="458" y="124">parameters, uncertainty</text>
-  <text class="cd mono" x="458" y="150">stages/03_*.py</text>
+  <rect class="bx bx-hi" x="388" y="66" width="170" height="104" rx="9"/>
+  <text class="st" x="400" y="88">3 Balancing + median</text>
+  <text class="it" x="400" y="108">3 balancing cut-offs</text>
+  <text class="mu" x="400" y="124">Dagdelen median ->></text>
+  <text class="mu" x="400" y="138">the effective optimum</text>
+  <text class="cd mono" x="400" y="160">lane.ts</text>
 
-  <rect class="bx bx-good" x="656" y="78" width="180" height="92" rx="10"/>
-  <text class="it" x="670" y="104">④ Metrics + artifact</text>
-  <text class="mu" x="670" y="124">scored vs baseline / truth</text>
-  <text class="cd mono" x="670" y="150">stages/04_*.py</text>
+  <rect class="bx bx-hi" x="574" y="66" width="170" height="104" rx="9"/>
+  <text class="st" x="586" y="88">4 NPV fixed-point</text>
+  <text class="it" x="586" y="108">F couples cut-off and</text>
+  <text class="mu" x="586" y="124">cashflows -> iterate</text>
+  <text class="mu" x="586" y="138">over the mine life</text>
+  <text class="cd mono" x="586" y="160">optimize.ts</text>
 
-  <path class="flow" d="M200,124 H230" marker-end="url(#sc-arrow)"/>
-  <path class="flow" d="M412,124 H442" marker-end="url(#sc-arrow)"/>
-  <path class="flow" d="M624,124 H654" marker-end="url(#sc-arrow)"/>
+  <rect class="bx bx-good" x="760" y="66" width="124" height="104" rx="9"/>
+  <text class="st" x="772" y="88" style="fill:var(--color-good)">5 Trajectory</text>
+  <text class="it" x="772" y="108">declining cut-off</text>
+  <text class="mu" x="772" y="124">NPV . life . cashflow</text>
+  <text class="cd mono" x="772" y="148">laneTrajectory</text>
 
-  <!-- equation band -->
-  <rect class="bx" x="20" y="200" width="816" height="86" rx="10"/>
-  <text class="it" x="36" y="224">The governing relation (replace with the product's real equation):</text>
-  <text class="eq" x="36" y="256">y = f( x ; θ )            P(x) = 1 − exp[ −(x / x_c)^n ]            (placeholder)</text>
-  <text class="mu" x="36" y="276">render the real maths with KaTeX on the Methodology page; this SVG mirrors it visually.</text>
+  <path class="flow" d="M186,118 H200" marker-end="url(#sc-arrow)"/>
+  <path class="flow" d="M372,118 H386" marker-end="url(#sc-arrow)"/>
+  <path class="flow" d="M558,118 H572" marker-end="url(#sc-arrow)"/>
+  <path class="flow" d="M744,118 H758" marker-end="url(#sc-arrow)"/>
 
-  <!-- baseline vs learned -->
-  <rect class="bx" x="20" y="312" width="404" height="128" rx="10"/>
-  <text class="it" x="36" y="336" style="font-weight:700">Classical baseline</text>
-  <text class="mu" x="36" y="358">a transparent, deterministic method —</text>
-  <text class="mu" x="36" y="378">the honest reference every result is</text>
-  <text class="mu" x="36" y="398">measured against.</text>
-  <text class="cd mono" x="36" y="424">src/&lt;domain&gt;/*.ts (runs live)</text>
+  <rect class="bx" x="16" y="190" width="430" height="120" rx="9"/>
+  <text class="it" x="30" y="212" style="font-weight:700">The limiting cut-offs (opportunity cost tau = f + F.delta)</text>
+  <text class="eqi" x="30" y="240">g_mill = (h + tau/H) / (y(p-k))</text>
+  <text class="eq" x="30" y="266">tau -> f as F -> 0  =>  the cut-off DECLINES to break-even</text>
+  <text class="mu" x="30" y="292">F = the NPV of the remaining operation; high-grading pays while F is large.</text>
 
-  <rect class="bx bx-good" x="444" y="312" width="392" height="128" rx="10"/>
-  <text class="it" x="460" y="336" style="font-weight:700">Learned model</text>
-  <text class="mu" x="460" y="358">trained offline (torch), exported to</text>
-  <text class="mu" x="460" y="378">ONNX, run client-side; reported with</text>
-  <text class="mu" x="460" y="398">held-out skill vs the baseline.</text>
-  <text class="cd mono" x="460" y="424">model/learned.py → *.onnx → ort.ts</text>
+  <rect class="bx" x="454" y="190" width="430" height="120" rx="9"/>
+  <text class="it" x="468" y="212" style="font-weight:700">The NPV objective (fixed point)</text>
+  <text class="eqi" x="468" y="240">NPV = sum_t  C_t / (1+delta)^t</text>
+  <text class="eq" x="468" y="266">C_t = ore.gbar.y(p-k) - ore.h - Q.m - f</text>
+  <text class="mu" x="468" y="292">an exact year-by-year simulator gives the NPV of any cut-off policy.</text>
+
+  <rect class="bx" x="16" y="330" width="430" height="124" rx="9"/>
+  <text class="it" x="30" y="352" style="font-weight:700">Exact optimizer (always on)</text>
+  <text class="mu" x="30" y="374">the transparent Lane fixed-point + the exact</text>
+  <text class="mu" x="30" y="392">simulator - the authority every learned</text>
+  <text class="mu" x="30" y="410">prediction is measured against; runs live.</text>
+  <text class="cd mono" x="30" y="436">optimize.ts . laneTrajectory (live)</text>
+
+  <rect class="bx bx-good" x="454" y="330" width="430" height="124" rx="9"/>
+  <text class="it" x="468" y="352" style="font-weight:700">Learned lane (ONNX, client-side)</text>
+  <text class="mu" x="468" y="374">- cutoff-surrogate: features -> cut-off, NPV, life</text>
+  <text class="mu" x="468" y="392">  (instant sweeps; measured vs the exact optimizer).</text>
+  <text class="mu" x="468" y="410">- scenario-ood: AE flags out-of-envelope inputs.</text>
+  <text class="cd mono" x="468" y="436">train_lane.py -> *.onnx -> ort.ts</text>
 </svg>

@@ -1,68 +1,94 @@
-"""The offline pipeline orchestrator + CLI (ADR-0057). Runs the named stages per case, applies CONTRACT 1, writes
-the compact artifact + manifest (CONTRACT 2) and a flat index.json.
+"""The offline pipeline orchestrator + CLI (ADR-0057). Per case it applies CONTRACT 1, builds the compact per-case
+trace from the committed Lane outputs (case-results.json) + the learned-model metrics (cg-learned.json, when present),
+runs the lane gate, and writes the manifest + a flat index (CONTRACT 2). The committed case-results.json IS the TS
+engine's real output (baked by the SAME engine the browser runs), so the DEFAULT path is light (numpy/stdlib, no
+torch/node) and deterministic. `--retrain` regenerates the artifacts (re-bake the cases + train the learned models
+torch -> ONNX) - see cglab/science/.
 
-    python -m cglab.pipeline            # all cases
-    python -m cglab.pipeline EX02_epidemic --seed 7
+    python -m cglab.pipeline                 # rebuild all replay traces + manifests from committed artifacts
+    python -m cglab.pipeline S-BASE          # one case
+    python -m cglab.pipeline all --retrain   # re-bake case-results + train the learned models, then rebuild
 """
 from __future__ import annotations
 
 import argparse
-import time
+import subprocess
 from pathlib import Path
 
 from . import registry
+from .cases.lane_cases import descriptor_row
 from .core.manifest import build_index
-from .core.rng import make_rng
-from .io.contract import validate_rows
-from .io.formats import write_json
-from .io.schema import SIRParams
-from .stages import evaluate, export, infer, train
+from .io.contract import validate_records
+from .io.formats import read_json, write_json
+from .stages import export
 
-# data-pipeline/cglab/pipeline.py -> parents[2] = repo root (works under `pip install -e .` too)
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DERIVED = REPO_ROOT / "data" / "derived"
 MANIFESTS = DERIVED / "manifests"
-MODELS = REPO_ROOT / "models"
-
-STAGES = ("preprocess", "feature_extraction", "train", "infer", "evaluate", "export")
+SCIENCE = Path(__file__).resolve().parent / "science"
 
 
-def _train_model() -> dict:
-    # didactic surrogate: train on the non-degenerate case params; held-out eval uses a disjoint synthetic draw
-    params = [c.params for c in registry.list_cases() if c.params.I0 > 0]
-    return train.run(params, str(MODELS))
+def _load_artifacts() -> tuple[dict, dict | None]:
+    cr = DERIVED / "case-results.json"
+    if not cr.exists():
+        raise SystemExit(
+            f"missing committed artifact {cr}. case-results.json is baked by the TS engine "
+            f"(science/bake_cases.mjs) - run `python -m cglab.pipeline all --retrain` (or `npm run bake` in frontend/)."
+        )
+    learned_path = DERIVED / "cg-learned.json"
+    learned = read_json(learned_path) if learned_path.exists() else None  # learned models optional until trained
+    return read_json(cr), learned
 
 
-def _holdout_params(seed: int) -> list[SIRParams]:
-    rng = make_rng(seed + 999)  # disjoint from training => leakage-safe
-    out: list[SIRParams] = []
-    for i in range(20):
-        out.append(SIRParams(f"_holdout{i}", beta=float(rng.uniform(0.15, 1.2)),
-                             gamma=float(rng.uniform(0.15, 0.40)), N=100_000.0, I0=50.0))
-    return out
+def _contract_flags() -> list[dict]:
+    """Apply CONTRACT 1 to the cases' deposit+economics descriptors - proves the ingestion gate, carries the flags."""
+    return validate_records([descriptor_row(c) for c in registry.list_cases()]).flagged
 
 
-def precompute(case_id: str, seed: int = 42, model: dict | None = None) -> dict:
+def precompute(case_id: str, seed: int = 42,
+               artifacts: tuple[dict, dict | None] | None = None, flags: list[dict] | None = None) -> dict:
     case = registry.get_case(case_id)
-    if model is None:
-        model = _train_model()
-    t0 = time.perf_counter()
-    # run CONTRACT 1 on the case params (proves the gate + carries flags); a real product reads raw data here
-    rep = validate_rows([{"case_id": case.params.case_id, "beta": case.params.beta, "gamma": case.params.gamma,
-                          "N": case.params.N, "I0": case.params.I0, "days": case.params.days}])
-    params = rep.accepted[0] if rep.accepted else case.params
-    result = infer.run(params)
-    metrics = evaluate.run(model, _holdout_params(seed))
-    run_ms = (time.perf_counter() - t0) * 1000.0
-    return export.run(case=case, params=params, result=result, seed=seed, run_ms=run_ms,
-                      flags=rep.flagged, metrics=metrics, derived_dir=str(DERIVED), manifests_dir=str(MANIFESTS))
+    case_results, learned = artifacts if artifacts is not None else _load_artifacts()
+    return export.build_replay(
+        case, derived_dir=str(DERIVED), manifests_dir=str(MANIFESTS),
+        case_results=case_results, learned=learned,
+        contract_flags=(flags if flags is not None else _contract_flags()), seed=seed,
+    )
+
+
+def _node(*args: str) -> None:
+    # run from frontend/ so the bare `tsx` loader + onnxruntime-web resolve from frontend/node_modules; the .mjs
+    # scripts compute every I/O path relative to their own file (import.meta.url), so cwd does not affect outputs.
+    subprocess.run(["node", "--import", "tsx", *args], check=True, cwd=str(REPO_ROOT / "frontend"))
+
+
+def retrain(seed: int = 42) -> None:
+    """HEAVY lane (two-language): re-bake the optimization (the SAME TS engine) and train the learned models
+    (torch -> ONNX). The science is preserved verbatim in cglab/science/."""
+    print("[retrain] bake case-results (TS Lane optimizer over the cases) ...", flush=True)
+    _node(str(SCIENCE / "bake_cases.mjs"))
+    train = SCIENCE / "train_lane.py"
+    if train.exists():
+        print("[retrain] generate the learned-model training data (the SAME TS engine) ...", flush=True)
+        _node(str(SCIENCE / "gen_train.mjs"))
+        print("[retrain] torch train the learned models (cut-off surrogate + scenario OOD-AE) -> ONNX ...", flush=True)
+        vp = REPO_ROOT / ".venv-precompute" / "Scripts" / "python.exe"
+        py = str(vp) if vp.exists() else "python"
+        subprocess.run([py, str(train)], check=True, cwd=str(REPO_ROOT))
+        print("[retrain] eval the trained surrogate downstream (vs the exact optimizer) ...", flush=True)
+        _node(str(SCIENCE / "eval_lane.mjs"))  # assembles the final data/derived/cg-learned.json
+    else:
+        print("[retrain] (science/train_lane.py absent - learned models pending; traces record learned=pending)",
+              flush=True)
+    print(f"[retrain] artifacts -> {DERIVED}", flush=True)
 
 
 def run_all(seed: int = 42) -> list[dict]:
-    model = _train_model()
+    artifacts = _load_artifacts()
+    flags = _contract_flags()
     entries = []
     for c in registry.list_cases():
-        precompute(c.id, seed=seed, model=model)
+        precompute(c.id, seed=seed, artifacts=artifacts, flags=flags)
         entries.append({"case_id": c.id, "category": c.category, "manifest_path": f"manifests/{c.id}.json"})
     write_json(MANIFESTS / "index.json", build_index(entries))
     return entries
@@ -72,12 +98,16 @@ def main() -> None:
     ap = argparse.ArgumentParser(prog="cglab.pipeline")
     ap.add_argument("case", nargs="?", default="all", help="a case id, or 'all'")
     ap.add_argument("--seed", type=int, default=42)
+    ap.add_argument("--retrain", action="store_true",
+                    help="re-bake case-results (TS engine) + train the learned models (torch) before rebuilding")
     args = ap.parse_args()
+    if args.retrain:
+        retrain(args.seed)
     if args.case == "all":
         entries = run_all(args.seed)
         print(f"precomputed {len(entries)} cases -> {DERIVED}")
         for e in entries:
-            print(f"  {e['case_id']:20s} [{e['category']}]")
+            print(f"  {e['case_id']:12s} [{e['category']}]")
         print(f"index -> {MANIFESTS / 'index.json'}")
     else:
         m = precompute(args.case, args.seed)
