@@ -1,20 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 460" width="900" class="arch-svg" role="img" aria-label="What the app is — placeholder, specialise per product">
-  <!-- PLACEHOLDER (template). Each product REPLACES this with a diagram of its own
-       domain: the real problem, the inputs, the science core, the value it returns.
-       Keep the shell CSS-variable tokens so it stays themed. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 460" width="900" class="arch-svg" role="img" aria-label="CutoffGrade Studio — deposit and economics to the optimal cut-off and NPV">
   <style>
     .arch-svg text { font-family: var(--font-sans, Inter, "Segoe UI", system-ui, sans-serif); }
     .arch-svg .mono { font-family: var(--font-mono, ui-monospace, Consolas, monospace); }
     .arch-svg .bx { fill: var(--color-surface-2); stroke: var(--color-border); stroke-width: 1.2; }
     .arch-svg .bx-hi { stroke: var(--color-accent); }
     .arch-svg .bx-good { stroke: var(--color-good); }
+    .arch-svg .it { fill: var(--color-fg); font-size: 11px; font-weight: 600; }
     .arch-svg .ttl { fill: var(--color-fg); font-size: 13px; font-weight: 700; }
     .arch-svg .sub { fill: var(--color-fg-subtle); font-size: 10px; }
-    .arch-svg .it { fill: var(--color-fg); font-size: 11px; }
     .arch-svg .cd { fill: var(--color-accent); font-size: 9.5px; }
     .arch-svg .mu { fill: var(--color-fg-subtle); font-size: 10px; }
     .arch-svg .flow { fill: none; stroke: var(--color-fg-faint); stroke-width: 1.6; }
-    .arch-svg .ph { fill: var(--color-warn); font-size: 10px; font-weight: 600; }
+    .arch-svg .axis { stroke: var(--color-border); stroke-width: 1; }
+    .arch-svg .gt { fill: none; stroke: var(--color-accent); stroke-width: 2; }
+    .arch-svg .traj { fill: none; stroke: var(--color-bad); stroke-width: 2; }
+    .arch-svg .be { stroke: var(--color-warn); stroke-width: 1.2; stroke-dasharray: 3 3; }
   </style>
   <defs>
     <marker id="ta-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
@@ -22,47 +22,56 @@
     </marker>
   </defs>
 
-  <text class="ttl" x="22" y="30">What the app is</text>
-  <text class="ph" x="22" y="47">PLACEHOLDER — replace with this product's domain problem → input → method → value</text>
+  <text class="ttl" x="22" y="30">CutoffGrade Studio - what is the most valuable cut-off grade?</text>
+  <text class="sub" x="22" y="47">a mine-economics product: a grade-tonnage curve + price, costs and capacities to the NPV-maximising cut-off trajectory (Lane), the NPV, the life</text>
 
-  <rect class="bx bx-hi" x="20" y="74" width="194" height="150" rx="11"/>
-  <text class="it" x="34" y="100">The problem</text>
-  <text class="mu" x="34" y="120">a real mining /</text>
-  <text class="mu" x="34" y="136">operations question</text>
-  <text class="mu" x="34" y="156">answered from data</text>
-  <text class="cd mono" x="34" y="182">products/&lt;slug&gt;.md</text>
+  <rect class="bx bx-hi" x="20" y="74" width="196" height="150" rx="11"/>
+  <text class="it" x="34" y="98">The question</text>
+  <text class="mu" x="34" y="118">Which rock is ORE?</text>
+  <text class="mu" x="34" y="134">The break-even is</text>
+  <text class="mu" x="34" y="150">wrong over a life -</text>
+  <text class="mu" x="34" y="166">it ignores the time</text>
+  <text class="mu" x="34" y="182">value of capacity.</text>
+  <text class="cd mono" x="34" y="206">Lane 1964 / 1988</text>
 
-  <rect class="bx" x="248" y="74" width="194" height="150" rx="11"/>
-  <text class="it" x="262" y="100">The input</text>
-  <text class="mu" x="262" y="120">a measurement,</text>
-  <text class="mu" x="262" y="136">image, or signal</text>
-  <text class="mu" x="262" y="156">(Contract 1)</text>
-  <text class="cd mono" x="262" y="182">data/examples/*</text>
+  <rect class="bx" x="244" y="74" width="196" height="150" rx="11"/>
+  <text class="it" x="258" y="98">The input</text>
+  <line class="axis" x1="262" y1="194" x2="424" y2="194"/>
+  <line class="axis" x1="262" y1="118" x2="262" y2="194"/>
+  <path class="gt" d="M262,124 C300,128 340,150 380,176 C400,186 414,190 424,192"/>
+  <text class="mu" x="258" y="138">ore fraction vs cut-off</text>
+  <text class="mu" x="380" y="210">cut-off</text>
+  <text class="cd mono" x="258" y="212" style="font-size:8.5px">deposit + economics (Contract 1)</text>
 
-  <rect class="bx bx-hi" x="476" y="74" width="194" height="150" rx="11"/>
-  <text class="it" x="490" y="100">The method</text>
-  <text class="mu" x="490" y="120">SOTA, real — a</text>
-  <text class="mu" x="490" y="136">classical baseline</text>
-  <text class="mu" x="490" y="156">+ a learned model</text>
-  <text class="cd mono" x="490" y="182">src/&lt;domain&gt;/ · *.onnx</text>
+  <rect class="bx bx-hi" x="468" y="74" width="196" height="150" rx="11"/>
+  <text class="it" x="482" y="98">The method</text>
+  <text class="mu" x="482" y="118">- 3 limiting cut-offs</text>
+  <text class="mu" x="482" y="134">- 3 balancing cut-offs</text>
+  <text class="mu" x="482" y="150">- NPV fixed-point</text>
+  <text class="mu" x="482" y="166">  optimization</text>
+  <text class="cd mono" x="482" y="190">lane/ + surrogate.onnx</text>
+  <text class="mu" x="482" y="210">live in the browser</text>
 
-  <rect class="bx bx-good" x="704" y="74" width="176" height="150" rx="11"/>
-  <text class="it" x="718" y="100">The value</text>
-  <text class="mu" x="718" y="120">a decision-grade</text>
-  <text class="mu" x="718" y="136">number + an</text>
-  <text class="mu" x="718" y="156">interactive readout</text>
-  <text class="cd mono" x="718" y="182">pages/Tool.tsx</text>
+  <rect class="bx bx-good" x="692" y="74" width="188" height="150" rx="11"/>
+  <text class="it" x="706" y="98">The value</text>
+  <line class="axis" x1="712" y1="190" x2="868" y2="190"/>
+  <line class="axis" x1="712" y1="118" x2="712" y2="190"/>
+  <path class="traj" d="M716,124 C760,140 800,166 868,182"/>
+  <line class="be" x1="712" y1="182" x2="868" y2="182"/>
+  <text class="mu" x="794" y="160" style="font-size:8px">declining cut-off</text>
+  <text class="mu" x="812" y="206">life</text>
+  <text class="cd mono" x="706" y="218">cut-off . NPV . life</text>
 
-  <path class="flow" d="M214,149 H246" marker-end="url(#ta-arrow)"/>
-  <path class="flow" d="M442,149 H474" marker-end="url(#ta-arrow)"/>
-  <path class="flow" d="M670,149 H702" marker-end="url(#ta-arrow)"/>
+  <path class="flow" d="M216,149 H242" marker-end="url(#ta-arrow)"/>
+  <path class="flow" d="M440,149 H466" marker-end="url(#ta-arrow)"/>
+  <path class="flow" d="M664,149 H690" marker-end="url(#ta-arrow)"/>
 
-  <rect class="bx" x="20" y="256" width="860" height="180" rx="11"/>
-  <text class="it" x="36" y="282">It is a real system, not a demo:</text>
-  <text class="mu" x="36" y="306">• a deterministic engine that recomputes live in the browser on every control — no mocked outputs;</text>
-  <text class="mu" x="36" y="328">• an offline pipeline with two validated data contracts, so you can run it on YOUR data, not just the built-in cases;</text>
-  <text class="mu" x="36" y="350">• a learned model trained from real / sourced data and exported to ONNX, running client-side next to a classical baseline;</text>
-  <text class="mu" x="36" y="372">• six documented pages (App · Introduction · Methodology · Implementation · Experiments · Benchmark);</text>
-  <text class="mu" x="36" y="394">• an honest record: every number is sourced or labelled synthetic, every limitation stated.</text>
-  <text class="cd mono" x="36" y="420">replace the four boxes above with the concrete nouns of THIS product (e.g. muckpile image → watershed → PSD → P80).</text>
+  <rect class="bx" x="20" y="252" width="860" height="184" rx="11"/>
+  <text class="it" x="36" y="278">It is a real system, not a demo:</text>
+  <text class="mu" x="36" y="302">- the Lane optimizer (frontend/src/lane/) recomputes the optimal cut-off trajectory + NPV + life live on every price / cost / capacity / delta slider;</text>
+  <text class="mu" x="36" y="324">- the cut-off is generally HIGHER early (high-grading while the remaining reserve is most valuable) and DECLINES to break-even over the life;</text>
+  <text class="mu" x="36" y="346">- an exact year-by-year NPV simulator is the authority; a learned surrogate (ONNX) gives instant Monte-Carlo + an OOD-AE flags weird scenarios;</text>
+  <text class="mu" x="36" y="368">- C-UNIFORM (single grade) + C-BREAKEVEN (no time cost, cut-off = break-even) are closed-form oracles; nothing is fabricated;</text>
+  <text class="mu" x="36" y="390">- Contract 1 accepts your own deposit + economics; six documented pages; every number sourced or labelled synthetic.</text>
+  <text class="cd mono" x="36" y="418">grade-tonnage + price/costs/capacities  ->  Lane limiting + balancing cut-offs  ->  NPV fixed-point  ->  declining cut-off . NPV . life</text>
 </svg>

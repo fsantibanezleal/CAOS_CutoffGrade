@@ -1,8 +1,7 @@
 import react from '@vitejs/plugin-react';
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from 'vite';
 
 export default defineConfig({
-  base: '/', // relative base -> works on a GitHub Pages project site
+  base: '/', // served at the custom domain root (cutoffgrade.fasl-work.com)
   plugins: [react()],
-  test: { environment: 'node', globals: true },
 });
