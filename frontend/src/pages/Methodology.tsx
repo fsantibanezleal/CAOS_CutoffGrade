@@ -3,9 +3,9 @@ import { Callout, Cite, Equation, InlineMath, ReferenceList, Tabs, useShellLang 
 export default function Methodology() {
   const es = useShellLang() === 'es';
   return (
-    <article className="pf-doc">
+    <article className="page-body prose">
       <h1>{es ? 'Metodología' : 'Methodology'}</h1>
-      <p className="pf-lead">{es
+      <p className="lede">{es
         ? 'Curva ley-tonelaje → los tres cortes limitantes + tres balanceadores → la optimización de VAN de punto fijo → la trayectoria de corte decreciente (high-grading).'
         : 'Grade-tonnage curve → the three limiting + three balancing cut-offs → the NPV fixed-point optimization → the declining cut-off trajectory (high-grading).'}</p>
 

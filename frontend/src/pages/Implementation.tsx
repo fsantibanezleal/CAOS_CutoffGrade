@@ -3,9 +3,9 @@ import { Callout, Tabs, useShellLang } from '@fasl-work/caos-app-shell';
 export default function Implementation() {
   const es = useShellLang() === 'es';
   return (
-    <article className="pf-doc">
+    <article className="page-body prose">
       <h1>{es ? 'Implementación' : 'Implementation'}</h1>
-      <p className="pf-lead">{es
+      <p className="lede">{es
         ? 'Instanciado sobre el arquetipo de repo-producto (ADR-0057): el motor de Lane es TypeScript (corre en el navegador Y en el bake Node); Python son los dos contratos + el pipeline.'
         : 'Instantiated on the product-repo archetype (ADR-0057): the Lane engine is TypeScript (runs in the browser AND in the Node bake); Python is the two contracts + the pipeline.'}</p>
 

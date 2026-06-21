@@ -3,9 +3,9 @@ import { Callout, Cite, useShellLang } from '@fasl-work/caos-app-shell';
 export default function Introduction() {
   const es = useShellLang() === 'es';
   return (
-    <article className="pf-doc">
+    <article className="page-body prose">
       <h1>{es ? 'Introducción' : 'Introduction'}</h1>
-      <p className="pf-lead">{es
+      <p className="lede">{es
         ? '"Mineral" no es un hecho geológico — es una decisión económica. La ley de corte es esa frontera, y elegirla mal cuesta cientos de millones de VAN.'
         : '"Ore" is not a geological fact — it is an economic decision. The cut-off grade is that boundary, and choosing it badly costs hundreds of millions of NPV.'}</p>
 
