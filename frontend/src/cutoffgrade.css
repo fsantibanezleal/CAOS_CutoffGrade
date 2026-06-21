@@ -1,0 +1,64 @@
+/* FragmentIQ — app-specific styles on top of @fasl-work/caos-app-shell/styles.css (shell design tokens). */
+
+.pf-layout { display: grid; grid-template-columns: 300px 1fr; gap: 1.4rem; align-items: start; }
+@media (max-width: 900px) { .pf-layout { grid-template-columns: 1fr; } }
+.pf-side { display: flex; flex-direction: column; gap: 0.9rem; }
+.pf-main { min-width: 0; }
+
+.pf-card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 12px; padding: 0.85rem 0.95rem; }
+.pf-card-t { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-fg-faint); margin-bottom: 0.6rem; }
+.pf-catgroup { margin-bottom: 0.55rem; }
+.pf-catlabel { font-size: 0.72rem; color: var(--color-fg-faint); margin: 0.4rem 0 0.25rem; }
+.pf-chips { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+
+.chip { background: var(--color-surface-2, var(--color-surface)); border: 1px solid var(--color-border); color: var(--color-fg-subtle); border-radius: 999px; padding: 0.3rem 0.7rem; font-size: 0.8rem; cursor: pointer; }
+.chip:hover { color: var(--color-fg); border-color: var(--color-fg-faint); }
+.chip.on { background: var(--color-accent); color: var(--color-accent-fg, #fff); border-color: transparent; font-weight: 600; }
+
+.pf-ctl { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.8rem; color: var(--color-fg-subtle); margin-bottom: 0.5rem; }
+.pf-ctl .range { width: 100%; accent-color: var(--color-accent); }
+.pf-cap { font-size: 0.78rem; color: var(--color-fg-subtle); margin-top: 0.3rem; }
+.pf-muted { color: var(--color-fg-faint); }
+.pf-note { font-size: 0.86rem; color: var(--color-fg-subtle); line-height: 1.6; }
+
+.pf-vizstack { display: flex; flex-direction: column; gap: 0.9rem; }
+.pf-plot-t { font-size: 0.82rem; color: var(--color-fg-subtle); }
+.pf-plot-th { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+
+.pf-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 0.55rem; }
+.pf-kpi { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 9px; padding: 0.5rem 0.6rem; text-align: center; }
+.pf-kpi-v { font-family: var(--font-mono, monospace); font-size: 1.05rem; font-weight: 700; color: var(--color-fg); }
+.pf-kpi-l { font-size: 0.7rem; color: var(--color-fg-faint); margin-top: 0.15rem; }
+
+.pf-pending { border-left: 4px solid var(--color-warn, #d29922); padding: 0.6rem 0.9rem; background: var(--color-surface); border-radius: 0 8px 8px 0; }
+.pf-pending strong { display: block; margin-bottom: 0.3rem; }
+.heatmap-readout { position: absolute; pointer-events: none; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 6px; padding: 0.2rem 0.45rem; font-family: var(--font-mono, monospace); font-size: 0.72rem; color: var(--color-fg); white-space: nowrap; z-index: 5; }
+.uplot-host { width: 100%; }
+
+/* ---- FragmentIQ-specific ---- */
+.fq-scene canvas { border: 1px solid var(--color-border); }
+.fq-hist { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 10px; padding: 0.7rem; }
+.fq-hist-row { display: flex; align-items: flex-end; gap: 3px; height: 200px; }
+.fq-hist-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+.fq-hist-col i { width: 100%; background: var(--color-accent); border-radius: 2px 2px 0 0; min-height: 1px; }
+.fq-hist-x { font-size: 0.62rem; color: var(--color-fg-faint); margin-top: 0.2rem; }
+
+/* doc pages (shared with the sibling apps) */
+.pf-doc { max-width: 60rem; }
+.pf-doc h1 { margin-bottom: 0.4rem; }
+.pf-doc h2 { margin-top: 1.6rem; }
+.pf-lead { font-size: 1.02rem; color: var(--color-fg-subtle); line-height: 1.7; margin-bottom: 1rem; }
+.pf-doc-sec { line-height: 1.7; }
+.pf-doc-sec p { margin: 0.6rem 0; }
+.pf-list { line-height: 1.7; padding-left: 1.1rem; }
+.pf-list li { margin: 0.35rem 0; }
+.pf-exp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 0.8rem; margin: 1rem 0; }
+.pf-exp-h { display: flex; align-items: baseline; gap: 0.5rem; }
+.pf-exp-h span { font-size: 0.85rem; color: var(--color-fg-subtle); }
+.pf-anchor { font-size: 0.8rem; color: var(--color-accent); margin: 0.4rem 0 0.2rem; }
+.pf-mono { font-family: var(--font-mono, monospace); font-size: 0.86rem; }
+
+.codeblock { background: var(--color-surface-2, var(--color-surface)); border: 1px solid var(--color-border); border-radius: 8px; padding: 0.85rem 1rem; overflow: auto; font-family: var(--font-mono, monospace); font-size: 0.8rem; line-height: 1.55; color: var(--color-fg); white-space: pre; }
+.cmp-table { border-collapse: collapse; width: 100%; font-size: 0.84rem; margin-top: 0.6rem; }
+.cmp-table th, .cmp-table td { padding: 0.4rem 0.55rem; text-align: center; border-bottom: 1px solid var(--color-border); }
+.cmp-table thead th { color: var(--color-fg-faint); font-weight: 600; font-size: 0.78rem; }

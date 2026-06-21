@@ -11,3 +11,4 @@ export { breakEven, laneCutoffs } from './lane.ts';
 export { simulateLife, optimalConstantCutoff, laneTrajectory } from './optimize.ts';
 export { analyze } from './analyze.ts';
 export type { Analysis, SensitivityRow } from './analyze.ts';
+export { FEATURES } from './learned.ts';

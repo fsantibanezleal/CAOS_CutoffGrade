@@ -26,6 +26,9 @@ frontend/.vite/
 frontend/public/data/
 frontend/public/manifests/
 frontend/public/pyodide/
+frontend/public/case-results.json
+frontend/public/cg-learned.json
+frontend/public/*.onnx
 *.tsbuildinfo
 
 # --- Secrets / env (public repo — only .env.example is committed) ---
