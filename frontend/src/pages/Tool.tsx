@@ -167,7 +167,7 @@ export default function Tool() {
           ) : modelsPresent === false ? (
             <div className="cg-pending">
               <strong>{es ? 'Surrogate: no entrenado' : 'Surrogate: not trained'}</strong>
-              <p>{es ? 'Corre `python -m cglab.pipeline all --retrain` para entrenar el surrogate (torch → ONNX). El optimizador EXACTO de Lane corre en vivo mientras tanto.' : 'Run `python -m cglab.pipeline all --retrain` to train the surrogate (torch → ONNX). The EXACT Lane optimizer runs live meanwhile.'}</p>
+              <p>{es ? 'Re-genera el surrogate con el paso de re-entrenamiento del precómputo (torch → ONNX). El optimizador EXACTO de Lane corre en vivo mientras tanto.' : 'Regenerate the surrogate with the precompute retrain step (torch → ONNX). The EXACT Lane optimizer runs live meanwhile.'}</p>
             </div>
           ) : (
             <>
