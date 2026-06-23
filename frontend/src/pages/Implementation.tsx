@@ -6,8 +6,8 @@ export default function Implementation() {
     <article className="page-body prose">
       <h1>{es ? 'Implementación' : 'Implementation'}</h1>
       <p className="lede">{es
-        ? 'Instanciado sobre el arquetipo de repo-producto (ADR-0057): el motor de Lane es TypeScript y corre idéntico en dos carriles — vivo en el navegador y en el precómputo (Node). El carril de precómputo además entrena los dos modelos y hornea los casos; dos contratos tipados unen ambos carriles, y un drift entre ellos rompe el chequeo de tipos.'
-        : 'Instantiated on the product-repo archetype (ADR-0057): the Lane engine is TypeScript and runs identically in two lanes — live in the browser and in precompute (Node). The precompute lane also trains the two models and bakes the cases; two typed contracts bind the lanes, and any drift between them fails the type-check.'}</p>
+        ? 'Una arquitectura de dos carriles: el motor económico de Lane es TypeScript y corre idéntico en ambos — vivo en el navegador y en el precómputo (Node). El carril de precómputo además entrena los dos modelos y hornea los casos; dos contratos tipados unen ambos carriles, y un drift entre ellos rompe el chequeo de tipos.'
+        : 'A dual-lane architecture: the Lane economic engine is TypeScript and runs identically in both — live in the browser and in precompute (Node). The precompute lane also trains the two models and bakes the cases; two typed contracts bind the lanes, and any drift between them fails the type-check.'}</p>
 
       <Tabs ariaLabel={es ? 'implementación' : 'implementation'} tabs={[
         {

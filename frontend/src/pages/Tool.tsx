@@ -10,11 +10,12 @@ import { CashChart } from '../viz/CashChart.tsx';
 import { TauChart } from '../viz/TauChart.tsx';
 import { UtilChart } from '../viz/UtilChart.tsx';
 
+// `key` matches each case's `category` field (the data join); `en`/`es` are the bilingual sidebar labels.
 const CATS = [
-  'capacity regime (the binding stage)',
-  'economic scenario (price/cost regime)',
-  'deposit type (grade variability)',
-  'oracle control (closed-form check)',
+  { key: 'capacity regime (the binding stage)', en: 'capacity regime', es: 'régimen de capacidad' },
+  { key: 'economic scenario (price/cost regime)', en: 'economic scenario', es: 'escenario económico' },
+  { key: 'deposit type (grade variability)', en: 'deposit type', es: 'tipo de depósito' },
+  { key: 'oracle control (closed-form check)', en: 'oracle control', es: 'control oráculo' },
 ];
 
 const pct = (g: number, n = 3) => `${(g * 100).toFixed(n)}%`;
@@ -251,10 +252,10 @@ export default function Tool() {
         <div className="cg-card">
           <div className="cg-card-t">{es ? 'Caso' : 'Case'}</div>
           {CATS.map((cat) => (
-            <div key={cat} className="cg-catgroup">
-              <div className="cg-catlabel">{cat.split(' (')[0]}</div>
+            <div key={cat.key} className="cg-catgroup">
+              <div className="cg-catlabel">{es ? cat.es : cat.en}</div>
               <div className="cg-chips">
-                {CASES.filter((c) => c.category === cat).map((c) => (
+                {CASES.filter((c) => c.category === cat.key).map((c) => (
                   <button key={c.id} className={`chip ${caseId === c.id ? 'on' : ''}`} title={c.name} onClick={() => setCaseId(c.id)}>{c.id}</button>
                 ))}
               </div>
