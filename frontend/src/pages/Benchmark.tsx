@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useShellLang } from '@fasl-work/caos-app-shell';
+import { Cite, Refs, useShellLang } from '@fasl-work/caos-app-shell';
 import { loadCaseResults, loadLearned, type LearnedFile } from '../lib/artifacts.ts';
 import type { CaseResultsFile } from '../lib/contract.types.ts';
 
@@ -14,7 +14,7 @@ export default function Benchmark() {
   useEffect(() => { loadCaseResults().then(setData).catch(() => setData(null)); }, []);
   useEffect(() => { loadLearned().then(setLearned).catch(() => setLearned(null)).finally(() => setLearnedLoading(false)); }, []);
 
-  if (!data) return <article className="page-body prose"><h1>Benchmark</h1><p className="pf-note">{es ? 'cargando…' : 'loading…'}</p></article>;
+  if (!data) return <article className="page-body prose"><h1>Benchmark</h1><p className="cg-note">{es ? 'cargando…' : 'loading…'}</p></article>;
 
   const cases = data.cases;
   const scen = ['S-LOWPRICE', 'S-BASE', 'S-HIGHPRICE'];
@@ -33,7 +33,7 @@ export default function Benchmark() {
           ))}
         </tbody>
       </table>
-      <p className="pf-note">{es ? 'VAN monótono en precio (la propiedad de cordura). Un precio más alto baja el break-even → más es mineral → más VAN.' : 'NPV monotone in price (the sanity property). A higher price lowers the break-even → more is ore → more NPV.'}</p>
+      <p className="cg-note">{es ? 'VAN monótono en precio (la propiedad de cordura). Un precio más alto baja el break-even → más es mineral → más VAN.' : 'NPV monotone in price (the sanity property). A higher price lowers the break-even → more is ore → more NPV.'}</p>
 
       <h2>{es ? 'Corte vs restricción binding' : 'Cut-off vs the binding stage'}</h2>
       <table className="cmp-table">
@@ -44,7 +44,7 @@ export default function Benchmark() {
           ))}
         </tbody>
       </table>
-      <p className="pf-note">{es ? 'Mina-limitada → corte cerca del break-even (tiempo de molino libre). Molino/mercado-limitada → corte elevado por el costo de oportunidad f+F·δ.' : 'Mine-limited → cut-off near break-even (mill time is free). Mill/market-limited → cut-off raised by the f+F·δ opportunity cost.'}</p>
+      <p className="cg-note">{es ? 'Mina-limitada → corte cerca del break-even (tiempo de molino libre). Molino/mercado-limitada → corte elevado por el costo de oportunidad f+F·δ ' : 'Mine-limited → cut-off near break-even (mill time is free). Mill/market-limited → cut-off raised by the f+F·δ opportunity cost '}<Cite id="hall2014" paren />{es ? '.' : '.'}</p>
 
       <h2>{es ? 'Modelos aprendidos vs el optimizador exacto' : 'Learned models vs the exact optimizer'}</h2>
       {learned ? (
@@ -56,10 +56,11 @@ export default function Benchmark() {
           </tbody>
         </table>
       ) : learnedLoading ? (
-        <p className="pf-note">{es ? 'Cargando modelos aprendidos…' : 'Loading learned models…'}</p>
+        <p className="cg-note">{es ? 'Cargando modelos aprendidos…' : 'Loading learned models…'}</p>
       ) : (
-        <p className="pf-note">{es ? 'Modelos aprendidos no entrenados — corre `python -m cglab.pipeline all --retrain`. El optimizador EXACTO de Lane corre en vivo mientras tanto.' : 'Learned models not trained — run `python -m cglab.pipeline all --retrain`. The EXACT Lane optimizer runs live meanwhile.'}</p>
+        <p className="cg-note">{es ? 'Modelos aprendidos no entrenados — re-genéralos con el paso de re-entrenamiento del precómputo. El optimizador EXACTO de Lane corre en vivo mientras tanto.' : 'Learned models not trained — regenerate them with the precompute retrain step. The EXACT Lane optimizer runs live meanwhile.'}</p>
       )}
+      <Refs ids={['lane1988', 'hall2014', 'rendu2014']} label="Refs" />
     </article>
   );
 }
