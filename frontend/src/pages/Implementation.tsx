@@ -13,7 +13,7 @@ export default function Implementation() {
         {
           id: 'lanes', label: es ? 'Carriles' : 'Lanes',
           content: (
-            <div className="pf-doc-sec">
+            <div className="cg-doc-sec">
               <table className="cmp-table">
                 <thead><tr><th>{es ? 'carril' : 'lane'}</th><th>{es ? 'qué' : 'what'}</th><th>deps</th></tr></thead>
                 <tbody>
@@ -22,14 +22,14 @@ export default function Implementation() {
                   <tr><td>{es ? 'Replay (ligero)' : 'Replay (light)'}</td><td>{es ? 'cglab.pipeline reconstruye trazas/manifests' : 'cglab.pipeline reshapes traces/manifests'}</td><td>requirements.txt (numpy)</td></tr>
                 </tbody>
               </table>
-              <p className="pf-cap">{es ? 'El gate (core/gate.py) mide cliente ∧ runtimes ⊆ {ts-econ, onnxruntime-web} ∧ presupuestos → vivo.' : 'The gate (core/gate.py) measures client-side ∧ runtimes ⊆ {ts-econ, onnxruntime-web} ∧ budgets → live.'}</p>
+              <p className="cg-cap">{es ? 'El gate (core/gate.py) mide cliente ∧ runtimes ⊆ {ts-econ, onnxruntime-web} ∧ presupuestos → vivo.' : 'The gate (core/gate.py) measures client-side ∧ runtimes ⊆ {ts-econ, onnxruntime-web} ∧ budgets → live.'}</p>
             </div>
           ),
         },
         {
           id: 'contracts', label: es ? 'Contratos' : 'Contracts',
           content: (
-            <div className="pf-doc-sec">
+            <div className="cg-doc-sec">
               <p><b>CONTRATO 1</b> (io/contract.py){es ? ' — la puerta "trae tu propio depósito": valida el depósito + la economía y rechaza/marca con una política de outliers explícita.' : ' — the "bring your own deposit" gate: validates the deposit + economics and rejects/flags with an explicit outlier policy.'}</p>
               <p><b>CONTRATO 2</b> (core/{'{'}trace,manifest{'}'}.py){es ? ' — la traza por caso (cutoffgrade.trace/v1): la curva ley-tonelaje, los 6 cortes, la trayectoria óptima + VAN + vida + flujo de caja, la sensibilidad, las métricas aprendidas. Espejada por src/lib/contract.types.ts → un drift rompe tsc.' : ' — the per-case trace (cutoffgrade.trace/v1): the grade-tonnage curve, the 6 cut-offs, the optimal trajectory + NPV + life + cashflow, the sensitivity, the learned metrics. Mirrored by src/lib/contract.types.ts → a drift fails tsc.'}</p>
               <Callout variant="note" title={es ? 'Dos lenguajes, un motor' : 'Two languages, one engine'}>
@@ -41,7 +41,7 @@ export default function Implementation() {
         {
           id: 'pipeline', label: 'pipeline',
           content: (
-            <div className="pf-doc-sec">
+            <div className="cg-doc-sec">
               <pre className="codeblock">{`python -m cglab.pipeline            # light (numpy): rebuild traces + manifests
 python -m cglab.pipeline S-BASE     # one case
 python -m cglab.pipeline all --retrain   # re-bake + train the 2 models (torch -> ONNX)`}</pre>

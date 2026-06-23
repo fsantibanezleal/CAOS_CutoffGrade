@@ -11,7 +11,7 @@ export default function Experiments() {
   const [data, setData] = useState<CaseResultsFile | null>(null);
   useEffect(() => { loadCaseResults().then(setData).catch(() => setData(null)); }, []);
 
-  if (!data) return <article className="page-body prose"><h1>{es ? 'Experimentos' : 'Experiments'}</h1><p className="pf-note">{es ? 'cargando casos…' : 'loading cases…'}</p></article>;
+  if (!data) return <article className="page-body prose"><h1>{es ? 'Experimentos' : 'Experiments'}</h1><p className="cg-note">{es ? 'cargando casos…' : 'loading cases…'}</p></article>;
 
   return (
     <article className="page-body prose">
@@ -38,7 +38,7 @@ export default function Experiments() {
           ))}
         </tbody>
       </table>
-      <p className="pf-note">{es ? 'Anclas: C-BREAKEVEN — el corte óptimo iguala al break-even (sin costo temporal). C-UNIFORM — depósito de ley única (todo o nada). S-HIGHPRICE > S-BASE > S-LOWPRICE en VAN.' : 'Anchors: C-BREAKEVEN — the optimal cut-off equals the break-even (no time cost). C-UNIFORM — single-grade deposit (all-or-nothing). S-HIGHPRICE > S-BASE > S-LOWPRICE in NPV.'}</p>
+      <p className="cg-note">{es ? 'Anclas: C-BREAKEVEN — el corte óptimo iguala al break-even (sin costo temporal). C-UNIFORM — depósito de ley única (todo o nada). S-HIGHPRICE > S-BASE > S-LOWPRICE en VAN.' : 'Anchors: C-BREAKEVEN — the optimal cut-off equals the break-even (no time cost). C-UNIFORM — single-grade deposit (all-or-nothing). S-HIGHPRICE > S-BASE > S-LOWPRICE in NPV.'}</p>
     </article>
   );
 }
