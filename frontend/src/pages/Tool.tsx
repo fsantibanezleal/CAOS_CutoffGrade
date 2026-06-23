@@ -7,6 +7,8 @@ import { loadLearned, type LearnedFile } from '../lib/artifacts.ts';
 import { GTChart } from '../viz/GTChart.tsx';
 import { TrajChart } from '../viz/TrajChart.tsx';
 import { CashChart } from '../viz/CashChart.tsx';
+import { TauChart } from '../viz/TauChart.tsx';
+import { UtilChart } from '../viz/UtilChart.tsx';
 
 const CATS = [
   'capacity regime (the binding stage)',
@@ -96,6 +98,30 @@ export default function Tool() {
         <div className="cg-vizstack">
           <div className="cg-plot-t">{es ? 'Flujo de caja anual ($M) + el VAN acumulado descontado sobre la vida de la mina.' : 'Annual cashflow ($M) + the cumulative discounted value (NPV build-up) over the mine life.'}</div>
           <CashChart schedule={a.optimal.schedule} discountRate={econ.discountRate} lang={lang} />
+        </div>
+      ),
+    },
+    {
+      id: 'tau', label: es ? 'Costo de oportunidad τ(t)' : 'Opportunity cost τ(t)',
+      content: (
+        <div className="cg-vizstack">
+          <div className="cg-plot-t">{es ? 'El costo de oportunidad τ = f + F·δ por año: lo que cuesta ocupar un año de la capacidad escasa. Es lo que ELEVA el corte sobre el break-even — y por qué decrece.' : 'The opportunity cost τ = f + F·δ per year: what it costs to occupy a year of the scarce capacity. This is what RAISES the cut-off above break-even — and why it declines.'}</div>
+          <TauChart schedule={a.optimal.schedule} fixedCostYr={econ.fixedCostYr} discountRate={econ.discountRate} lang={lang} />
+          <p className="cg-note">{es
+            ? `F (VAN remanente) parte alto y cae a 0 al agotarse la reserva, así que τ cae hacia el costo fijo f. El corte sigue a τ: alto temprano, decreciente al final. δ = ${(econ.discountRate * 100).toFixed(1)}%.`
+            : `F (remaining NPV) starts high and falls to 0 as the reserve depletes, so τ falls toward the fixed cost f. The cut-off tracks τ: high early, declining at the end. δ = ${(econ.discountRate * 100).toFixed(1)}%.`}</p>
+        </div>
+      ),
+    },
+    {
+      id: 'util', label: es ? 'Utilización de capacidad' : 'Capacity utilisation',
+      content: (
+        <div className="cg-vizstack">
+          <div className="cg-plot-t">{es ? 'Utilización por año de las tres etapas (mina · molino · mercado). La etapa SATURADA (en 100%) es la que limita ese año y fija el corte; las otras tienen holgura.' : 'Per-year utilisation of the three stages (mine · mill · market). The SATURATED stage (at 100%) is the one binding that year and setting the cut-off; the others have slack.'}</div>
+          <UtilChart schedule={a.optimal.schedule} mineCapacity={econ.mineCapacity} millCapacity={econ.millCapacity} marketCapacity={econ.marketCapacity} recovery={econ.recovery} lang={lang} />
+          <p className="cg-note">{es
+            ? `Restricción global del caso: ${a.binding}. Cuando cambia la etapa que limita (mueve la capacidad del molino), el corte óptimo salta — eso es la lógica de "qué etapa limita" de Lane.`
+            : `Case-wide binding stage: ${a.binding}. When the binding stage changes (move the mill capacity), the optimal cut-off jumps — that is Lane's "which stage binds" logic.`}</p>
         </div>
       ),
     },
