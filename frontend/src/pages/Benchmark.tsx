@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useShellLang } from '@fasl-work/caos-app-shell';
+import { Cite, Refs, useShellLang } from '@fasl-work/caos-app-shell';
 import { loadCaseResults, loadLearned, type LearnedFile } from '../lib/artifacts.ts';
 import type { CaseResultsFile } from '../lib/contract.types.ts';
 
@@ -44,7 +44,7 @@ export default function Benchmark() {
           ))}
         </tbody>
       </table>
-      <p className="cg-note">{es ? 'Mina-limitada → corte cerca del break-even (tiempo de molino libre). Molino/mercado-limitada → corte elevado por el costo de oportunidad f+F·δ.' : 'Mine-limited → cut-off near break-even (mill time is free). Mill/market-limited → cut-off raised by the f+F·δ opportunity cost.'}</p>
+      <p className="cg-note">{es ? 'Mina-limitada → corte cerca del break-even (tiempo de molino libre). Molino/mercado-limitada → corte elevado por el costo de oportunidad f+F·δ ' : 'Mine-limited → cut-off near break-even (mill time is free). Mill/market-limited → cut-off raised by the f+F·δ opportunity cost '}<Cite id="hall2014" paren />{es ? '.' : '.'}</p>
 
       <h2>{es ? 'Modelos aprendidos vs el optimizador exacto' : 'Learned models vs the exact optimizer'}</h2>
       {learned ? (
@@ -60,6 +60,7 @@ export default function Benchmark() {
       ) : (
         <p className="cg-note">{es ? 'Modelos aprendidos no entrenados — re-genéralos con el paso de re-entrenamiento del precómputo. El optimizador EXACTO de Lane corre en vivo mientras tanto.' : 'Learned models not trained — regenerate them with the precompute retrain step. The EXACT Lane optimizer runs live meanwhile.'}</p>
       )}
+      <Refs ids={['lane1988', 'hall2014', 'rendu2014']} label="Refs" />
     </article>
   );
 }

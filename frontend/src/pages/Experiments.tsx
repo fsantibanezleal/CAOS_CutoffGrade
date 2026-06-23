@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useShellLang } from '@fasl-work/caos-app-shell';
+import { Cite, Refs, useShellLang } from '@fasl-work/caos-app-shell';
 import { loadCaseResults } from '../lib/artifacts.ts';
 import type { CaseResultsFile } from '../lib/contract.types.ts';
 
@@ -38,7 +38,8 @@ export default function Experiments() {
           ))}
         </tbody>
       </table>
-      <p className="cg-note">{es ? 'Anclas: C-BREAKEVEN — el corte óptimo iguala al break-even (sin costo temporal). C-UNIFORM — depósito de ley única (todo o nada). S-HIGHPRICE > S-BASE > S-LOWPRICE en VAN.' : 'Anchors: C-BREAKEVEN — the optimal cut-off equals the break-even (no time cost). C-UNIFORM — single-grade deposit (all-or-nothing). S-HIGHPRICE > S-BASE > S-LOWPRICE in NPV.'}</p>
+      <p className="cg-note">{es ? 'Anclas (controles de forma cerrada que validan el motor contra la teoría de Lane ' : 'Anchors (closed-form controls validating the engine against Lane theory '}<Cite id="lane1988" paren />{es ? '): C-BREAKEVEN — el corte óptimo iguala al break-even (sin costo temporal, δ=0). C-UNIFORM — depósito de ley única (todo o nada). S-HIGHPRICE > S-BASE > S-LOWPRICE en VAN.' : '): C-BREAKEVEN — the optimal cut-off equals the break-even (no time cost, δ=0). C-UNIFORM — single-grade deposit (all-or-nothing). S-HIGHPRICE > S-BASE > S-LOWPRICE in NPV.'}</p>
+      <Refs ids={['lane1988', 'asad2011']} label="Refs" />
     </article>
   );
 }

@@ -1,4 +1,4 @@
-import { Callout, Cite, useShellLang } from '@fasl-work/caos-app-shell';
+import { Callout, Cite, Refs, useShellLang } from '@fasl-work/caos-app-shell';
 
 export default function Introduction() {
   const es = useShellLang() === 'es';
@@ -34,6 +34,7 @@ export default function Introduction() {
           ? 'No es un planificador estratégico de mina (sin secuenciamiento de fases, sin pushbacks, sin blending multi-elemento ni incertidumbre geológica). Es la teoría de Lane implementada exactamente sobre una curva ley-tonelaje estacionaria.'
           : 'It is not a strategic mine planner (no phase sequencing, no pushbacks, no multi-element blending or geological uncertainty). It is Lane theory implemented exactly over a stationary grade-tonnage curve.'}
       </Callout>
+      <Refs ids={['lane1964', 'lane1988']} label="Refs" />
     </article>
   );
 }

@@ -1,4 +1,4 @@
-import { Callout, Tabs, useShellLang } from '@fasl-work/caos-app-shell';
+import { Callout, Cite, Refs, Tabs, useShellLang } from '@fasl-work/caos-app-shell';
 
 export default function Implementation() {
   const es = useShellLang() === 'es';
@@ -56,6 +56,8 @@ export default function Implementation() {
           ),
         },
       ]} />
+      <p className="cg-cap">{es ? 'El motor implementa el método económico de cortes de Lane ' : 'The engine implements Lane\'s economic cut-off method '}<Cite id="lane1988" paren />{es ? '; las ecuaciones están en Metodología.' : '; the equations are in Methodology.'}</p>
+      <Refs ids={['lane1988']} label="Refs" />
     </article>
   );
 }
