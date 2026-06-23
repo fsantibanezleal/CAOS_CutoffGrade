@@ -3,6 +3,21 @@
 All notable changes to CutoffGrade Studio. Format: `X.XX.XXX` (display) — see `cglab.__version__`. Keep `0.x` while on
 synthetic data. Tag every release.
 
+## [0.06.001] — 2026-06-23
+
+Bring-to-bar T2 (a honesty fix from the gap review): the **learned-model tabs no longer show "pending training" for
+models that are trained and served live.**
+
+### Fixed
+- The What-if (ONNX) + Anomaly (AE) tabs gated their "pending training / run `--retrain`" block on a state that was
+  also true while the ONNX/WASM was *loading* — so the live flagship could flash an "unfinished" message for models
+  that are committed and served (HTTP 200). Now a **one-time `surrogateAvailable()` HEAD probe** drives a three-state
+  gate — *checking* → a neutral "Loading…", *absent* → the "not trained" message, *served* → the live results —
+  separate from the per-recompute inference (so it never flashes pending on a slider drag). Both tabs now also
+  surface the published held-out metrics ("Trained + live · NPV err 6.8 % · cut-off err 10.9 %"; "AUC 0.999"). The
+  Benchmark learned-models table gets the same loading-vs-absent distinction. Verified live: no pending message, the
+  metrics footers render, 0 console errors.
+
 ## [0.06.000] — 2026-06-21
 
 ### Added

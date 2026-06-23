@@ -27,7 +27,7 @@ const config: ShellConfig = {
     { path: '/benchmark', en: 'Benchmark', es: 'Benchmark' },
   ],
   links: { github: 'https://github.com/fsantibanezleal/CAOS_CutoffGrade' },
-  version: '0.06.000',
+  version: '0.06.001',
   architecture,
 };
 
