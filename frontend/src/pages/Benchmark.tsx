@@ -10,8 +10,9 @@ export default function Benchmark() {
   const es = useShellLang() === 'es';
   const [data, setData] = useState<CaseResultsFile | null>(null);
   const [learned, setLearned] = useState<LearnedFile | null>(null);
+  const [learnedLoading, setLearnedLoading] = useState(true);   // distinguish "still loading" from "genuinely absent"
   useEffect(() => { loadCaseResults().then(setData).catch(() => setData(null)); }, []);
-  useEffect(() => { loadLearned().then(setLearned).catch(() => setLearned(null)); }, []);
+  useEffect(() => { loadLearned().then(setLearned).catch(() => setLearned(null)).finally(() => setLearnedLoading(false)); }, []);
 
   if (!data) return <article className="page-body prose"><h1>Benchmark</h1><p className="pf-note">{es ? 'cargando…' : 'loading…'}</p></article>;
 
@@ -54,8 +55,10 @@ export default function Benchmark() {
             <tr><td>{es ? 'OOD de escenarios' : 'scenario OOD-AE'}</td><td>AUC</td><td><b>{learned.ood.auc.toFixed(3)}</b></td></tr>
           </tbody>
         </table>
+      ) : learnedLoading ? (
+        <p className="pf-note">{es ? 'Cargando modelos aprendidos…' : 'Loading learned models…'}</p>
       ) : (
-        <p className="pf-note">{es ? 'Modelos aprendidos pendientes — corre `python -m cglab.pipeline all --retrain`. El optimizador EXACTO de Lane corre en vivo mientras tanto.' : 'Learned models pending — run `python -m cglab.pipeline all --retrain`. The EXACT Lane optimizer runs live meanwhile.'}</p>
+        <p className="pf-note">{es ? 'Modelos aprendidos no entrenados — corre `python -m cglab.pipeline all --retrain`. El optimizador EXACTO de Lane corre en vivo mientras tanto.' : 'Learned models not trained — run `python -m cglab.pipeline all --retrain`. The EXACT Lane optimizer runs live meanwhile.'}</p>
       )}
     </article>
   );

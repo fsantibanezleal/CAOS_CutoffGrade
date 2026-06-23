@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Tabs, useShellLang } from '@fasl-work/caos-app-shell';
 import { analyze, type Economics } from '../lane/index.ts';
 import { CASES, caseById, type CGCase } from '../lane/cases.ts';
-import { runOod, runSurrogate } from '../lib/ort.ts';
+import { runOod, runSurrogate, surrogateAvailable } from '../lib/ort.ts';
 import { loadLearned, type LearnedFile } from '../lib/artifacts.ts';
 import { GTChart } from '../viz/GTChart.tsx';
 import { TrajChart } from '../viz/TrajChart.tsx';
@@ -28,8 +28,10 @@ export default function Tool() {
   const [discMul, setDiscMul] = useState(1);
   const [learned, setLearned] = useState<LearnedFile | null>(null);
   const [surr, setSurr] = useState<{ cutoff: number; npv: number; life: number } | null>(null);
-  const [surrPending, setSurrPending] = useState(true);
   const [ood, setOod] = useState<number | null>(null);
+  // model availability is checked ONCE (a HEAD probe; both ONNX models ship together) and drives the pending-vs-ready
+  // gate — separate from the per-recompute inference, so a trained+served model never flashes "pending training".
+  const [modelsPresent, setModelsPresent] = useState<boolean | null>(null);   // null = checking · false = absent · true = served
   const oodThr = learned?.ood?.thr ?? null;
 
   const theCase = useMemo<CGCase>(() => caseById(caseId), [caseId]);
@@ -45,10 +47,10 @@ export default function Tool() {
 
   useEffect(() => { setPriceMul(1); setCostMul(1); setMillMul(1); setDiscMul(1); }, [caseId]);
   useEffect(() => { loadLearned().then(setLearned).catch(() => setLearned(null)); }, []);
+  useEffect(() => { surrogateAvailable().then(setModelsPresent).catch(() => setModelsPresent(false)); }, []);
   useEffect(() => {
     let cancel = false;
-    setSurrPending(true);
-    runSurrogate(econ, theCase.deposit).then((r) => { if (cancel) return; setSurr(r); setSurrPending(r === null); });
+    runSurrogate(econ, theCase.deposit).then((r) => { if (cancel) return; setSurr(r); });
     runOod(econ, theCase.deposit).then((m) => { if (!cancel) setOod(m); });
     return () => { cancel = true; };
   }, [econ, theCase]);
@@ -160,21 +162,24 @@ export default function Tool() {
       content: (
         <div className="pf-vizstack">
           <div className="pf-plot-t">{es ? 'El surrogate de corte/VAN (ONNX) emula el optimizador de Lane para barridos instantáneos del envolvente económico.' : 'The cut-off/NPV surrogate (ONNX) emulates the Lane optimizer for instant economic-envelope sweeps.'}</div>
-          {surrPending ? (
+          {modelsPresent === null ? (
+            <div className="pf-pending"><strong>{es ? 'Cargando el surrogate…' : 'Loading the surrogate…'}</strong></div>
+          ) : modelsPresent === false ? (
             <div className="pf-pending">
-              <strong>{es ? 'Surrogate: pendiente de entrenamiento' : 'Surrogate: pending training'}</strong>
+              <strong>{es ? 'Surrogate: no entrenado' : 'Surrogate: not trained'}</strong>
               <p>{es ? 'Corre `python -m cglab.pipeline all --retrain` para entrenar el surrogate (torch → ONNX). El optimizador EXACTO de Lane corre en vivo mientras tanto.' : 'Run `python -m cglab.pipeline all --retrain` to train the surrogate (torch → ONNX). The EXACT Lane optimizer runs live meanwhile.'}</p>
             </div>
           ) : (
             <>
               <div className="pf-kpis">
-                <Kpi label={es ? 'corte (surrogate)' : 'cut-off (surrogate)'} value={surr ? pct(surr.cutoff) : '—'} />
+                <Kpi label={es ? 'corte (surrogate)' : 'cut-off (surrogate)'} value={surr ? pct(surr.cutoff) : '…'} />
                 <Kpi label={es ? 'corte (exacto)' : 'cut-off (exact)'} value={pct(cut.effective)} />
-                <Kpi label={es ? 'VAN (surrogate)' : 'NPV (surrogate)'} value={surr ? money(surr.npv) : '—'} />
+                <Kpi label={es ? 'VAN (surrogate)' : 'NPV (surrogate)'} value={surr ? money(surr.npv) : '…'} />
                 <Kpi label={es ? 'VAN (exacto)' : 'NPV (exact)'} value={money(a.optimal.npv)} />
-                <Kpi label={es ? 'error VAN' : 'NPV error'} value={surr ? `${(Math.abs(surr.npv - a.optimal.npv) / Math.max(1, Math.abs(a.optimal.npv)) * 100).toFixed(1)}%` : '—'} />
+                <Kpi label={es ? 'error VAN' : 'NPV error'} value={surr ? `${(Math.abs(surr.npv - a.optimal.npv) / Math.max(1, Math.abs(a.optimal.npv)) * 100).toFixed(1)}%` : '…'} />
               </div>
               <p className="pf-note">{es ? 'El optimizador exacto de Lane es la autoridad; el surrogate gana su lugar por la velocidad (barridos Monte-Carlo instantáneos sobre miles de escenarios), no por una victoria fabricada.' : 'The exact Lane optimizer is the authority; the surrogate earns its place on speed (instant Monte-Carlo sweeps over thousands of scenarios), not a fabricated win.'}</p>
+              {learned && <p className="pf-cap pf-muted">{es ? 'Entrenado + en vivo' : 'Trained + live'} · {es ? 'error VAN held-out' : 'held-out NPV err'} {(learned.surrogate.npv_err * 100).toFixed(1)}% · {es ? 'error corte' : 'cut-off err'} {(learned.surrogate.cutoff_err * 100).toFixed(1)}% (n={learned.surrogate.nEval})</p>}
             </>
           )}
         </div>
@@ -185,25 +190,28 @@ export default function Tool() {
       content: (
         <div className="pf-vizstack">
           <div className="pf-plot-t">{es ? 'El autoencoder OOD marca escenarios fuera del envolvente económico entrenado (precios/costos/leyes extremos) — el guardia en vivo de "el surrogate está extrapolando".' : 'The OOD autoencoder flags scenarios outside the trained economic envelope (extreme prices/costs/grades) — the live "the surrogate is extrapolating" guard.'}</div>
-          {ood == null ? (
+          {modelsPresent === null ? (
+            <div className="pf-pending"><strong>{es ? 'Cargando el autoencoder…' : 'Loading the autoencoder…'}</strong></div>
+          ) : modelsPresent === false ? (
             <div className="pf-pending">
-              <strong>{es ? 'Autoencoder OOD: pendiente de entrenamiento' : 'OOD autoencoder: pending training'}</strong>
+              <strong>{es ? 'Autoencoder OOD: no entrenado' : 'OOD autoencoder: not trained'}</strong>
               <p>{es ? 'Entrénalo con `--retrain`. Mientras tanto, el optimizador exacto de Lane corre en vivo y las banderas del Contrato 1 (en los docs) son el guardia honesto.' : 'Train it with `--retrain`. Meanwhile the exact Lane optimizer runs live and the Contract-1 flags (in the docs) are the honest guard.'}</p>
             </div>
           ) : (
             <>
               <div className="pf-kpis">
-                <Kpi label={es ? 'puntaje de anomalía' : 'anomaly score'} value={ood.toFixed(2)} />
+                <Kpi label={es ? 'puntaje de anomalía' : 'anomaly score'} value={ood != null ? ood.toFixed(2) : '…'} />
                 {oodThr != null && <Kpi label={es ? 'umbral (p95 in-dist)' : 'threshold (in-dist p95)'} value={oodThr.toFixed(2)} />}
-                {oodThr != null && (
+                {oodThr != null && ood != null && (
                   <Kpi label={es ? 'veredicto' : 'verdict'} value={ood > oodThr ? (es ? 'fuera de envolvente' : 'off-envelope') : (es ? 'en envolvente' : 'in-envelope')} />
                 )}
               </div>
-              {oodThr != null && (
+              {oodThr != null && ood != null && (
                 <p className="pf-note">{ood > oodThr
                   ? (es ? 'El escenario está fuera del envolvente entrenado — el surrogate está extrapolando; confía en el optimizador exacto.' : 'The scenario is outside the trained envelope — the surrogate is extrapolating; trust the exact optimizer.')
                   : (es ? 'El escenario está dentro del envolvente entrenado — el surrogate es confiable aquí.' : 'The scenario is inside the trained envelope — the surrogate is reliable here.')}</p>
               )}
+              {learned?.ood && <p className="pf-cap pf-muted">{es ? 'Entrenado + en vivo' : 'Trained + live'} · AUC {learned.ood.auc.toFixed(3)} (n={learned.ood.nEval})</p>}
             </>
           )}
         </div>
