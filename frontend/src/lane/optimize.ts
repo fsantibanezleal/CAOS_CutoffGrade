@@ -47,6 +47,9 @@ export function simulateLife(cutoffFn: (year: number, remainingMt: number) => nu
 
     const ore = Q * phi;
     const cashflow = ore * gbar * y * (p - k) - ore * h - Q * m - f; // $M
+    // OPERATING CONVENTION (diverges from textbook Lane): close the mine the first year a cashflow turns
+    // value-negative, rather than running to reserve exhaustion at F→0. This shortens the reported mine life and
+    // never reports value-negative years. Documented in docs/frameworks/01_economics.md + the Methodology Lane tab.
     if (cashflow <= 0 && year > 0) break; // continuing is value-negative → close the mine
 
     npv += cashflow / Math.pow(1 + delta, year);
@@ -110,6 +113,9 @@ function backwardF(schedule: SchedulePoint[], delta: number): number[] {
 export function laneTrajectory(econ: Economics, deposit: Deposit): LifeResult & { trajectory: number[] } {
   const be = breakEven(econ);
   const gMax = gMaxOf(deposit);
+  // OPERATING CONVENTION (diverges from textbook Lane): clamp the cut-off to [break-even, gMax]. Strict Lane lets
+  // the cut-off fall below break-even in the final years (marginal material → stockpile/blend); clamping at
+  // break-even slightly raises the reported NPV vs strict Lane. Documented in docs/frameworks/01_economics.md.
   const clamp = (g: number): number => Math.min(gMax, Math.max(be, g));
 
   // seed with the constant optimum

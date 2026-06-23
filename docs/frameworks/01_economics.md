@@ -35,6 +35,25 @@ and the year's throughput Q is limited by the binding stage (`min(M, H/φ, K/(φ
 falling to break-even as the reserve depletes ([Lane 1988](#refs), [Asad & Topal 2011](#refs)). The best CONSTANT
 cut-off (a 1-D search refined by golden-section) is the verifiable baseline the declining policy is ≥.
 
+## 4. Two operating conventions that diverge from textbook Lane (honest qualifier)
+
+The engine makes two explicit modelling choices that depart from strict Lane; both are visible in the code
+(`optimize.ts`) and stated in the in-app Methodology "Operating conventions" callout, because they change the reported
+life and NPV and should not be presented as pure Lane:
+
+1. **Mine closure at the first value-negative year** (`optimize.ts`, the `cashflow <= 0` break). Textbook Lane runs the
+   operation to **reserve exhaustion** (life ends as `F → 0`); this engine instead **closes the mine the first year a
+   cashflow turns ≤ 0**. Effect: it **shortens the reported mine life** and never reports value-negative years. This is
+   a going-concern operating rule, not Lane's life definition.
+2. **Cut-off clamped to `[break-even, gMax]`** (`optimize.ts`, the `clamp`). Strict Lane lets the optimal cut-off fall
+   **below break-even** in the final years (marginal material is stockpiled/blended rather than treated as waste);
+   this engine **clamps at break-even**. Effect: it **slightly raises the reported NPV** versus strict Lane, because the
+   sub-break-even tail is excluded.
+
+Neither changes the six-cut-off formulas or the fixed-point logic — they bound the *trajectory tail*. The stockpiling
+extension (Lane 1988, ch. on stockpiles) is the principled way to handle sub-break-even material and is on the roadmap;
+until then, the clamp is the honest, conservative simplification.
+
 <a id="refs"></a>
 **References:** Lane 1964 · Lane 1988 (The Economic Definition of Ore) · Dagdelen 1992 · Asad & Topal 2011 · Hall 2014 ·
 Rendu 2014. Full list in `frontend/src/data/citations.ts` + the in-app Methodology page.
