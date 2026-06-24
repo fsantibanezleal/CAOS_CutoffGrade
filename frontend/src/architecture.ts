@@ -16,7 +16,7 @@ export const architecture: ArchitectureConfig = {
         '(milled) vs waste, chosen to maximise NPV (not just immediate profit). Feed a grade-tonnage curve + price, ' +
         'costs and the three stage capacities (mine / mill / market), and see the optimal DECLINING cut-off trajectory, ' +
         'the NPV, the mine life and the cashflow profile.\n\n' +
-        'It is a real system, not a demo. The Lane optimizer (frontend/src/lane/) recomputes live in the browser on ' +
+        'It is a real system, not a demo. The in-browser Lane optimizer recomputes live on ' +
         'every price/cost/capacity/δ slider; a cut-off/NPV surrogate (ONNX) gives instant Monte-Carlo sweeps next to the ' +
         'exact optimizer; Contract 1 accepts your own deposit + economics. C-UNIFORM and C-BREAKEVEN are closed-form ' +
         'oracles — the exact optimizer is the authority, no fabricated wins.',
@@ -25,7 +25,7 @@ export const architecture: ArchitectureConfig = {
         '(molido) vs estéril, elegida para maximizar el VAN (no sólo la ganancia inmediata). Alimenta una curva ' +
         'ley-tonelaje + precio, costos y las tres capacidades (mina / molino / mercado), y observa la trayectoria de ' +
         'corte óptima DECRECIENTE, el VAN, la vida de la mina y el perfil de flujo de caja.\n\n' +
-        'Es un sistema real, no un demo. El optimizador de Lane (frontend/src/lane/) recalcula en vivo en el navegador ' +
+        'Es un sistema real, no un demo. El optimizador de Lane recalcula en vivo en el navegador ' +
         'con cada slider de precio/costo/capacidad/δ; un surrogate de corte/VAN (ONNX) da barridos Monte-Carlo ' +
         'instantáneos junto al optimizador exacto; el Contrato 1 acepta tu propio depósito + economía. C-UNIFORM y ' +
         'C-BREAKEVEN son oráculos de forma cerrada — el optimizador exacto es la autoridad, sin victorias fabricadas.',
@@ -37,18 +37,18 @@ export const architecture: ArchitectureConfig = {
       svg: 'svg/tech/02-lanes.svg',
       body_en:
         'Three lanes, and the split is the point. WEB (live, in the browser): the TypeScript Lane optimizer ' +
-        '(frontend/src/lane/) re-runs on every control and onnxruntime-web runs cutoff-surrogate.onnx — no server. ' +
-        'OFFLINE / COMPUTE (your machine, isolated .venv): the Python pipeline bakes the canonical case artifacts and ' +
-        'the heavy lane (--retrain, .venv-precompute, torch) trains the surrogate + the scenario OOD-AE and exports them ' +
-        'to ONNX. REPLAY: the small, committed artifacts in data/derived are overlaid into the SPA by copy-data.mjs and ' +
-        'loaded live; the typed mirror (contract.types.ts) fails the build if the web and the pipeline shapes diverge.',
+        're-runs on every control and onnxruntime-web runs the cutoff surrogate as an ONNX model — no server. ' +
+        'OFFLINE / COMPUTE (your machine, an isolated Python environment): the Python pipeline bakes the canonical case artifacts and ' +
+        'the heavy lane (the precompute/retrain step, torch) trains the surrogate + the scenario OOD-AE and exports them ' +
+        'to ONNX. REPLAY: the small, committed artifacts are overlaid into the SPA at build and ' +
+        'loaded live; a typed contract mirror fails the build if the web and the pipeline shapes diverge.',
       body_es:
         'Tres carriles, y la división es lo central. WEB (en vivo, en el navegador): el optimizador de Lane en ' +
-        'TypeScript (frontend/src/lane/) re-corre con cada control y onnxruntime-web ejecuta cutoff-surrogate.onnx — sin ' +
-        'servidor. OFFLINE / CÓMPUTO (tu máquina, .venv aislado): el pipeline Python hornea los artefactos canónicos por ' +
-        'caso y el carril pesado (--retrain, .venv-precompute, torch) entrena el surrogate + el OOD-AE de escenarios y ' +
-        'los exporta a ONNX. REPLAY: los artefactos pequeños y versionados en data/derived se superponen al SPA con ' +
-        'copy-data.mjs y se cargan en vivo; el espejo tipado (contract.types.ts) rompe el build si la web y el pipeline divergen.',
+        'TypeScript re-corre con cada control y onnxruntime-web ejecuta el cutoff surrogate como modelo ONNX — sin ' +
+        'servidor. OFFLINE / CÓMPUTO (tu máquina, un entorno Python aislado): el pipeline Python hornea los artefactos canónicos por ' +
+        'caso y el carril pesado (el paso de precómputo/reentrenamiento, torch) entrena el surrogate + el OOD-AE de escenarios y ' +
+        'los exporta a ONNX. REPLAY: los artefactos pequeños y versionados se superponen al SPA en el build ' +
+        'y se cargan en vivo; un contrato tipado espejo rompe el build si la web y el pipeline divergen.',
     },
     {
       id: 'web-flow',
@@ -61,7 +61,7 @@ export const architecture: ArchitectureConfig = {
         'feed the interactive viz — the grade-tonnage curve, the declining cut-off trajectory, the cashflow profile and ' +
         'the Lane cut-off panel, each reading values back on hover. The six sibling pages (App · Introduction · ' +
         'Methodology · Implementation · Experiments · Benchmark) are identical across every CAOS product. The build is ' +
-        'gated by the contract-type mirror, the artifacts are overlaid by copy-data, vite builds the static output, and ' +
+        'gated by the contract-type mirror, the artifacts are overlaid by a build step, vite builds the static output, and ' +
         'GitHub Pages serves it at cutoffgrade.fasl-work.com.',
       body_es:
         'La página App recalcula en vivo: las entradas (el selector de casos o tu propio depósito + economía, más los ' +
@@ -70,7 +70,7 @@ export const architecture: ArchitectureConfig = {
         'de corte decreciente, el perfil de flujo de caja y el panel de cortes de Lane, cada uno devolviendo valores al ' +
         'pasar el cursor. Las seis páginas hermanas (App · Introducción · Metodología · Implementación · Experimentos · ' +
         'Benchmark) son idénticas en todos los productos CAOS. El build lo controla el espejo de tipos del contrato, los ' +
-        'artefactos los superpone copy-data, vite construye el estático y GitHub Pages lo sirve en cutoffgrade.fasl-work.com.',
+        'artefactos los superpone un paso del build, vite construye el estático y GitHub Pages lo sirve en cutoffgrade.fasl-work.com.',
     },
     {
       id: 'science',
@@ -112,8 +112,8 @@ export const architecture: ArchitectureConfig = {
         'the grade mean/CV, tonnage, price, the four costs, recovery, the three capacities and the discount rate, with ' +
         'range/NaN guards — so the app accepts your data, not just the built-in cases. Contract 2 (artifact) defines the ' +
         'output the web reads (the grade-tonnage curve, the 6 cut-offs, the optimal trajectory + NPV + life + cashflow, ' +
-        'the sensitivity, the model index), mirrored exactly by contract.types.ts. Between them the staged, ' +
-        'deterministic pipeline runs the lane gate (numpy-light by default, --retrain for the heavy torch lane) and ' +
+        'the sensitivity, the model index), mirrored exactly by a typed contract. Between them the staged, ' +
+        'deterministic pipeline runs the lane gate (numpy-light by default, the heavy torch retrain step on demand) and ' +
         'writes a provenance manifest, so every result is reproducible and the web can never silently drift.',
       body_es:
         'Dos contratos de datos validados encierran el pipeline. El Contrato 1 (ingesta) define un depósito + economía ' +
@@ -121,8 +121,8 @@ export const architecture: ArchitectureConfig = {
         'y la tasa de descuento, con guardas de rango/NaN — para que la app acepte tus datos, no sólo los casos ' +
         'incluidos. El Contrato 2 (artefacto) define la salida que lee la web (la curva ley-tonelaje, los 6 cortes, la ' +
         'trayectoria óptima + VAN + vida + flujo de caja, la sensibilidad, el índice de modelos), espejada exactamente ' +
-        'por contract.types.ts. Entre ambos, el pipeline por etapas y determinista corre el lane gate (numpy-light por ' +
-        'defecto, --retrain para el carril pesado de torch) y escribe un manifest de procedencia, de modo que cada ' +
+        'por un contrato tipado. Entre ambos, el pipeline por etapas y determinista corre el lane gate (numpy-light por ' +
+        'defecto, el paso de reentrenamiento pesado de torch a demanda) y escribe un manifest de procedencia, de modo que cada ' +
         'resultado es reproducible y la web nunca diverge en silencio.',
     },
   ],
