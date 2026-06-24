@@ -3,6 +3,24 @@
 All notable changes to CutoffGrade Studio. Format: `X.XX.XXX` (display) — see `cglab.__version__`. Keep `0.x` while on
 synthetic data. Tag every release.
 
+## [0.07.001] — 2026-06-23
+
+Consistency fix (patch) — abstracted internal paths out of the ⓘ Architecture-modal PROSE bodies (ADR-0017 §3
+"zero internal references"; the SVG monospace labels remain ADR-0058-exempt). Replaced `frontend/src/lane/`,
+`.venv`, `--retrain`, `.venv-precompute`, `copy-data(.mjs)`, `contract.types.ts`, `data/derived` and the bare
+`cutoff-surrogate.onnx` filename in the modal description text with abstract equivalents. Matches the
+ChargeCascade modal-prose standard; no behavior change. Also aligned the stale `frontend/package.json` version
+(0.06.001) to the displayed version.
+
+## [0.07.000] — 2026-06-23
+
+At-bar release (backfilled changelog entry — this was shipped + live-verified but not recorded here at the time).
+Brought CutoffGrade Studio to the RotorVitals quality bar via adversarial audit → 2 re-audit rounds → AT_BAR:
+2 new genuine reactive App views (τ(t) opportunity-cost + capacity-utilisation → 10 tabs), Methodology deepened
+to 6 method-family tabs meeting the §2 floor, 6 citations given verifiable URLs, banned `ReferenceList` →
+per-section `<Refs>`/`<Cite>`, `.pf-*`→`.cg-*`, version single-sourced, retro git tags. Live at
+cutoffgrade.fasl-work.com.
+
 ## [0.06.001] — 2026-06-23
 
 Bring-to-bar T2 (a honesty fix from the gap review): the **learned-model tabs no longer show "pending training" for
