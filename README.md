@@ -1,5 +1,10 @@
 # CutoffGrade Studio — Lane's optimal cut-off grade
 
+[![CI](https://img.shields.io/github/actions/workflow/status/fsantibanezleal/CAOS_CutoffGrade/ci.yml?branch=main&label=CI)](https://github.com/fsantibanezleal/CAOS_CutoffGrade/actions)
+[![License](https://img.shields.io/github/license/fsantibanezleal/CAOS_CutoffGrade)](LICENSE)
+[![Version](https://img.shields.io/github/v/tag/fsantibanezleal/CAOS_CutoffGrade?label=version&sort=semver)](https://github.com/fsantibanezleal/CAOS_CutoffGrade/tags)
+[![Live demo](https://img.shields.io/badge/demo-live-2ea44f)](https://cutoffgrade.fasl-work.com)
+
 [![CI](https://github.com/fsantibanezleal/CAOS_CutoffGrade/actions/workflows/ci.yml/badge.svg)](https://github.com/fsantibanezleal/CAOS_CutoffGrade/actions)
 **Live:** https://cutoffgrade.fasl-work.com
 
