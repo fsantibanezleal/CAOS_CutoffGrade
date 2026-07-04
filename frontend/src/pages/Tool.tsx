@@ -33,7 +33,7 @@ export default function Tool() {
   const [surr, setSurr] = useState<{ cutoff: number; npv: number; life: number } | null>(null);
   const [ood, setOod] = useState<number | null>(null);
   // model availability is checked ONCE (a HEAD probe; both ONNX models ship together) and drives the pending-vs-ready
-  // gate — separate from the per-recompute inference, so a trained+served model never flashes "pending training".
+  // gate, separate from the per-recompute inference, so a trained+served model never flashes "pending training".
   const [modelsPresent, setModelsPresent] = useState<boolean | null>(null);   // null = checking · false = absent · true = served
   const oodThr = learned?.ood?.thr ?? null;
 
@@ -69,7 +69,7 @@ export default function Tool() {
       id: 'gt', label: es ? 'Curva ley-tonelaje' : 'Grade-tonnage',
       content: (
         <div className="cg-vizstack">
-          <div className="cg-plot-t">{es ? 'Curva ley-tonelaje — fracción mineral + ley media vs la ley de corte. Líneas: break-even (ámbar), corte óptimo (rojo).' : 'Grade-tonnage curve — ore fraction + average grade vs the cut-off. Lines: break-even (amber), optimal cut-off (red).'}</div>
+          <div className="cg-plot-t">{es ? 'Curva ley-tonelaje, fracción mineral + ley media vs la ley de corte. Líneas: break-even (ámbar), corte óptimo (rojo).' : 'Grade-tonnage curve, ore fraction + average grade vs the cut-off. Lines: break-even (amber), optimal cut-off (red).'}</div>
           <GTChart curve={a.gradeTonnage} breakEven={a.breakEven} effective={cut.effective} lang={lang} />
           <div className="cg-kpis">
             <Kpi label={es ? 'VAN óptimo' : 'optimal NPV'} value={money(a.optimal.npv)} />
@@ -106,7 +106,7 @@ export default function Tool() {
       id: 'tau', label: es ? 'Costo de oportunidad τ(t)' : 'Opportunity cost τ(t)',
       content: (
         <div className="cg-vizstack">
-          <div className="cg-plot-t">{es ? 'El costo de oportunidad τ = f + F·δ por año: lo que cuesta ocupar un año de la capacidad escasa. Es lo que ELEVA el corte sobre el break-even — y por qué decrece.' : 'The opportunity cost τ = f + F·δ per year: what it costs to occupy a year of the scarce capacity. This is what RAISES the cut-off above break-even — and why it declines.'}</div>
+          <div className="cg-plot-t">{es ? 'El costo de oportunidad τ = f + F·δ por año: lo que cuesta ocupar un año de la capacidad escasa. Es lo que ELEVA el corte sobre el break-even, y por qué decrece.' : 'The opportunity cost τ = f + F·δ per year: what it costs to occupy a year of the scarce capacity. This is what RAISES the cut-off above break-even, and why it declines.'}</div>
           <TauChart schedule={a.optimal.schedule} fixedCostYr={econ.fixedCostYr} discountRate={econ.discountRate} lang={lang} />
           <p className="cg-note">{es
             ? `F (VAN remanente) parte alto y cae a 0 al agotarse la reserva, así que τ cae hacia el costo fijo f. El corte sigue a τ: alto temprano, decreciente al final. δ = ${(econ.discountRate * 100).toFixed(1)}%.`
@@ -121,8 +121,8 @@ export default function Tool() {
           <div className="cg-plot-t">{es ? 'Utilización por año de las tres etapas (mina · molino · mercado). La etapa SATURADA (en 100%) es la que limita ese año y fija el corte; las otras tienen holgura.' : 'Per-year utilisation of the three stages (mine · mill · market). The SATURATED stage (at 100%) is the one binding that year and setting the cut-off; the others have slack.'}</div>
           <UtilChart schedule={a.optimal.schedule} mineCapacity={econ.mineCapacity} millCapacity={econ.millCapacity} marketCapacity={econ.marketCapacity} recovery={econ.recovery} lang={lang} />
           <p className="cg-note">{es
-            ? `Restricción global del caso: ${a.binding}. Cuando cambia la etapa que limita (mueve la capacidad del molino), el corte óptimo salta — eso es la lógica de "qué etapa limita" de Lane.`
-            : `Case-wide binding stage: ${a.binding}. When the binding stage changes (move the mill capacity), the optimal cut-off jumps — that is Lane's "which stage binds" logic.`}</p>
+            ? `Restricción global del caso: ${a.binding}. Cuando cambia la etapa que limita (mueve la capacidad del molino), el corte óptimo salta, eso es la lógica de "qué etapa limita" de Lane.`
+            : `Case-wide binding stage: ${a.binding}. When the binding stage changes (move the mill capacity), the optimal cut-off jumps, that is Lane's "which stage binds" logic.`}</p>
         </div>
       ),
     },
@@ -163,7 +163,7 @@ export default function Tool() {
               ))}
             </tbody>
           </table>
-          <p className="cg-note">{es ? 'Cada fila aplica un shock relativo (±) al parámetro y re-optimiza con Lane — el valor de la teoría: cuantifica el riesgo económico.' : 'Each row applies a relative (±) shock to the parameter and re-optimizes with Lane — the value of the theory: it quantifies the economic risk.'}</p>
+          <p className="cg-note">{es ? 'Cada fila aplica un shock relativo (±) al parámetro y re-optimiza con Lane, el valor de la teoría: cuantifica el riesgo económico.' : 'Each row applies a relative (±) shock to the parameter and re-optimizes with Lane, the value of the theory: it quantifies the economic risk.'}</p>
         </div>
       ),
     },
@@ -205,7 +205,7 @@ export default function Tool() {
                 <Kpi label={es ? 'VAN (exacto)' : 'NPV (exact)'} value={money(a.optimal.npv)} />
                 <Kpi label={es ? 'error VAN' : 'NPV error'} value={surr ? `${(Math.abs(surr.npv - a.optimal.npv) / Math.max(1, Math.abs(a.optimal.npv)) * 100).toFixed(1)}%` : '…'} />
               </div>
-              <p className="cg-note">{es ? 'El optimizador exacto de Lane es la autoridad; el surrogate gana su lugar por la velocidad (inferencia en microsegundos — hoy una comparación de un escenario; los barridos Monte-Carlo masivos son el tier estocástico del roadmap), no por una victoria fabricada.' : 'The exact Lane optimizer is the authority; the surrogate earns its place on speed (microsecond inference — today a single-scenario comparison; mass Monte-Carlo sweeps are the roadmap stochastic tier), not a fabricated win.'}</p>
+              <p className="cg-note">{es ? 'El optimizador exacto de Lane es la autoridad; el surrogate gana su lugar por la velocidad (inferencia en microsegundos, hoy una comparación de un escenario; los barridos Monte-Carlo masivos son el tier estocástico del roadmap), no por una victoria fabricada.' : 'The exact Lane optimizer is the authority; the surrogate earns its place on speed (microsecond inference, today a single-scenario comparison; mass Monte-Carlo sweeps are the roadmap stochastic tier), not a fabricated win.'}</p>
               {learned && <p className="cg-cap cg-muted">{es ? 'Entrenado + en vivo' : 'Trained + live'} · {es ? 'error VAN held-out' : 'held-out NPV err'} {(learned.surrogate.npv_err * 100).toFixed(1)}% · {es ? 'error corte' : 'cut-off err'} {(learned.surrogate.cutoff_err * 100).toFixed(1)}% (n={learned.surrogate.nEval})</p>}
             </>
           )}
@@ -216,7 +216,7 @@ export default function Tool() {
       id: 'anomaly', label: es ? 'Anomalía (AE)' : 'Anomaly (AE)',
       content: (
         <div className="cg-vizstack">
-          <div className="cg-plot-t">{es ? 'El autoencoder OOD marca escenarios fuera del envolvente económico entrenado (precios/costos/leyes extremos) — el guardia en vivo de "el surrogate está extrapolando".' : 'The OOD autoencoder flags scenarios outside the trained economic envelope (extreme prices/costs/grades) — the live "the surrogate is extrapolating" guard.'}</div>
+          <div className="cg-plot-t">{es ? 'El autoencoder OOD marca escenarios fuera del envolvente económico entrenado (precios/costos/leyes extremos), el guardia en vivo de "el surrogate está extrapolando".' : 'The OOD autoencoder flags scenarios outside the trained economic envelope (extreme prices/costs/grades), the live "the surrogate is extrapolating" guard.'}</div>
           {modelsPresent === null ? (
             <div className="cg-pending"><strong>{es ? 'Cargando el autoencoder…' : 'Loading the autoencoder…'}</strong></div>
           ) : modelsPresent === false ? (
@@ -235,8 +235,8 @@ export default function Tool() {
               </div>
               {oodThr != null && ood != null && (
                 <p className="cg-note">{ood > oodThr
-                  ? (es ? 'El escenario está fuera del envolvente entrenado — el surrogate está extrapolando; confía en el optimizador exacto.' : 'The scenario is outside the trained envelope — the surrogate is extrapolating; trust the exact optimizer.')
-                  : (es ? 'El escenario está dentro del envolvente entrenado — el surrogate es confiable aquí.' : 'The scenario is inside the trained envelope — the surrogate is reliable here.')}</p>
+                  ? (es ? 'El escenario está fuera del envolvente entrenado, el surrogate está extrapolando; confía en el optimizador exacto.' : 'The scenario is outside the trained envelope, the surrogate is extrapolating; trust the exact optimizer.')
+                  : (es ? 'El escenario está dentro del envolvente entrenado, el surrogate es confiable aquí.' : 'The scenario is inside the trained envelope, the surrogate is reliable here.')}</p>
               )}
               {learned?.ood && <p className="cg-cap cg-muted">{es ? 'Entrenado + en vivo' : 'Trained + live'} · AUC {learned.ood.auc.toFixed(3)} (n={learned.ood.nEval})</p>}
             </>

@@ -1,42 +1,49 @@
 # Changelog
 
-All notable changes to CutoffGrade Studio. Format: `X.XX.XXX` (display) — see `cglab.__version__`. Keep `0.x` while on
+All notable changes to CutoffGrade Studio. Format: `X.XX.XXX` (display), see `cglab.__version__`. Keep `0.x` while on
 synthetic data. Tag every release.
 
-## [0.07.001] — 2026-06-23
+## [0.07.002], 2026-07-04
 
-Consistency fix (patch) — abstracted internal paths out of the ⓘ Architecture-modal PROSE bodies (ADR-0017 §3
+### Changed
+- Content standards (ADR-0067): removed every em-dash from tracked content (replaced with commas, or
+  "n/a" in table cells). No behaviour change. Added `scripts/check_content_standards.py` + wired it
+  into the CI `guards` job so the repo cannot regress on em-dashes or emojis.
+
+## [0.07.001], 2026-06-23
+
+Consistency fix (patch), abstracted internal paths out of the ⓘ Architecture-modal PROSE bodies (ADR-0017 §3
 "zero internal references"; the SVG monospace labels remain ADR-0058-exempt). Replaced `frontend/src/lane/`,
 `.venv`, `--retrain`, `.venv-precompute`, `copy-data(.mjs)`, `contract.types.ts`, `data/derived` and the bare
 `cutoff-surrogate.onnx` filename in the modal description text with abstract equivalents. Matches the
 ChargeCascade modal-prose standard; no behavior change. Also aligned the stale `frontend/package.json` version
 (0.06.001) to the displayed version.
 
-## [0.07.000] — 2026-06-23
+## [0.07.000], 2026-06-23
 
-At-bar release (backfilled changelog entry — this was shipped + live-verified but not recorded here at the time).
+At-bar release (backfilled changelog entry, this was shipped + live-verified but not recorded here at the time).
 Brought CutoffGrade Studio to the RotorVitals quality bar via adversarial audit → 2 re-audit rounds → AT_BAR:
 2 new genuine reactive App views (τ(t) opportunity-cost + capacity-utilisation → 10 tabs), Methodology deepened
 to 6 method-family tabs meeting the §2 floor, 6 citations given verifiable URLs, banned `ReferenceList` →
 per-section `<Refs>`/`<Cite>`, `.pf-*`→`.cg-*`, version single-sourced, retro git tags. Live at
 cutoffgrade.fasl-work.com.
 
-## [0.06.001] — 2026-06-23
+## [0.06.001], 2026-06-23
 
 Bring-to-bar T2 (a honesty fix from the gap review): the **learned-model tabs no longer show "pending training" for
 models that are trained and served live.**
 
 ### Fixed
 - The What-if (ONNX) + Anomaly (AE) tabs gated their "pending training / run `--retrain`" block on a state that was
-  also true while the ONNX/WASM was *loading* — so the live flagship could flash an "unfinished" message for models
+  also true while the ONNX/WASM was *loading*, so the live flagship could flash an "unfinished" message for models
   that are committed and served (HTTP 200). Now a **one-time `surrogateAvailable()` HEAD probe** drives a three-state
-  gate — *checking* → a neutral "Loading…", *absent* → the "not trained" message, *served* → the live results —
+  gate, *checking* → a neutral "Loading…", *absent* → the "not trained" message, *served* → the live results , 
   separate from the per-recompute inference (so it never flashes pending on a slider drag). Both tabs now also
   surface the published held-out metrics ("Trained + live · NPV err 6.8 % · cut-off err 10.9 %"; "AUC 0.999"). The
   Benchmark learned-models table gets the same loading-vs-absent distinction. Verified live: no pending message, the
   metrics footers render, 0 console errors.
 
-## [0.06.000] — 2026-06-21
+## [0.06.000], 2026-06-21
 
 ### Added
 - **The 6-page SPA** on `@fasl-work/caos-app-shell` (App · Introduction · Methodology · Implementation · Experiments ·
@@ -52,19 +59,19 @@ models that are trained and served live.**
   cases, guides.
 - Root files: README, STRUCTURE, LICENSE, LICENSES, ATTRIBUTION.
 
-## [0.03.000] — 2026-06-21
+## [0.03.000], 2026-06-21
 
 ### Added
 - The Python core: the two data contracts (deposit+economics ingestion + artifact), the 10 cases-by-category, the
   numpy-light staged pipeline, the two-language bake (Node runs the SAME TS Lane engine), the live/precompute gate.
 
-## [0.02.000] — 2026-06-21
+## [0.02.000], 2026-06-21
 
 ### Added
 - The Lane science core (`frontend/src/lane/`): the lognormal grade-tonnage curve, the six Lane cut-offs, the exact NPV
   life simulator, the optimal-constant + the declining high-grading trajectory. 8/8 oracle tests.
 
-## [0.01.000] — 2026-06-21
+## [0.01.000], 2026-06-21
 
 ### Added
 - Initial instantiation from the CAOS product-repo template (ADR-0057): the `cglab` package, identity (CNAME, vite

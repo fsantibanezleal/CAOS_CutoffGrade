@@ -2,7 +2,7 @@
 
 Each case (`data-pipeline/cglab/cases/lane_cases.py`, mirrored in `frontend/src/lane/cases.ts`) declares a **CATEGORY**,
 its deposit + economics, an **expected band** (what a domain reader should see), a **validation anchor** (a property the
-result MUST satisfy — checked in `frontend/test/{lane,contract}.test.ts`), and a real|synthetic flag. The **App shows
+result MUST satisfy, checked in `frontend/test/{lane,contract}.test.ts`), and a real|synthetic flag. The **App shows
 ONE selected case**; **Experiments/Benchmark show cross-case summaries** (never mixed into the App). All deposits are
 SYNTHETIC (a porphyry-copper-like base case); `C-UNIFORM` and `C-BREAKEVEN` are the closed-form ORACLE controls.
 

@@ -1,4 +1,4 @@
-# data/ — the data contract + layout
+# data/, the data contract + layout
 
 This folder is governed by the **two data contracts** of ADR-0057.
 
@@ -7,25 +7,25 @@ This folder is governed by the **two data contracts** of ADR-0057.
 | Path | What | Git |
 |---|---|---|
 | `raw/` | private/large local inputs (here: the surrogate train/eval scenario dumps) | **git-ignored** (never committed) |
-| `examples/` | `deposits.csv` — a tiny standard-format sample that PASSES Contract 1 (clone-verify) | committed |
+| `examples/` | `deposits.csv`, a tiny standard-format sample that PASSES Contract 1 (clone-verify) | committed |
 | `derived/<case>/` | the compact, standard-format artifacts the web replays | committed |
 | `derived/manifests/` | per-case `<case>.json` (Contract 2) + the flat `index.json` inventory | committed |
 | `demo/`, `artifacts/`, `samples/` | empty archetype placeholders (`.gitkeep` only) | committed |
 
-## CONTRACT 1 — ingestion (raw → pipeline) — the *bring-your-own-deposit* gate
+## CONTRACT 1, ingestion (raw → pipeline), the *bring-your-own-deposit* gate
 
 Defined in `data-pipeline/cglab/io/contract.py` (`validate_records` / `validate_deposit`). A deposit + economics
 record is **accepted** iff it satisfies the schema; **rejected** with a reason otherwise (never silently coerced);
 plausible-but-extreme records are **flagged** (accepted; the flag travels into the manifest). This gate runs in the
-**offline pipeline** — there is no in-app upload.
+**offline pipeline**, there is no in-app upload.
 
 Schema (one record per scenario):
 
 | Column | Unit | Rule | Notes |
 |---|---|---|---|
-| `deposit_id` | — | non-empty | identifier |
+| `deposit_id` | n/a | non-empty | identifier |
 | `grade_mean` | grade fraction | > 0 | lognormal deposit mean grade |
-| `grade_cv` | — | ≥ 0 (optional, default 0.6) | grade coefficient of variation; > 2.0 → **flag** |
+| `grade_cv` | n/a | ≥ 0 (optional, default 0.6) | grade coefficient of variation; > 2.0 → **flag** |
 | `tonnage_mt` | Mt | > 0 | total in-situ tonnage |
 | `price` | $/unit metal | > 0 | `price − refining_cost ≤ 0` → **flag** (nothing is ever ore) |
 | `mining_cost` | $/t mined | ≥ 0 | |
@@ -41,13 +41,13 @@ Schema (one record per scenario):
 **Outlier policy:** missing/empty column → reject · non-numeric → reject · NaN/Inf → reject · out-of-range → reject ·
 plausible-but-extreme → **flag** (accepted; recorded in the manifest).
 
-## CONTRACT 2 — artifact (pipeline → web)
+## CONTRACT 2, artifact (pipeline → web)
 
 Each pipeline run writes a compact trace (`derived/<case>/trace.json`, schema `cutoffgrade.trace/v1`) and a manifest
 (`derived/manifests/<case>.json`, schema `cutoffgrade.manifest/v2`) recording params, seed, engine+version, the
 artifact byte size, the measured **lane/gate** verdict, Contract-1 flags, and the evaluation metrics.
 `frontend/src/lib/contract.types.ts` mirrors these schemas so any drift fails the web build. The web loads these
-committed artifacts (the learned-model metrics + the replay traces) **and** recomputes live in the browser by design —
+committed artifacts (the learned-model metrics + the replay traces) **and** recomputes live in the browser by design , 
 the TypeScript Lane engine in `frontend/src/lane/` is the same code that baked them.
 
 ## Provenance / license

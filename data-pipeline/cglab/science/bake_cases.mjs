@@ -1,5 +1,5 @@
 // Bake the per-case Lane cut-off optimization through the SAME TypeScript engine the browser runs, and write
-// data/derived/case-results.json — the committed, deterministic per-case outputs the LIGHT Python pipeline reshapes
+// data/derived/case-results.json, the committed, deterministic per-case outputs the LIGHT Python pipeline reshapes
 // into per-case replay traces + manifests (CONTRACT 2). No Python re-port of the economics engine. The exact Lane
 // optimizer is baked here (it needs no training); the learned surrogate/AE metrics are added by --retrain once trained.
 // Run (from frontend/ so tsx resolves):  node --import tsx ../data-pipeline/cglab/science/bake_cases.mjs

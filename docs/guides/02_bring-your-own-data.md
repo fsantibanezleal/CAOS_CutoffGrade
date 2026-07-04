@@ -1,10 +1,10 @@
-# Guide — bring your own deposit
+# Guide, bring your own deposit
 
-The product is **applicable to NEW data**, not just the baked cases — that is what makes it a tool. The door is
+The product is **applicable to NEW data**, not just the baked cases, that is what makes it a tool. The door is
 **CONTRACT 1** (`data-pipeline/cglab/io/contract.py`), and it lives in the **offline pipeline**. Be clear about
 what does NOT exist today: there is **no in-app upload**, no Pyodide lane (the live lane is the TypeScript engine,
 see `frontend/copy-data.mjs`), and no ready-made CSV-to-pipeline CLI. Ingesting a tabulated empirical grade-tonnage
-curve is roadmap — the engine currently models the deposit as a 2-parameter lognormal.
+curve is roadmap, the engine currently models the deposit as a 2-parameter lognormal.
 
 1. Express your deposit + economics as one record of the documented schema (see
    [`data/README.md`](../../data/README.md); a passing sample is committed at `data/examples/deposits.csv`):
@@ -21,5 +21,5 @@ curve is roadmap — the engine currently models the deposit as a 2-parameter lo
    case) and `scripts/precompute.{sh,ps1} all` (rebuilds the traces + manifests the SPA replays; add `--retrain`
    to also retrain the learned models, torch).
 
-If your data legitimately doesn't fit, extend CONTRACT 1 (and its tests) **deliberately** — never loosen it just
+If your data legitimately doesn't fit, extend CONTRACT 1 (and its tests) **deliberately**, never loosen it just
 to make bad data pass.

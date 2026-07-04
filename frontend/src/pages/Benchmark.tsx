@@ -22,7 +22,7 @@ export default function Benchmark() {
   return (
     <article className="page-body prose">
       <h1>Benchmark</h1>
-      <p className="lede">{es ? 'Comparaciones cross-case — las que NO dependen de un solo caso viven aquí (no en el App). Todas vienen del bake del motor TS.' : 'Cross-case comparisons — the ones that do NOT depend on a single case live here (not in the App). All come from the TS-engine bake.'}</p>
+      <p className="lede">{es ? 'Comparaciones cross-case, las que NO dependen de un solo caso viven aquí (no en el App). Todas vienen del bake del motor TS.' : 'Cross-case comparisons, the ones that do NOT depend on a single case live here (not in the App). All come from the TS-engine bake.'}</p>
 
       <h2>{es ? 'VAN vs precio (sensibilidad)' : 'NPV vs price (sensitivity)'}</h2>
       <table className="cmp-table">
@@ -58,7 +58,7 @@ export default function Benchmark() {
       ) : learnedLoading ? (
         <p className="cg-note">{es ? 'Cargando modelos aprendidos…' : 'Loading learned models…'}</p>
       ) : (
-        <p className="cg-note">{es ? 'Modelos aprendidos no entrenados — re-genéralos con el paso de re-entrenamiento del precómputo. El optimizador EXACTO de Lane corre en vivo mientras tanto.' : 'Learned models not trained — regenerate them with the precompute retrain step. The EXACT Lane optimizer runs live meanwhile.'}</p>
+        <p className="cg-note">{es ? 'Modelos aprendidos no entrenados, re-genéralos con el paso de re-entrenamiento del precómputo. El optimizador EXACTO de Lane corre en vivo mientras tanto.' : 'Learned models not trained, regenerate them with the precompute retrain step. The EXACT Lane optimizer runs live meanwhile.'}</p>
       )}
       <Refs ids={['lane1988', 'hall2014', 'rendu2014']} label="Refs" />
     </article>

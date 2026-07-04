@@ -13,7 +13,7 @@ re-implementing the economics in Python.
 | `train` | fit the cut-off/NPV surrogate + the scenario OOD-AE → ONNX (`science/train_lane.py`, torch) |
 | `infer` | optimize every case through the SAME TS engine (`science/bake_cases.mjs`) → `case-results.json` |
 | `evaluate` | the surrogate's downstream NPV/cut-off error vs the exact optimizer (`science/eval_lane.mjs`) + the OOD AUC |
-| `export` | build the compact per-case trace + manifest (CONTRACT 2) — the LIGHT, numpy-only step |
+| `export` | build the compact per-case trace + manifest (CONTRACT 2), the LIGHT, numpy-only step |
 
 ## The two lanes of `cglab.pipeline`
 
@@ -34,4 +34,4 @@ eval_lane.mjs  ──► data/derived/cg-learned.json              (surrogate do
 pipeline.export──► data/derived/<case>/trace.json + manifests/<case>.json + index.json   (CONTRACT 2)
 ```
 
-Determinism: the light pipeline is a pure function of the committed artifacts — re-running it is byte-identical.
+Determinism: the light pipeline is a pure function of the committed artifacts, re-running it is byte-identical.
