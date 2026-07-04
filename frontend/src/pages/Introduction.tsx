@@ -43,7 +43,7 @@ export default function Introduction() {
             <text className="s" x="248" y="78">{es ? 'refino/fijo) · recuperación' : 'refine/fixed) · recovery'}</text>
             <text className="s" x="248" y="100">{es ? 'capacidades: mina · molino · mercado' : 'capacities: mine · mill · market'}</text>
             <text className="s" x="248" y="122">{es ? 'tasa de descuento δ' : 'discount rate δ'}</text>
-            <text className="s" x="248" y="150">{es ? 'tu propio depósito + deck (Contrato 1)' : 'bring your own deposit + deck (Contract 1)'}</text>
+            <text className="s" x="248" y="150">{es ? 'depósito propio: pipeline offline (Contrato 1)' : 'own deposit: offline pipeline (Contract 1)'}</text>
             {/* Stage 3 — Lane optimizer */}
             <rect className="bx hi" x="456" y="20" width="190" height="150" rx="10" />
             <text className="t" x="470" y="42">{es ? 'Optimizador de Lane' : 'Lane optimizer'}</text>

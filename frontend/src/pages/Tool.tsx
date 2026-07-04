@@ -188,7 +188,7 @@ export default function Tool() {
       id: 'whatif', label: es ? 'What-if (ONNX)' : 'What-if (ONNX)',
       content: (
         <div className="cg-vizstack">
-          <div className="cg-plot-t">{es ? 'El surrogate de corte/VAN (ONNX) emula el optimizador de Lane para barridos instantáneos del envolvente económico.' : 'The cut-off/NPV surrogate (ONNX) emulates the Lane optimizer for instant economic-envelope sweeps.'}</div>
+          <div className="cg-plot-t">{es ? 'El surrogate de corte/VAN (ONNX) emula el optimizador de Lane: una inferencia instantánea por cambio de control, comparada contra el resultado exacto.' : 'The cut-off/NPV surrogate (ONNX) emulates the Lane optimizer: one instant inference per control change, compared against the exact result.'}</div>
           {modelsPresent === null ? (
             <div className="cg-pending"><strong>{es ? 'Cargando el surrogate…' : 'Loading the surrogate…'}</strong></div>
           ) : modelsPresent === false ? (
@@ -205,7 +205,7 @@ export default function Tool() {
                 <Kpi label={es ? 'VAN (exacto)' : 'NPV (exact)'} value={money(a.optimal.npv)} />
                 <Kpi label={es ? 'error VAN' : 'NPV error'} value={surr ? `${(Math.abs(surr.npv - a.optimal.npv) / Math.max(1, Math.abs(a.optimal.npv)) * 100).toFixed(1)}%` : '…'} />
               </div>
-              <p className="cg-note">{es ? 'El optimizador exacto de Lane es la autoridad; el surrogate gana su lugar por la velocidad (barridos Monte-Carlo instantáneos sobre miles de escenarios), no por una victoria fabricada.' : 'The exact Lane optimizer is the authority; the surrogate earns its place on speed (instant Monte-Carlo sweeps over thousands of scenarios), not a fabricated win.'}</p>
+              <p className="cg-note">{es ? 'El optimizador exacto de Lane es la autoridad; el surrogate gana su lugar por la velocidad (inferencia en microsegundos — hoy una comparación de un escenario; los barridos Monte-Carlo masivos son el tier estocástico del roadmap), no por una victoria fabricada.' : 'The exact Lane optimizer is the authority; the surrogate earns its place on speed (microsecond inference — today a single-scenario comparison; mass Monte-Carlo sweeps are the roadmap stochastic tier), not a fabricated win.'}</p>
               {learned && <p className="cg-cap cg-muted">{es ? 'Entrenado + en vivo' : 'Trained + live'} · {es ? 'error VAN held-out' : 'held-out NPV err'} {(learned.surrogate.npv_err * 100).toFixed(1)}% · {es ? 'error corte' : 'cut-off err'} {(learned.surrogate.cutoff_err * 100).toFixed(1)}% (n={learned.surrogate.nEval})</p>}
             </>
           )}

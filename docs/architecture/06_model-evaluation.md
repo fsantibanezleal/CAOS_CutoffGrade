@@ -24,6 +24,7 @@ Both are trained offline (`science/train_lane.py`, torch) and reported next to t
 **Honesty.** The surrogate's NPV error is measured DOWNSTREAM (`eval_lane.mjs`): its predicted cut-off is run as a
 constant policy through the EXACT simulator, and the NPV is compared to the exact optimum. ~7% NPV error reflects that
 the NPV surface is fairly flat near the optimum (so a ~11% cut-off error costs only ~7% NPV) — an honest property, not a
-fabricated win. The exact optimizer is the authority and runs live by default; the surrogate earns its place on instant
-Monte-Carlo / batch sweeps. The OOD AUC (0.999) is high because the out-of-envelope scenarios are pushed well off the
+fabricated win. The exact optimizer is the authority and runs live by default; the surrogate earns its place on speed —
+today the single-scenario What-if comparison in the App (mass Monte-Carlo / batch sweeps are the roadmap stochastic
+tier). The OOD AUC (0.999) is high because the out-of-envelope scenarios are pushed well off the
 training manifold; we say so.

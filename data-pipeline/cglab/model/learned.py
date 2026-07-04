@@ -3,9 +3,10 @@ science/train_lane.py and the in-browser inference). Both are honest, value-addi
 optimizer — NOT bolted-on. Trained OFFLINE (torch -> ONNX), run LIVE (onnxruntime-web).
 
 1. cutoff-surrogate — an MLP regressor. Input: the standardized deposit + economic features -> output: the optimal
-   initial cut-off, the NPV and the life. A fast surrogate for the iterative Lane fixed-point optimizer, so the App
-   sliders + a Monte-Carlo price simulation are instant. Benchmarked by the NPV + cut-off error vs the EXACT optimizer
-   on held-out scenarios (the exact optimizer is the authority).
+   initial cut-off, the NPV and the life. A fast surrogate for the iterative Lane fixed-point optimizer: today it
+   powers the App's single-scenario What-if comparison (mass Monte-Carlo sweeps are the roadmap stochastic tier).
+   Benchmarked by the NPV + cut-off error vs the EXACT optimizer on held-out scenarios (the exact optimizer is the
+   authority).
 
 2. scenario-ood — an economic-scenario autoencoder. Input: the same standardized feature vector -> output:
    reconstruction; a high MSE = a scenario OUTSIDE the training envelope (the surrogate is extrapolating). Benchmarked
