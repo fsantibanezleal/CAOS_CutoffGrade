@@ -1,4 +1,4 @@
-"""DORMANT archetype residue — NOT used by CutoffGrade Studio. This product's live lane is the TypeScript engine
+"""DORMANT archetype residue, NOT used by CutoffGrade Studio. This product's live lane is the TypeScript engine
 (frontend/src/lane/) + onnxruntime-web; there is no Pyodide lane (see frontend/copy-data.mjs) and nothing imports
 this module (it still references the template's SIR model, which no longer exists in this repo)."""
 from __future__ import annotations

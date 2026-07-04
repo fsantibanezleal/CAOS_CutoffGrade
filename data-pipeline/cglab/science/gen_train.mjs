@@ -1,4 +1,4 @@
-// Generate the learned-model training data by running the SAME TypeScript engine the browser runs — so the surrogate
+// Generate the learned-model training data by running the SAME TypeScript engine the browser runs, so the surrogate
 // trains on EXACTLY the Lane optimizer the App uses, and is benchmarked against it. Writes to data/raw/ (git-ignored,
 // regenerable). Invoked by pipeline.retrain before train_lane.py. Run (from frontend/ so tsx resolves):
 //   node --import tsx ../data-pipeline/cglab/science/gen_train.mjs
@@ -18,7 +18,7 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const RAW = resolve(HERE, '../../../data/raw');
 mkdirSync(RAW, { recursive: true });
 
-// a small seeded RNG (mulberry32) — deterministic training data
+// a small seeded RNG (mulberry32), deterministic training data
 function mulberry32(seed) {
   let a = seed >>> 0;
   return () => {
@@ -43,7 +43,7 @@ const ENV = {
 function sampleScenario(env) {
   const v = {};
   for (const k of Object.keys(env)) v[k] = u(env[k][0], env[k][1]);
-  // keep the mill below the mine (else the mill never binds — degenerate); resample if needed
+  // keep the mill below the mine (else the mill never binds, degenerate); resample if needed
   if (v.mill_capacity >= v.mine_capacity) v.mill_capacity = v.mine_capacity * u(0.3, 0.85);
   const deposit = { id: 's', gradeMean: v.grade_mean, gradeCv: v.grade_cv, tonnageMt: v.tonnage_mt };
   const econ = {

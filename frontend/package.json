@@ -1,7 +1,7 @@
 {
   "name": "cutoffgrade-frontend",
   "private": true,
-  "version": "0.07.001",
+  "version": "0.07.002",
   "type": "module",
   "scripts": {
     "predev": "node copy-data.mjs",

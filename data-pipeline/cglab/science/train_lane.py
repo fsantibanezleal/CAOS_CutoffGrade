@@ -1,15 +1,15 @@
-"""HEAVY lane (local-only) — train CutoffGrade's two learned models and export them to ONNX. Run inside the
+"""HEAVY lane (local-only), train CutoffGrade's two learned models and export them to ONNX. Run inside the
 .venv-precompute (torch) AFTER gen_train.mjs has written data/raw/{lane-train,lane-eval}.json:
 
     python data-pipeline/cglab/science/train_lane.py
 
-1. cutoff-surrogate — an MLP regressor (12 standardized deposit+economic features -> [optimal cut-off, NPV, life]).
+1. cutoff-surrogate, an MLP regressor (12 standardized deposit+economic features -> [optimal cut-off, NPV, life]).
    A fast surrogate for the iterative Lane fixed-point optimizer (microsecond inference; today the App's
-   single-scenario What-if comparison — mass Monte-Carlo / batch sweeps are the roadmap stochastic tier). Its DOWNSTREAM
+   single-scenario What-if comparison, mass Monte-Carlo / batch sweeps are the roadmap stochastic tier). Its DOWNSTREAM
    skill (using the predicted cut-off in the EXACT simulator, vs the exact optimum) is measured by eval_lane.mjs (the
    engine is TypeScript, so the honest end-to-end comparison runs in the engine's own language). The standardisation is
    folded into the export wrapper, so the ONNX takes RAW features and returns RAW outputs.
-2. scenario-ood — a small autoencoder over the standardized feature vector; the reconstruction MSE separates
+2. scenario-ood, a small autoencoder over the standardized feature vector; the reconstruction MSE separates
    in-distribution scenarios from out-of-envelope ones (an honest "the surrogate is extrapolating" flag). The AUC is
    reported here.
 
@@ -144,14 +144,14 @@ def train_ood(X: np.ndarray, mu_x: np.ndarray, sd_x: np.ndarray, in_eval: np.nda
     labels = np.concatenate([np.zeros(len(in_scores)), np.ones(len(ood_scores))])
     scores = np.concatenate([in_scores, ood_scores])
     auc = _auc(labels, scores)
-    # the in-distribution 95th-percentile reconstruction MSE — the App flags a scenario as off-envelope when its
+    # the in-distribution 95th-percentile reconstruction MSE, the App flags a scenario as off-envelope when its
     # (ONNX-computed) anomaly score exceeds this. Derived from held-out in-dist data, not hand-picked.
     thr = float(np.quantile(in_scores, 0.95))
     print(f"OOD scores: in-dist p50={np.median(in_scores):.3f} p95={thr:.3f} | ood p50={np.median(ood_scores):.3f}")
 
     # export wrapper: RAW features -> standardise -> AE -> the standardized-space reconstruction MSE (the anomaly score
     # itself, [batch, 1]). Computing it INSIDE the ONNX means the browser reads an interpretable, correctly-scaled score
-    # directly (the SAME quantity used for the AUC above) — no client-side scaler needed.
+    # directly (the SAME quantity used for the AUC above), no client-side scaler needed.
     class AEExport(nn.Module):
         def __init__(self, core: OODAE) -> None:
             super().__init__()
@@ -169,7 +169,7 @@ def train_ood(X: np.ndarray, mu_x: np.ndarray, sd_x: np.ndarray, in_eval: np.nda
 
 def _strip_metadata(path: Path) -> None:
     """Remove any machine-specific provenance an ONNX exporter may bake in (node metadata_props / doc_strings can carry
-    absolute source paths) — keeps the committed ONNX clean (base-integrity guard) and reproducible across machines."""
+    absolute source paths), keeps the committed ONNX clean (base-integrity guard) and reproducible across machines."""
     import onnx
     m = onnx.load(str(path))
     m.doc_string = ""

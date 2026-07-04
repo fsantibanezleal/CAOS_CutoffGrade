@@ -1,7 +1,7 @@
 // Live in-browser inference of the cut-off/NPV surrogate (onnxruntime-web). GRACEFUL: until the model is trained
 // (science/train_lane.py -> cutoff-surrogate.onnx) the file is absent; the loader resolves to null and the App uses
 // the EXACT Lane optimizer (which is cheap enough to run live anyway) + shows the honest "pending training" state. The
-// surrogate's value is microsecond inference — today the App's single-scenario What-if comparison (mass Monte-Carlo /
+// surrogate's value is microsecond inference, today the App's single-scenario What-if comparison (mass Monte-Carlo /
 // batch sweeps are the roadmap stochastic tier). WASM EP, single-threaded; the npm package +
 // CDN wasmPaths are pinned to 1.27.
 import * as ort from 'onnxruntime-web';

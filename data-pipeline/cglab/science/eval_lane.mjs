@@ -1,4 +1,4 @@
-// Downstream evaluation of the trained cut-off surrogate — measured HONESTLY in the engine's own language. For each
+// Downstream evaluation of the trained cut-off surrogate, measured HONESTLY in the engine's own language. For each
 // held-out scenario the surrogate predicts the optimal cut-off; we run THAT cut-off through the EXACT year-by-year
 // simulator (simulateLife) and compare the resulting NPV to the exact optimum. The surrogate's cut-off + NPV error are
 // the honest skill numbers. Then we assemble the final data/derived/cg-learned.json by merging the OOD-AE AUC +
@@ -16,7 +16,7 @@ const RAW = resolve(ROOT, 'data/raw');
 const DERIVED = resolve(ROOT, 'data/derived');
 const FRONTEND = resolve(ROOT, 'frontend');
 
-// load onnxruntime-web (resolved from frontend/node_modules) — node build, WASM EP, single-threaded, local wasm.
+// load onnxruntime-web (resolved from frontend/node_modules), node build, WASM EP, single-threaded, local wasm.
 const req = createRequire(pathToFileURL(resolve(FRONTEND, 'pkg.js')));
 const ortMod = await import(pathToFileURL(req.resolve('onnxruntime-web')));
 const ort = ortMod.default ?? ortMod;
@@ -51,7 +51,7 @@ if (session) {
     nEval++;
   }
 } else {
-  // no surrogate trained yet — report the exact engine against itself (a sanity passthrough; train to get real numbers)
+  // no surrogate trained yet, report the exact engine against itself (a sanity passthrough; train to get real numbers)
   for (const s of ev) { laneTrajectory(s.econ, s.deposit); nEval++; }
 }
 

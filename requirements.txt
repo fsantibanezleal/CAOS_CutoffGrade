@@ -1,2 +1,2 @@
-# CORE / LIVE lane — minimal, Pyodide-safe. Pinned to the verified install (Python 3.12, 2026-06-20).
+# CORE / LIVE lane, minimal, Pyodide-safe. Pinned to the verified install (Python 3.12, 2026-06-20).
 numpy==2.4.6

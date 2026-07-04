@@ -11,7 +11,7 @@ CAT_SCENARIO = "economic scenario (price/cost regime)"
 CAT_DEPOSIT = "deposit type (grade variability)"
 CAT_ORACLE = "oracle control (closed-form check)"
 
-# the base case (a porphyry-copper-like deposit + economics) — identical to src/lane/cases.ts
+# the base case (a porphyry-copper-like deposit + economics), identical to src/lane/cases.ts
 _BASE_ECON = {
     "price": 9000.0, "mining_cost": 2.5, "processing_cost": 9.0, "refining_cost": 900.0,
     "fixed_cost_yr": 60.0, "recovery": 0.88, "mine_capacity": 45.0, "mill_capacity": 18.0,

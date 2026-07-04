@@ -1,6 +1,6 @@
 import type { Citation } from '@fasl-work/caos-app-shell';
 
-// The references CutoffGrade Studio's methodology rests on — Lane's economic cut-off-grade theory.
+// The references CutoffGrade Studio's methodology rests on, Lane's economic cut-off-grade theory.
 // None of these carry a DOI (the seminal works pre-date DOIs, or are books / conference proceedings),
 // so each links to a verifiable, stable source: the publisher, a library catalogue, or an open archive.
 export const CITATIONS: Citation[] = [

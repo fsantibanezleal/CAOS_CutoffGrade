@@ -1,4 +1,4 @@
-# PIPELINE lane — the light default, in the .venv-pipeline (local-only, never deployed).
+# PIPELINE lane, the light default, in the .venv-pipeline (local-only, never deployed).
 # numpy-only on purpose: the committed case-results are baked by the TS engine (frontend/src/lane/ via
 # science/bake_cases.mjs), so the replay/verify path installs instantly with no native build. The heavy retrain
 # lane (torch -> ONNX) pins in requirements-precompute.txt, documented in docs/frameworks/03_torch-onnx.md.
