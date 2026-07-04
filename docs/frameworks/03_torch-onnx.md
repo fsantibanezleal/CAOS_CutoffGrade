@@ -30,4 +30,5 @@ honest "pending training" state. Runs are serialised per session (not re-entrant
 
 Held-out numbers (see [model evaluation](../architecture/06_model-evaluation.md)): surrogate **NPV error 6.8%** /
 cut-off error 10.9% (downstream); scenario OOD-AE **AUC 0.999**. The exact optimizer is the authority; the surrogate is
-a fast approximation for instant Monte-Carlo / batch sweeps. No fabricated win.
+a fast approximation used today for the single-scenario What-if comparison in the App (mass Monte-Carlo / batch sweeps
+are the roadmap stochastic tier). No fabricated win.

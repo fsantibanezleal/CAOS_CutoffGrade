@@ -4,7 +4,8 @@
     python data-pipeline/cglab/science/train_lane.py
 
 1. cutoff-surrogate — an MLP regressor (12 standardized deposit+economic features -> [optimal cut-off, NPV, life]).
-   A fast surrogate for the iterative Lane fixed-point optimizer (instant Monte-Carlo / batch sweeps). Its DOWNSTREAM
+   A fast surrogate for the iterative Lane fixed-point optimizer (microsecond inference; today the App's
+   single-scenario What-if comparison — mass Monte-Carlo / batch sweeps are the roadmap stochastic tier). Its DOWNSTREAM
    skill (using the predicted cut-off in the EXACT simulator, vs the exact optimum) is measured by eval_lane.mjs (the
    engine is TypeScript, so the honest end-to-end comparison runs in the engine's own language). The standardisation is
    folded into the export wrapper, so the ONNX takes RAW features and returns RAW outputs.

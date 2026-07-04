@@ -13,21 +13,24 @@ export const architecture: ArchitectureConfig = {
       svg: 'svg/tech/01-the-app.svg',
       body_en:
         'CutoffGrade Studio answers "what is the most valuable cut-off grade?" — the boundary that splits rock into ore ' +
-        '(milled) vs waste, chosen to maximise NPV (not just immediate profit). Feed a grade-tonnage curve + price, ' +
-        'costs and the three stage capacities (mine / mill / market), and see the optimal DECLINING cut-off trajectory, ' +
-        'the NPV, the mine life and the cashflow profile.\n\n' +
+        '(milled) vs waste, chosen to maximise NPV (not just immediate profit). Feed a lognormal grade-tonnage model ' +
+        '(grade mean, variability, tonnage) + price, costs and the three stage capacities (mine / mill / market), and ' +
+        'see the optimal DECLINING cut-off trajectory, the NPV, the mine life and the cashflow profile.\n\n' +
         'It is a real system, not a demo. The in-browser Lane optimizer recomputes live on ' +
-        'every price/cost/capacity/δ slider; a cut-off/NPV surrogate (ONNX) gives instant Monte-Carlo sweeps next to the ' +
-        'exact optimizer; Contract 1 accepts your own deposit + economics. C-UNIFORM and C-BREAKEVEN are closed-form ' +
+        'every price/cost/capacity/δ slider; a cut-off/NPV surrogate (ONNX) runs one instant inference per control ' +
+        'change next to the exact optimizer (mass Monte-Carlo sweeps are the roadmap stochastic tier); Contract 1 ' +
+        'validates your own deposit + economics in the offline pipeline. C-UNIFORM and C-BREAKEVEN are closed-form ' +
         'oracles — the exact optimizer is the authority, no fabricated wins.',
       body_es:
         'CutoffGrade Studio responde "¿cuál es la ley de corte más valiosa?" — la frontera que separa la roca en mineral ' +
-        '(molido) vs estéril, elegida para maximizar el VAN (no sólo la ganancia inmediata). Alimenta una curva ' +
-        'ley-tonelaje + precio, costos y las tres capacidades (mina / molino / mercado), y observa la trayectoria de ' +
-        'corte óptima DECRECIENTE, el VAN, la vida de la mina y el perfil de flujo de caja.\n\n' +
+        '(molido) vs estéril, elegida para maximizar el VAN (no sólo la ganancia inmediata). Alimenta un modelo ' +
+        'ley-tonelaje lognormal (ley media, variabilidad, tonelaje) + precio, costos y las tres capacidades (mina / ' +
+        'molino / mercado), y observa la trayectoria de corte óptima DECRECIENTE, el VAN, la vida de la mina y el ' +
+        'perfil de flujo de caja.\n\n' +
         'Es un sistema real, no un demo. El optimizador de Lane recalcula en vivo en el navegador ' +
-        'con cada slider de precio/costo/capacidad/δ; un surrogate de corte/VAN (ONNX) da barridos Monte-Carlo ' +
-        'instantáneos junto al optimizador exacto; el Contrato 1 acepta tu propio depósito + economía. C-UNIFORM y ' +
+        'con cada slider de precio/costo/capacidad/δ; un surrogate de corte/VAN (ONNX) corre una inferencia instantánea ' +
+        'por cambio de control junto al optimizador exacto (los barridos Monte-Carlo masivos son el tier estocástico ' +
+        'del roadmap); el Contrato 1 valida tu propio depósito + economía en el pipeline offline. C-UNIFORM y ' +
         'C-BREAKEVEN son oráculos de forma cerrada — el optimizador exacto es la autoridad, sin victorias fabricadas.',
     },
     {
@@ -56,7 +59,7 @@ export const architecture: ArchitectureConfig = {
       es: 'Flujo de la web',
       svg: 'svg/tech/03-web-flow.svg',
       body_en:
-        'The App page recomputes live: inputs (the case selector or your own deposit + economics, plus the price / cost ' +
+        'The App page recomputes live: inputs (the case selector plus the price / cost ' +
         '/ capacity / discount-rate sliders) feed the TypeScript Lane optimizer and the onnxruntime-web surrogate, which ' +
         'feed the interactive viz — the grade-tonnage curve, the declining cut-off trajectory, the cashflow profile and ' +
         'the Lane cut-off panel, each reading values back on hover. The six sibling pages (App · Introduction · ' +
@@ -64,7 +67,7 @@ export const architecture: ArchitectureConfig = {
         'gated by the contract-type mirror, the artifacts are overlaid by a build step, vite builds the static output, and ' +
         'GitHub Pages serves it at cutoffgrade.fasl-work.com.',
       body_es:
-        'La página App recalcula en vivo: las entradas (el selector de casos o tu propio depósito + economía, más los ' +
+        'La página App recalcula en vivo: las entradas (el selector de casos más los ' +
         'sliders de precio / costo / capacidad / tasa de descuento) alimentan el optimizador de Lane en TypeScript y el ' +
         'surrogate onnxruntime-web, que alimentan la visualización interactiva — la curva ley-tonelaje, la trayectoria ' +
         'de corte decreciente, el perfil de flujo de caja y el panel de cortes de Lane, cada uno devolviendo valores al ' +
@@ -86,7 +89,8 @@ export const architecture: ArchitectureConfig = {
         'exact year-by-year simulator; ④ the result is the DECLINING optimal cut-off trajectory (high-grading) — higher ' +
         'early, falling to break-even as the reserve depletes.\n\n' +
         'The exact optimizer is always on and transparent — the authority every learned prediction is measured against. ' +
-        'The learned lane: an MLP surrogate (features → optimal cut-off, NPV, life) for instant sweeps, and a scenario ' +
+        'The learned lane: an MLP surrogate (features → optimal cut-off, NPV, life) compared live against the exact ' +
+        'optimizer in the What-if tab, and a scenario ' +
         'autoencoder that flags out-of-envelope inputs; both run client-side as ONNX, reported by their error vs the ' +
         'exact optimizer, never as a black box.',
       body_es:
@@ -98,7 +102,8 @@ export const architecture: ArchitectureConfig = {
         'resultado es la trayectoria de corte óptima DECRECIENTE (high-grading) — más alta al inicio, cayendo al ' +
         'break-even al agotarse la reserva.\n\n' +
         'El optimizador exacto está siempre activo y es transparente — la autoridad contra la que se mide toda predicción ' +
-        'aprendida. El carril aprendido: un surrogate MLP (features → corte óptimo, VAN, vida) para barridos instantáneos, ' +
+        'aprendida. El carril aprendido: un surrogate MLP (features → corte óptimo, VAN, vida) comparado en vivo contra ' +
+        'el optimizador exacto en la pestaña What-if, ' +
         'y un autoencoder de escenarios que marca entradas fuera del envolvente; ambos corren en el cliente como ONNX, ' +
         'reportados por su error vs el optimizador exacto, nunca como caja negra.',
     },
@@ -110,7 +115,7 @@ export const architecture: ArchitectureConfig = {
       body_en:
         'Two validated data contracts bracket the pipeline. Contract 1 (ingestion) defines a valid deposit + economics — ' +
         'the grade mean/CV, tonnage, price, the four costs, recovery, the three capacities and the discount rate, with ' +
-        'range/NaN guards — so the app accepts your data, not just the built-in cases. Contract 2 (artifact) defines the ' +
+        'range/NaN guards — so the offline pipeline accepts your data, not just the built-in cases. Contract 2 (artifact) defines the ' +
         'output the web reads (the grade-tonnage curve, the 6 cut-offs, the optimal trajectory + NPV + life + cashflow, ' +
         'the sensitivity, the model index), mirrored exactly by a typed contract. Between them the staged, ' +
         'deterministic pipeline runs the lane gate (numpy-light by default, the heavy torch retrain step on demand) and ' +
@@ -118,7 +123,7 @@ export const architecture: ArchitectureConfig = {
       body_es:
         'Dos contratos de datos validados encierran el pipeline. El Contrato 1 (ingesta) define un depósito + economía ' +
         'válidos — la media/CV de ley, el tonelaje, el precio, los cuatro costos, la recuperación, las tres capacidades ' +
-        'y la tasa de descuento, con guardas de rango/NaN — para que la app acepte tus datos, no sólo los casos ' +
+        'y la tasa de descuento, con guardas de rango/NaN — para que el pipeline offline acepte tus datos, no sólo los casos ' +
         'incluidos. El Contrato 2 (artefacto) define la salida que lee la web (la curva ley-tonelaje, los 6 cortes, la ' +
         'trayectoria óptima + VAN + vida + flujo de caja, la sensibilidad, el índice de modelos), espejada exactamente ' +
         'por un contrato tipado. Entre ambos, el pipeline por etapas y determinista corre el lane gate (numpy-light por ' +

@@ -1,5 +1,8 @@
 # Guide — run the API (only if `app/` is activated)
 
+> **Not used by CutoffGrade Studio.** `app/` is dormant in this repo — the product ships as a static GitHub-Pages
+> SPA with no backend. The archetype activation guide below is kept for reference only.
+
 The `app/` FastAPI backend is **DORMANT** by default — most products are static deterministic-replay and never
 need it. Activate ONLY on an ADR-0002 trigger (server-side processing of uploaded data, auth-gated private data,
 paid heavy compute).

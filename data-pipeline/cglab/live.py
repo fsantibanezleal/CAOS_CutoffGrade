@@ -1,6 +1,6 @@
-"""LIVE lane entrypoint (Pyodide-safe): compute a trace in the BROWSER using ONLY the pure-Python model (no heavy
-offline engine). The web worker calls run_trace_json(case_id=..., seed=...) or with explicit params for the
-bring-your-own-data interaction. Same trace schema as the offline export -> the SPA renders both identically."""
+"""DORMANT archetype residue — NOT used by CutoffGrade Studio. This product's live lane is the TypeScript engine
+(frontend/src/lane/) + onnxruntime-web; there is no Pyodide lane (see frontend/copy-data.mjs) and nothing imports
+this module (it still references the template's SIR model, which no longer exists in this repo)."""
 from __future__ import annotations
 
 from . import registry
