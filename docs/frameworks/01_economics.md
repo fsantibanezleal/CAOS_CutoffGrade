@@ -1,4 +1,4 @@
-# Framework — the Lane economics
+# Framework, the Lane economics
 
 The science. CutoffGrade implements Lane's economic definition of ore exactly
 ([`frontend/src/lane/`](../../frontend/src/lane/)).
@@ -12,7 +12,7 @@ the **ore fraction** φ and the **average ore grade** ḡ are analytic:
 - ḡ(g_c) = M · Φ((μ − ln g_c)/σ + σ) / Φ((μ − ln g_c)/σ)
 
 with σ² = ln(1+cv²) and μ = ln M − σ²/2. As cv → 0 the deposit is single-grade (all-or-nothing). The break-even
-cut-off — process iff the block pays its own processing cost — is `g_be = h/(y·(p−k))` ([Lane 1964](#refs)).
+cut-off, process iff the block pays its own processing cost, is `g_be = h/(y·(p−k))` ([Lane 1964](#refs)).
 
 ## 2. Lane's six cut-offs (`lane.ts`)
 
@@ -31,7 +31,7 @@ plus three **balancing** cut-offs (mine-mill, mill-market, mine-market) that equ
 Because F appears in the cut-off AND the cut-off sets the cashflows that set F, the optimum is a **fixed point** solved
 over the mine life by an exact year-by-year simulator: NPV = Σ C_t/(1+δ)^t with C_t = ore·ḡ·y(p−k) − ore·h − Q·m − f,
 and the year's throughput Q is limited by the binding stage (`min(M, H/φ, K/(φ·ḡ·y), R)`). The result is the
-**declining** optimal cut-off trajectory — higher early (high-grading while the remaining reserve is most valuable),
+**declining** optimal cut-off trajectory, higher early (high-grading while the remaining reserve is most valuable),
 falling to break-even as the reserve depletes ([Lane 1988](#refs), [Asad & Topal 2011](#refs)). The best CONSTANT
 cut-off (a 1-D search refined by golden-section) is the verifiable baseline the declining policy is ≥.
 
@@ -50,7 +50,7 @@ life and NPV and should not be presented as pure Lane:
    this engine **clamps at break-even**. Effect: it **slightly raises the reported NPV** versus strict Lane, because the
    sub-break-even tail is excluded.
 
-Neither changes the six-cut-off formulas or the fixed-point logic — they bound the *trajectory tail*. The stockpiling
+Neither changes the six-cut-off formulas or the fixed-point logic, they bound the *trajectory tail*. The stockpiling
 extension (Lane 1988, ch. on stockpiles) is the principled way to handle sub-break-even material and is on the roadmap;
 until then, the clamp is the honest, conservative simplification.
 

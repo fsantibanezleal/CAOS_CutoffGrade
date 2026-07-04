@@ -3,7 +3,7 @@ import type uPlot from 'uplot';
 import { type SchedulePointRec } from '../lib/contract.types.ts';
 import { themeColors, UPlotChart } from './UPlotChart.tsx';
 
-/** The optimal cut-off trajectory + the ore grade over the mine life — Lane's high-grading: the cut-off starts high
+/** The optimal cut-off trajectory + the ore grade over the mine life, Lane's high-grading: the cut-off starts high
  * and DECLINES toward break-even as the reserve depletes (the opportunity cost F·δ falls). */
 export function TrajChart({ schedule, lang = 'en', height = 240 }: {
   schedule: SchedulePointRec[]; lang?: 'en' | 'es'; height?: number;

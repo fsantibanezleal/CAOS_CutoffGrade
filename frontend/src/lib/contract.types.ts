@@ -3,7 +3,7 @@
 // `tsc` fail -> the contract is enforced at BUILD time (the web cannot ship reading a shape the pipeline does not
 // produce).
 
-// ---------- engine value objects (camelCase — the analyze() output) ----------
+// ---------- engine value objects (camelCase, the analyze() output) ----------
 
 export interface DepositRec { id: string; gradeMean: number; gradeCv: number; tonnageMt: number; }
 export interface EconRec {

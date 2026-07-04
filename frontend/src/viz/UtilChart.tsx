@@ -3,7 +3,7 @@ import type uPlot from 'uplot';
 import { type SchedulePointRec } from '../lib/contract.types.ts';
 import { themeColors, UPlotChart } from './UPlotChart.tsx';
 
-/** Per-year capacity utilisation of the three stages — which one is SATURATED (binding) each year.
+/** Per-year capacity utilisation of the three stages, which one is SATURATED (binding) each year.
  * mine = mined/M, mill = ore/H, market = metal/K (metal = ore·grade·recovery). The binding stage rides at 100%;
  * the others have slack. This is why the cut-off changes when a different stage binds. Live from the schedule. */
 export function UtilChart({ schedule, mineCapacity, millCapacity, marketCapacity, recovery, lang = 'en', height = 240 }: {

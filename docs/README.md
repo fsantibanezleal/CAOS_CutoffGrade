@@ -1,13 +1,13 @@
-# CutoffGrade Studio — documentation
+# CutoffGrade Studio, documentation
 
-The navigable wiki for CutoffGrade Studio: **Lane's economic cut-off grade** — the optimal cut-off that maximises NPV
+The navigable wiki for CutoffGrade Studio: **Lane's economic cut-off grade**, the optimal cut-off that maximises NPV
 (a grade-tonnage curve + price, costs and the three stage capacities → the declining cut-off trajectory + NPV + life),
 with the whole optimization running live in the browser. Instantiated on the CAOS product-repo archetype (ADR-0057).
 
-- **[Architecture](architecture.md)** — the archetype, the lanes, the gate, the two data contracts, determinism, deploy.
-- **[Frameworks](frameworks.md)** — the Lane economics, the viz stack, the learned models (torch → ONNX).
-- **[Cases](cases.md)** — the 10 cases by category + their validation anchors.
-- **[Guides](guides.md)** — instantiate, run the precompute/retrain lane, bring your own deposit.
+- **[Architecture](architecture.md)**, the archetype, the lanes, the gate, the two data contracts, determinism, deploy.
+- **[Frameworks](frameworks.md)**, the Lane economics, the viz stack, the learned models (torch → ONNX).
+- **[Cases](cases.md)**, the 10 cases by category + their validation anchors.
+- **[Guides](guides.md)**, instantiate, run the precompute/retrain lane, bring your own deposit.
 
 ## One-paragraph orientation
 

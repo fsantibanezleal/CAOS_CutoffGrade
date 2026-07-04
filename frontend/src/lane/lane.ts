@@ -11,7 +11,7 @@ import { avgGradeAbove, invertDecreasing, invertIncreasing, lnParams, metalAbove
 
 const median3 = (a: number, b: number, c: number): number => a + b + c - Math.min(a, b, c) - Math.max(a, b, c);
 
-/** The break-even cut-off: a block is ore iff g·y·(p−k) − h ≥ 0 (mining cost is sunk — the block is mined regardless). */
+/** The break-even cut-off: a block is ore iff g·y·(p−k) − h ≥ 0 (mining cost is sunk, the block is mined regardless). */
 export function breakEven(econ: Economics): number {
   const margin = econ.recovery * (econ.price - econ.refiningCost);
   return margin > 0 ? econ.processingCost / margin : Infinity;
@@ -43,7 +43,7 @@ export function laneCutoffs(econ: Economics, deposit: Deposit, F: number): LaneC
   const Ghk = median3(gMill, gMarket, gMillMarket);
   const Gmk = median3(gMine, gMarket, gMineMarket);
 
-  // the effective optimum is the LARGEST of the pairwise optima that is actually feasible — equivalently the binding
+  // the effective optimum is the LARGEST of the pairwise optima that is actually feasible, equivalently the binding
   // constraint is the one demanding the highest cut-off (a higher cut-off relieves whichever stage is tightest).
   const candidates: Array<{ g: number; binding: string }> = [
     { g: Gmh, binding: 'mine↔mill' }, { g: Ghk, binding: 'mill↔market' }, { g: Gmk, binding: 'mine↔market' },

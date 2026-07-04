@@ -1,4 +1,4 @@
-// CONTRACT 2 (frontend side) — the baked case-results.json must conform to the TS mirror and carry the invariants the
+// CONTRACT 2 (frontend side), the baked case-results.json must conform to the TS mirror and carry the invariants the
 // App relies on. Run with: node --import tsx --test test/contract.test.ts
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';

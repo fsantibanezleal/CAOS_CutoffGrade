@@ -1,4 +1,4 @@
-// Engine correctness — run with: node --import tsx --test test/lane.test.ts
+// Engine correctness, run with: node --import tsx --test test/lane.test.ts
 //
 // The science is pinned against closed forms + Lane's theory: the lognormal grade-tonnage curve is monotone; the
 // single-grade oracle is all-or-nothing; the no-time-cost oracle's optimal cut-off equals the break-even; NPV is
@@ -37,7 +37,7 @@ test('grade-tonnage curve is monotone (lognormal)', () => {
   }
 });
 
-test('C-UNIFORM oracle — single-grade deposit is all-or-nothing', () => {
+test('C-UNIFORM oracle, single-grade deposit is all-or-nothing', () => {
   const M = 0.0075;
   const cv = 0.00001;
   assert.equal(oreFraction(M * 0.9, M, cv), 1, 'cut-off below the grade → all ore');
@@ -51,7 +51,7 @@ test('C-UNIFORM oracle — single-grade deposit is all-or-nothing', () => {
   assert.ok(best.result.npv > 0, 'positive NPV');
 });
 
-test('C-BREAKEVEN oracle — no time cost ⇒ optimal cut-off = break-even', () => {
+test('C-BREAKEVEN oracle, no time cost ⇒ optimal cut-off = break-even', () => {
   const c = caseById('C-BREAKEVEN');
   const be = breakEven(c.econ);
   const best = optimalConstantCutoff(c.econ, c.deposit, 400);

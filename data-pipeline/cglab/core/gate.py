@@ -1,6 +1,6 @@
 """The measured live-vs-precompute GATE (ADR-0054), adapted for CutoffGrade's client-side lane.
 
-CutoffGrade runs its whole optimization IN THE BROWSER — a pure-TypeScript Lane optimizer (frontend/src/lane/) plus the
+CutoffGrade runs its whole optimization IN THE BROWSER, a pure-TypeScript Lane optimizer (frontend/src/lane/) plus the
 cut-off/NPV surrogate via onnxruntime-web. A case runs LIVE iff it is client-side AND its runtimes are a subset of the
 deployed set AND a full optimization + its replay trace are within budget; otherwise it is PRECOMPUTE and the SPA
 replays the committed trace. A teaching-scale optimization runs in tens of milliseconds and the traces are small, so

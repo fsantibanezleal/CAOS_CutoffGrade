@@ -1,8 +1,8 @@
-"""CONTRACT 1 — ingestion (raw deposit + economics -> pipeline). The *bring-your-own-deposit* gate.
+"""CONTRACT 1, ingestion (raw deposit + economics -> pipeline). The *bring-your-own-deposit* gate.
 
 * ``validate_records`` validates DEPOSIT+ECONOMICS rows (one per scenario). This is what the pipeline runs over the
   case set; it proves the gate and carries flags into the manifest.
-* ``validate_deposit`` validates a single dropped descriptor (a dict) — the same policy.
+* ``validate_deposit`` validates a single dropped descriptor (a dict), the same policy.
 
 A record is ACCEPTED iff it passes; ill-formed records are REJECTED with a reason (never silently coerced);
 plausible-but-extreme records are FLAGGED (accepted; the flag travels into the manifest). Documented in data/README.md.

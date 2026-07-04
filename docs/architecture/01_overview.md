@@ -1,20 +1,20 @@
-# Architecture — overview
+# Architecture, overview
 
 CutoffGrade Studio is an instance of the **CAOS product-repo archetype** ([ADR-0057]): an offline-pipeline-heavy,
 backend-optional product that deploys as a static, deterministic-replay viewer. The base is **frozen** (instantiated,
-never re-litigated); per-product rework lives only in the **core** — the optimization engine, the visualisations, the
+never re-litigated); per-product rework lives only in the **core**, the optimization engine, the visualisations, the
 cases, content.
 
 The distinctive thing about CutoffGrade is that the **optimization is the live lane**: the grade-tonnage curve + Lane's
 cut-offs + the NPV optimizer are TypeScript that run in the browser, and the cut-off/NPV surrogate runs via
-onnxruntime-web — so the App re-optimizes as you drag the price, costs, capacities or discount rate.
+onnxruntime-web, so the App re-optimizes as you drag the price, costs, capacities or discount rate.
 
 ## The lanes (and what runs where)
 
 | Lane | Where | Deps | Notes |
 |---|---|---|---|
 | **Live (client-side)** | `frontend/src/lane/` (grade-tonnage + Lane cut-offs + NPV optimizer) + onnxruntime-web (the surrogate) | web npm | the interactive core; re-optimizes on every control change |
-| **Offline (precompute)** | `cglab/science/` — Node bake of the SAME TS engine + torch training | `data-pipeline/requirements-precompute.txt` | bakes `case-results.json` + the ONNX |
+| **Offline (precompute)** | `cglab/science/`, Node bake of the SAME TS engine + torch training | `data-pipeline/requirements-precompute.txt` | bakes `case-results.json` + the ONNX |
 | **Replay (light)** | `cglab.pipeline` (numpy) | `data-pipeline/requirements.txt` | reshapes the committed bake → per-case traces + manifests |
 | **API (backend)** | `app/` (FastAPI) | `requirements-api.txt` | DORMANT; activate only on an ADR-0002 trigger |
 
@@ -35,7 +35,7 @@ compact per-case trace) → `data/derived/` (committed) → the `frontend/` App 
 
 ## What CutoffGrade is and is NOT
 
-- **Is:** Lane's economic cut-off grade implemented exactly — the grade-tonnage curve, the six characteristic cut-offs,
+- **Is:** Lane's economic cut-off grade implemented exactly, the grade-tonnage curve, the six characteristic cut-offs,
   the exact NPV life simulator and the declining high-grading trajectory, with an honest surrogate-vs-exact comparison
   and an out-of-envelope flag.
 - **Is NOT:** a strategic mine planner (no phase sequencing, no pushbacks, no multi-element blending or geological

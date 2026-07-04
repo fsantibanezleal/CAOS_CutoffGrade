@@ -1,6 +1,6 @@
 // The NPV optimizer. Two routines, both built on an EXACT year-by-year life simulator (correct by construction):
-//   1. optimalConstantCutoff — the single cut-off that maximises NPV (a 1-D grid search). The verifiable baseline.
-//   2. laneTrajectory — Lane's iterative DECLINING cut-off (high-grading): each year's cut-off uses the opportunity
+//   1. optimalConstantCutoff, the single cut-off that maximises NPV (a 1-D grid search). The verifiable baseline.
+//   2. laneTrajectory, Lane's iterative DECLINING cut-off (high-grading): each year's cut-off uses the opportunity
 //      cost F·δ of the remaining operation; as the reserve depletes F → 0 and the cut-off falls to break-even. The
 //      reported policy is the better of the converged trajectory and the best constant cut-off (Lane is ≥ constant).
 //

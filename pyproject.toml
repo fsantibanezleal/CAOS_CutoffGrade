@@ -1,4 +1,4 @@
-# CutoffGrade Studio — the offline pipeline package (ADR-0057 product-repo archetype).
+# CutoffGrade Studio, the offline pipeline package (ADR-0057 product-repo archetype).
 # The default lane is numpy-only on purpose (the committed case-results are baked by the TS engine, so replay
 # installs instantly); the heavy torch retrain lane pins in data-pipeline/requirements-precompute.txt.
 [build-system]
@@ -8,8 +8,8 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "cglab"
 # PEP 440 form of the display version X.XX.XXX (see CHANGELOG.md + cglab.__version__).
-version = "0.6.1"
-description = "CutoffGrade Studio offline pipeline (cglab) — two data contracts + staged pipeline + learned-model lane (the Lane engine itself is TypeScript, in frontend/)."
+version = "0.6.2"
+description = "CutoffGrade Studio offline pipeline (cglab), two data contracts + staged pipeline + learned-model lane (the Lane engine itself is TypeScript, in frontend/)."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }

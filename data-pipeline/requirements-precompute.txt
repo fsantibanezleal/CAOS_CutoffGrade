@@ -1,4 +1,4 @@
-# PRECOMPUTE / heavy lane (local-only, NEVER deployed) — the .venv-precompute that trains the two learned models.
+# PRECOMPUTE / heavy lane (local-only, NEVER deployed), the .venv-precompute that trains the two learned models.
 # Pinned to the verified CPU install (Python 3.12). The default lane (data-pipeline/requirements.txt) stays numpy-only
 # so CI + the replay pipeline never need torch.
 numpy>=1.26

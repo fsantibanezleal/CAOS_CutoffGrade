@@ -1,4 +1,4 @@
-/* FragmentIQ — app-specific styles on top of @fasl-work/caos-app-shell/styles.css (shell design tokens). */
+/* FragmentIQ, app-specific styles on top of @fasl-work/caos-app-shell/styles.css (shell design tokens). */
 
 .cg-layout { display: grid; grid-template-columns: 300px 1fr; gap: 1.4rem; align-items: start; }
 @media (max-width: 900px) { .cg-layout { grid-template-columns: 1fr; } }

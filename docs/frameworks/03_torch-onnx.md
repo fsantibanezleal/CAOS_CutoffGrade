@@ -1,4 +1,4 @@
-# Framework — the learned models (torch → ONNX → onnxruntime-web)
+# Framework, the learned models (torch → ONNX → onnxruntime-web)
 
 Two honest learned models, trained offline and run live. The EXACT Lane optimizer is always the authority; these are a
 fast surrogate of it + an out-of-envelope flag.
@@ -17,13 +17,13 @@ features and returns RAW [cut-off, NPV, life].
 ## The honest downstream eval (`eval_lane.mjs`)
 
 The surrogate predicts a cut-off; `eval_lane.mjs` runs THAT cut-off as a constant policy through the EXACT simulator
-(onnxruntime-web in Node) and compares the NPV to the exact optimum — the honest **downstream** skill, in the engine's
+(onnxruntime-web in Node) and compares the NPV to the exact optimum, the honest **downstream** skill, in the engine's
 own language. (Raw regression error would flatter the model; the downstream NPV error is what matters.)
 
 ## Inference (`frontend/src/lib/ort.ts`, onnxruntime-web)
 
 WASM execution provider, single-threaded; the npm package and the CDN `wasmPaths` are pinned to the same version (1.27).
-The loader is **graceful** — if the model is absent the App uses the EXACT optimizer (cheap, runs live) + shows the
+The loader is **graceful**, if the model is absent the App uses the EXACT optimizer (cheap, runs live) + shows the
 honest "pending training" state. Runs are serialised per session (not re-entrant).
 
 ## Honesty
