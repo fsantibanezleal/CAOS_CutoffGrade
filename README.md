@@ -9,9 +9,10 @@
 **Live:** https://cutoffgrade.fasl-work.com
 
 CutoffGrade Studio answers *"what is the most valuable cut-off grade?"* — the boundary that splits rock into ore
-(milled) vs waste, chosen to maximise **NPV**, not just immediate profit. Feed a grade-tonnage curve + price, costs and
-the three stage capacities (mine / mill / market) and get the optimal **declining cut-off trajectory** (Lane's
-high-grading), the NPV, the mine life and the cashflow profile — recomputed **live in your browser** on every slider.
+(milled) vs waste, chosen to maximise **NPV**, not just immediate profit. Feed a lognormal grade-tonnage model (grade
+mean, variability, tonnage) + price, costs and the three stage capacities (mine / mill / market) and get the optimal
+**declining cut-off trajectory** (Lane's high-grading), the NPV, the mine life and the cashflow profile — recomputed
+**live in your browser** on every slider. (Tabulated empirical grade-tonnage curves are not ingestible yet — roadmap.)
 
 A CAOS/Faena mining web-app instantiated on the **product-repo archetype** ([ADR-0057](docs/architecture/01_overview.md)),
 with the in-app ⓘ **Architecture modal** ([ADR-0058](docs/frameworks/02_viz.md)).
@@ -24,11 +25,13 @@ with the in-app ⓘ **Architecture modal** ([ADR-0058](docs/frameworks/02_viz.md
   balancing + the Dagdelen median effective optimum.
 - **The NPV fixed-point optimization** — an exact year-by-year life simulator solves the fixed point (F couples the
   cut-off and the cashflows), giving the **declining** optimal cut-off trajectory, the NPV, the life and the cashflows.
-- **cut-off/NPV surrogate (learned)** — an MLP that predicts [cut-off, NPV, life] for instant Monte-Carlo / sweeps,
-  trained offline (torch → ONNX), run **live** (onnxruntime-web), measured downstream vs the exact optimizer.
+- **cut-off/NPV surrogate (learned)** — an MLP that predicts [cut-off, NPV, life] in microseconds, trained offline
+  (torch → ONNX), run **live** (onnxruntime-web), measured downstream vs the exact optimizer. Today it powers the
+  single-scenario What-if comparison in the App; mass Monte-Carlo sweeps are the roadmap stochastic tier.
 - **scenario OOD-AE (learned)** — flags economic scenarios outside the training envelope.
-- **Bring your own deposit** — CONTRACT 1 validates `{grade_mean, grade_cv, tonnage, price, the costs, recovery, the 3
-  capacities, discount_rate}`.
+- **Bring your own deposit (offline pipeline)** — CONTRACT 1 validates `{grade_mean, grade_cv, tonnage, price, the
+  costs, recovery, the 3 capacities, discount_rate}` before the bake. There is no in-app upload; see
+  [docs/guides/02_bring-your-own-data.md](docs/guides/02_bring-your-own-data.md).
 
 ## Honesty
 

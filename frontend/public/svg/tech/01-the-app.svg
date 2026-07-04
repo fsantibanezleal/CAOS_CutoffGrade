@@ -23,7 +23,7 @@
   </defs>
 
   <text class="ttl" x="22" y="30">CutoffGrade Studio - what is the most valuable cut-off grade?</text>
-  <text class="sub" x="22" y="47">a mine-economics product: a grade-tonnage curve + price, costs and capacities to the NPV-maximising cut-off trajectory (Lane), the NPV, the life</text>
+  <text class="sub" x="22" y="47">a mine-economics product: a lognormal grade-tonnage model + price, costs and capacities to the NPV-maximising cut-off trajectory (Lane), the NPV, the life</text>
 
   <rect class="bx bx-hi" x="20" y="74" width="196" height="150" rx="11"/>
   <text class="it" x="34" y="98">The question</text>
@@ -70,8 +70,8 @@
   <text class="it" x="36" y="278">It is a real system, not a demo:</text>
   <text class="mu" x="36" y="302">- the Lane optimizer (frontend/src/lane/) recomputes the optimal cut-off trajectory + NPV + life live on every price / cost / capacity / delta slider;</text>
   <text class="mu" x="36" y="324">- the cut-off is generally HIGHER early (high-grading while the remaining reserve is most valuable) and DECLINES to break-even over the life;</text>
-  <text class="mu" x="36" y="346">- an exact year-by-year NPV simulator is the authority; a learned surrogate (ONNX) gives instant Monte-Carlo + an OOD-AE flags weird scenarios;</text>
+  <text class="mu" x="36" y="346">- an exact year-by-year NPV simulator is the authority; a learned surrogate (ONNX) gives instant what-if reads + an OOD-AE flags weird scenarios;</text>
   <text class="mu" x="36" y="368">- C-UNIFORM (single grade) + C-BREAKEVEN (no time cost, cut-off = break-even) are closed-form oracles; nothing is fabricated;</text>
-  <text class="mu" x="36" y="390">- Contract 1 accepts your own deposit + economics; six documented pages; every number sourced or labelled synthetic.</text>
+  <text class="mu" x="36" y="390">- Contract 1 validates your own deposit + economics (offline pipeline); six documented pages; every number sourced or labelled synthetic.</text>
   <text class="cd mono" x="36" y="418">grade-tonnage + price/costs/capacities  ->  Lane limiting + balancing cut-offs  ->  NPV fixed-point  ->  declining cut-off . NPV . life</text>
 </svg>
