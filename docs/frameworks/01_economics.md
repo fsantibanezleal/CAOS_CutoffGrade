@@ -55,5 +55,5 @@ extension (Lane 1988, ch. on stockpiles) is the principled way to handle sub-bre
 until then, the clamp is the honest, conservative simplification.
 
 <a id="refs"></a>
-**References:** Lane 1964 · Lane 1988 (The Economic Definition of Ore) · Dagdelen 1992 · Asad & Topal 2011 · Hall 2014 ·
-Rendu 2014. Full list in `frontend/src/data/citations.ts` + the in-app Methodology page.
+**References:** [Lane 1964](https://www.academia.edu/32253070/Choosing_the_Optimum_Cutoff_Grade_by_K_Lane_1964_) · [Lane 1988 (The Economic Definition of Ore)](https://books.google.com/books/about/The_Economic_Definition_of_Ore.html?id=-igaAQAAIAAJ) · [Dagdelen 1992](https://search.worldcat.org/title/23rd-application-of-computers-and-operations-research-in-the-mineral-industry/oclc/26335886) · [Asad & Topal 2011](https://scielo.org.za/scielo.php?script=sci_arttext&pid=S2225-62532011001100005) · [Hall 2014](https://www.ausimm.com/publications/spectrum-series/cut-off-grades-and-optimising-the-strategic-mine-plan/) · [Rendu 2014](https://books.google.com/books/about/An_Introduction_to_Cut_off_Grade_Estimat.html?id=jK1yAgAAQBAJ).
+Full list in `frontend/src/data/citations.ts` + the in-app Methodology page.

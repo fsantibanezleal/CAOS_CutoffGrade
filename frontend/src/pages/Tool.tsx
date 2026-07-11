@@ -9,6 +9,7 @@ import { TrajChart } from '../viz/TrajChart.tsx';
 import { CashChart } from '../viz/CashChart.tsx';
 import { TauChart } from '../viz/TauChart.tsx';
 import { UtilChart } from '../viz/UtilChart.tsx';
+import { PanelBoundary } from '../viz/PanelBoundary.tsx';
 
 // `key` matches each case's `category` field (the data join); `en`/`es` are the bilingual sidebar labels.
 const CATS = [
@@ -281,7 +282,7 @@ export default function Tool() {
         </div>
       </aside>
       <main className="cg-main">
-        <Tabs tabs={tabs} ariaLabel={es ? 'vistas de la optimización' : 'optimization views'} />
+        <Tabs tabs={tabs.map((t) => ({ ...t, content: <PanelBoundary key={`${caseId}-${t.id}`} lang={es ? 'es' : 'en'}>{t.content}</PanelBoundary> }))} ariaLabel={es ? 'vistas de la optimización' : 'optimization views'} />
       </main>
     </div>
   );

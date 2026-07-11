@@ -3,6 +3,20 @@
 All notable changes to CutoffGrade Studio. Format: `X.XX.XXX` (display), see `cglab.__version__`. Keep `0.x` while on
 synthetic data. Tag every release.
 
+## [0.07.003], 2026-07-11
+
+### Fixed
+- Honesty vs the engine (Methodology): the break-even prose claimed the break-even "covers mining + processing +
+  selling", but the engine (and the equation shown right below it) EXCLUDES the sunk mining cost
+  (g_be = h/(y(p-r))). Reworded so both the marginal and milling break-even cut-offs exclude mining (a separate
+  mine-level break-even, which would include mining, is not what the App computes), and fixed the equation caption.
+- Reference integrity: docs/frameworks/01_economics.md #refs was a link-less author-year list; each reference now
+  links to its verified URL (mirroring citations.ts): Lane 1964, Lane 1988, Dagdelen 1992, Asad & Topal 2011,
+  Hall 2014, Rendu 2014.
+
+### Added
+- Per-panel error boundary (viz/PanelBoundary.tsx, mirroring RotorVitals) so one view crash cannot blank the App.
+
 ## [0.07.002], 2026-07-04
 
 ### Changed
