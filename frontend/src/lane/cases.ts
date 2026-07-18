@@ -1,7 +1,7 @@
 // The canonical case set, shared by the offline bake (data-pipeline/cglab/science/bake_cases.mjs) and the SPA. Cases
-// are grouped by CATEGORY (capacity regime / economic scenario / deposit type / oracle control). The App shows ONE
-// selected case; Experiments/Benchmark show cross-case summaries. All deposits are SYNTHETIC; C-UNIFORM and C-BREAKEVEN
-// are the closed-form ORACLES. Economics are illustrative (a porphyry-copper-like base case), labelled synthetic.
+// are grouped by category (capacity regime / economic scenario / deposit type / oracle control). The App shows one
+// selected case; Experiments/Benchmark show cross-case summaries. All deposits are synthetic; C-UNIFORM and C-BREAKEVEN
+// are the closed-form oracles. Economics are illustrative (a porphyry-copper-like base case), labelled synthetic.
 
 import type { Deposit, Economics } from './types.ts';
 

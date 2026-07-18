@@ -1,5 +1,5 @@
 // The grade-tonnage curve, the deposit as a lognormal distribution of in-situ grade. For a cut-off g_c we need the
-// ORE FRACTION (proportion at or above g_c) and the AVERAGE ORE GRADE (mean grade above g_c). Both are analytic for a
+// ore fraction (proportion at or above g_c) and the average ore grade (mean grade above g_c). Both are analytic for a
 // lognormal, so the oracles are exact. cv → 0 degenerates to a single-grade deposit (handled explicitly).
 
 import type { GTPoint } from './types.ts';

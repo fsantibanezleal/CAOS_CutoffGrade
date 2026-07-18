@@ -2,8 +2,8 @@
 // (market), price/refining in $/unit product, mining/processing in $/t (≡ $M/Mt), fixed + opportunity cost in $M/yr,
 // F (present value of the remaining operation) in $M. The margin per unit grade per tonne ore is y·(p−k).
 //
-// The opportunity cost of capacity is the term that makes the cut-off DECLINE over the life: τ = f + F·δ. When the MILL
-// or the MARKET binds, occupying that scarce capacity for a year costs τ, so the cut-off is raised above break-even by
+// The opportunity cost of capacity is the term that makes the cut-off decline over the life: τ = f + F·δ. When the mill
+// or the market binds, occupying that scarce capacity for a year costs τ, so the cut-off is raised above break-even by
 // τ spread over the binding capacity. As the reserve depletes, F → 0, τ → f, and the cut-off falls to break-even.
 
 import type { Deposit, Economics, LaneCutoffs } from './types.ts';
@@ -43,7 +43,7 @@ export function laneCutoffs(econ: Economics, deposit: Deposit, F: number): LaneC
   const Ghk = median3(gMill, gMarket, gMillMarket);
   const Gmk = median3(gMine, gMarket, gMineMarket);
 
-  // the effective optimum is the LARGEST of the pairwise optima that is actually feasible, equivalently the binding
+  // the effective optimum is the largest of the pairwise optima that is actually feasible, equivalently the binding
   // constraint is the one demanding the highest cut-off (a higher cut-off relieves whichever stage is tightest).
   const candidates: Array<{ g: number; binding: string }> = [
     { g: Gmh, binding: 'mine↔mill' }, { g: Ghk, binding: 'mill↔market' }, { g: Gmk, binding: 'mine↔market' },
