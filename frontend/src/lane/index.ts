@@ -1,5 +1,5 @@
 // CutoffGrade Studio engine, Lane's cut-off-grade optimization. Dependency-free (no DOM, no npm runtime deps) so the
-// SAME engine runs in the browser (live) and under Node in the offline bake (via tsx).
+// same engine runs in the browser (live) and under Node in the offline bake (via tsx).
 //
 //   gradeTonnageCurve / oreFraction / avgGradeAbove, the lognormal grade-tonnage curve
 //   breakEven / laneCutoffs                        , the break-even + Lane's six characteristic cut-offs

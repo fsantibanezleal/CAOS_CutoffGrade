@@ -1,6 +1,6 @@
 import { Component, type ReactNode } from 'react';
 
-// Per-panel error boundary: a crash inside one optimization view renders a small inline message INSTEAD of
+// Per-panel error boundary: a crash inside one optimization view renders a small inline message instead of
 // unmounting the whole App to a blank page. The tab bar stays usable so the user can switch away. Mirrors the
 // RotorVitals PanelBoundary (the reference app).
 export class PanelBoundary extends Component<{ children: ReactNode; lang?: 'en' | 'es' }, { error: Error | null }> {

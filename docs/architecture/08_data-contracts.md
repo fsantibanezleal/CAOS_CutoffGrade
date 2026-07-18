@@ -1,6 +1,6 @@
 # The two data contracts
 
-## CONTRACT 1, ingestion (`io/contract.py`)
+## Contract 1, ingestion (`io/contract.py`)
 
 The *bring-your-own-deposit* gate. A record is **accepted** iff it passes; ill-formed records are **rejected** with a
 reason (never silently coerced); plausible-but-extreme records are **flagged** (accepted; the flag travels into the
@@ -19,15 +19,15 @@ manifest). Documented in `data/README.md`.
 
 Committed sample that must pass: `data/examples/deposits.csv` (a CI test asserts it).
 
-## CONTRACT 2, artifact (`core/{trace,manifest}.py`)
+## Contract 2, artifact (`core/{trace,manifest}.py`)
 
-The pipeline → web contract. The web loads ONLY manifests + traces + the shared artifacts.
+The pipeline → web contract. The web loads only manifests + traces + the shared artifacts.
 
 - **`cutoffgrade.trace/v1`** (per case): the deposit + economics spec, the break-even + the grade-tonnage curve, the six
   Lane cut-offs, the optimal declining cut-off trajectory + NPV + life + cashflow schedule, the best-constant baseline,
   the sensitivity sweep, and the learned-model metrics (`status: trained | pending-training`).
 - **`cutoffgrade.manifest/v2`** (per case): category, the engine + version, the **shared artifacts** (the two ONNX +
-  `cg-learned.json` + `case-results.json`), the trace pointer + byte size, the lane/gate verdict, the CONTRACT-1 flags,
+  `cg-learned.json` + `case-results.json`), the trace pointer + byte size, the lane/gate verdict, the Contract-1 flags,
   the metrics, and an honesty note.
 - **`cutoffgrade.index/v1`**: the flat inventory of all 10 cases.
 

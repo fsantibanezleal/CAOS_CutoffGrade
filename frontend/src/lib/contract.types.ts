@@ -1,6 +1,6 @@
-// CONTRACT 2 mirror (frontend side). MUST stay in lock-step with the Python schemas in
+// Contract 2 mirror (frontend side). Must stay in lock-step with the Python schemas in
 // data-pipeline/cglab/core/{trace.py, manifest.py} + the bake (cglab/science/bake_cases.mjs). A drift here makes
-// `tsc` fail -> the contract is enforced at BUILD time (the web cannot ship reading a shape the pipeline does not
+// `tsc` fail -> the contract is enforced at build time (the web cannot ship reading a shape the pipeline does not
 // produce).
 
 // ---------- engine value objects (camelCase, the analyze() output) ----------

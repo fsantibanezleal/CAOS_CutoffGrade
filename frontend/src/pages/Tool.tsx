@@ -33,7 +33,7 @@ export default function Tool() {
   const [learned, setLearned] = useState<LearnedFile | null>(null);
   const [surr, setSurr] = useState<{ cutoff: number; npv: number; life: number } | null>(null);
   const [ood, setOod] = useState<number | null>(null);
-  // model availability is checked ONCE (a HEAD probe; both ONNX models ship together) and drives the pending-vs-ready
+  // model availability is checked once (a HEAD probe; both ONNX models ship together) and drives the pending-vs-ready
   // gate, separate from the per-recompute inference, so a trained+served model never flashes "pending training".
   const [modelsPresent, setModelsPresent] = useState<boolean | null>(null);   // null = checking · false = absent · true = served
   const oodThr = learned?.ood?.thr ?? null;
@@ -86,7 +86,7 @@ export default function Tool() {
       id: 'traj', label: es ? 'Trayectoria de corte' : 'Cut-off trajectory',
       content: (
         <div className="cg-vizstack">
-          <div className="cg-plot-t">{es ? 'La política óptima de Lane: el corte parte alto y DECRECE hacia el break-even al agotarse la reserva (high-grading).' : 'The Lane optimal policy: the cut-off starts high and DECLINES toward break-even as the reserve depletes (high-grading).'}</div>
+          <div className="cg-plot-t">{es ? 'La política óptima de Lane: el corte parte alto y decrece hacia el break-even al agotarse la reserva (high-grading).' : 'The Lane optimal policy: the cut-off starts high and declines toward break-even as the reserve depletes (high-grading).'}</div>
           <TrajChart schedule={a.optimal.schedule} lang={lang} />
           <p className="cg-note">{es
             ? `El corte cae de ${pct(firstCut)} (año 1) hacia el break-even ${pct(a.breakEven)}. El uplift de VAN del high-grading vs el mejor corte constante es ${a.npvUpliftPct.toFixed(2)}%.`
@@ -107,7 +107,7 @@ export default function Tool() {
       id: 'tau', label: es ? 'Costo de oportunidad τ(t)' : 'Opportunity cost τ(t)',
       content: (
         <div className="cg-vizstack">
-          <div className="cg-plot-t">{es ? 'El costo de oportunidad τ = f + F·δ por año: lo que cuesta ocupar un año de la capacidad escasa. Es lo que ELEVA el corte sobre el break-even, y por qué decrece.' : 'The opportunity cost τ = f + F·δ per year: what it costs to occupy a year of the scarce capacity. This is what RAISES the cut-off above break-even, and why it declines.'}</div>
+          <div className="cg-plot-t">{es ? 'El costo de oportunidad τ = f + F·δ por año: lo que cuesta ocupar un año de la capacidad escasa. Es lo que eleva el corte sobre el break-even, y por qué decrece.' : 'The opportunity cost τ = f + F·δ per year: what it costs to occupy a year of the scarce capacity. This is what raises the cut-off above break-even, and why it declines.'}</div>
           <TauChart schedule={a.optimal.schedule} fixedCostYr={econ.fixedCostYr} discountRate={econ.discountRate} lang={lang} />
           <p className="cg-note">{es
             ? `F (VAN remanente) parte alto y cae a 0 al agotarse la reserva, así que τ cae hacia el costo fijo f. El corte sigue a τ: alto temprano, decreciente al final. δ = ${(econ.discountRate * 100).toFixed(1)}%.`
@@ -119,10 +119,10 @@ export default function Tool() {
       id: 'util', label: es ? 'Utilización de capacidad' : 'Capacity utilisation',
       content: (
         <div className="cg-vizstack">
-          <div className="cg-plot-t">{es ? 'Utilización por año de las tres etapas (mina · molino · mercado). La etapa SATURADA (en 100%) es la que limita ese año y fija el corte; las otras tienen holgura.' : 'Per-year utilisation of the three stages (mine · mill · market). The SATURATED stage (at 100%) is the one binding that year and setting the cut-off; the others have slack.'}</div>
+          <div className="cg-plot-t">{es ? 'Utilización por año de las tres etapas (mina · molino · mercado). La etapa saturada (en 100%) es la que limita ese año y fija el corte; las otras tienen holgura.' : 'Per-year utilisation of the three stages (mine · mill · market). The saturated stage (at 100%) is the one binding that year and setting the cut-off; the others have slack.'}</div>
           <UtilChart schedule={a.optimal.schedule} mineCapacity={econ.mineCapacity} millCapacity={econ.millCapacity} marketCapacity={econ.marketCapacity} recovery={econ.recovery} lang={lang} />
           <p className="cg-note">{es
-            ? `Restricción global del caso: ${a.binding}. Cuando cambia la etapa que limita (mueve la capacidad del molino), el corte óptimo salta, eso es la lógica de "qué etapa limita" de Lane.`
+            ? `Restricción global del caso: ${a.binding}. Cuando cambia la etapa que limita (al mover la capacidad del molino), el corte óptimo salta, eso es la lógica de "qué etapa limita" de Lane.`
             : `Case-wide binding stage: ${a.binding}. When the binding stage changes (move the mill capacity), the optimal cut-off jumps, that is Lane's "which stage binds" logic.`}</p>
         </div>
       ),
@@ -195,7 +195,7 @@ export default function Tool() {
           ) : modelsPresent === false ? (
             <div className="cg-pending">
               <strong>{es ? 'Surrogate: no entrenado' : 'Surrogate: not trained'}</strong>
-              <p>{es ? 'Re-genera el surrogate con el paso de re-entrenamiento del precómputo (torch → ONNX). El optimizador exacto de Lane corre en vivo mientras tanto.' : 'Regenerate the surrogate with the precompute retrain step (torch → ONNX). The EXACT Lane optimizer runs live meanwhile.'}</p>
+              <p>{es ? 'Regenerar el surrogate con el paso de re-entrenamiento del precómputo (torch → ONNX). El optimizador exacto de Lane se ejecuta en vivo mientras tanto.' : 'Regenerate the surrogate with the precompute retrain step (torch → ONNX). The exact Lane optimizer runs live meanwhile.'}</p>
             </div>
           ) : (
             <>
@@ -223,7 +223,7 @@ export default function Tool() {
           ) : modelsPresent === false ? (
             <div className="cg-pending">
               <strong>{es ? 'Autoencoder OOD: no entrenado' : 'OOD autoencoder: not trained'}</strong>
-              <p>{es ? 'Entrénalo con `--retrain`. Mientras tanto, el optimizador exacto de Lane corre en vivo y las banderas del Contrato 1 (en los docs) son el guardia honesto.' : 'Train it with `--retrain`. Meanwhile the exact Lane optimizer runs live and the Contract-1 flags (in the docs) are the honest guard.'}</p>
+              <p>{es ? 'Entrenarlo con `--retrain`. Mientras tanto, el optimizador exacto de Lane se ejecuta en vivo y las banderas del Contrato 1 (en los docs) son el guardia honesto.' : 'Train it with `--retrain`. Meanwhile the exact Lane optimizer runs live and the Contract-1 flags (in the docs) are the honest guard.'}</p>
             </div>
           ) : (
             <>
@@ -236,7 +236,7 @@ export default function Tool() {
               </div>
               {oodThr != null && ood != null && (
                 <p className="cg-note">{ood > oodThr
-                  ? (es ? 'El escenario está fuera del envolvente entrenado, el surrogate está extrapolando; confía en el optimizador exacto.' : 'The scenario is outside the trained envelope, the surrogate is extrapolating; trust the exact optimizer.')
+                  ? (es ? 'El escenario está fuera del envolvente entrenado, el surrogate está extrapolando; el optimizador exacto es la referencia.' : 'The scenario is outside the trained envelope, the surrogate is extrapolating; trust the exact optimizer.')
                   : (es ? 'El escenario está dentro del envolvente entrenado, el surrogate es confiable aquí.' : 'The scenario is inside the trained envelope, the surrogate is reliable here.')}</p>
               )}
               {learned?.ood && <p className="cg-cap cg-muted">{es ? 'Entrenado + en vivo' : 'Trained + live'} · AUC {learned.ood.auc.toFixed(3)} (n={learned.ood.nEval})</p>}

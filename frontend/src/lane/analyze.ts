@@ -1,5 +1,5 @@
-// Per-case analysis, ties the engine together into ONE result the offline bake (data-pipeline/cglab/science/
-// bake_cases.mjs) and the SPA both consume: the grade-tonnage curve, Lane's six cut-offs, the optimal DECLINING
+// Per-case analysis, ties the engine together into one result the offline bake (data-pipeline/cglab/science/
+// bake_cases.mjs) and the SPA both consume: the grade-tonnage curve, Lane's six cut-offs, the optimal declining
 // trajectory + NPV + life + cashflow schedule, the best-constant baseline it beats, and a sensitivity sweep. Pure +
 // deterministic.
 

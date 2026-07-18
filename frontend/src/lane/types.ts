@@ -1,7 +1,7 @@
 // CutoffGrade Studio, shared types for Lane's cut-off-grade optimization.
 //
 // The deposit is a mineralised inventory with a (lognormal) grade distribution. A cut-off grade splits each parcel
-// into ORE (milled) vs WASTE (mined, dumped). The three stages, MINE (total material), MILL (ore), MARKET (product)
+// into ore (milled) vs waste (mined, dumped). The three stages, mine (total material), mill (ore), market (product)
 //, each have a capacity; whichever binds drives the economics. Lane (1964, 1988): the NPV-maximising cut-off is
 // generally higher early (high-grading) and declines over the life, because the opportunity cost of capacity (F·δ,
 // F = the present value of the remaining operation) falls as the reserve depletes.
@@ -78,7 +78,7 @@ export interface SchedulePoint {
   cashflow: number;
   /** the binding stage this year. */
   binding: string;
-  /** remaining inventory at the END of the year, Mt. */
+  /** remaining inventory at the end of the year, Mt. */
   remainingMt: number;
 }
 

@@ -1,6 +1,6 @@
-// Live in-browser inference of the cut-off/NPV surrogate (onnxruntime-web). GRACEFUL: until the model is trained
+// Live in-browser inference of the cut-off/NPV surrogate (onnxruntime-web). Graceful: until the model is trained
 // (science/train_lane.py -> cutoff-surrogate.onnx) the file is absent; the loader resolves to null and the App uses
-// the EXACT Lane optimizer (which is cheap enough to run live anyway) + shows the honest "pending training" state. The
+// the exact Lane optimizer (which is cheap enough to run live anyway) + shows the honest "pending training" state. The
 // surrogate's value is microsecond inference, today the App's single-scenario What-if comparison (mass Monte-Carlo /
 // batch sweeps are the roadmap stochastic tier). WASM EP, single-threaded; the npm package +
 // CDN wasmPaths are pinned to 1.27.
@@ -13,8 +13,8 @@ ort.env.wasm.numThreads = 1;
 const base = () => import.meta.env.BASE_URL || '/';
 const sessions: Record<string, Promise<ort.InferenceSession | null>> = {};
 
-// ONE global serialization chain for ALL onnxruntime-web work (session creation AND inference). The WASM EP runs
-// single-threaded and ships TWO models here (the cut-off surrogate + the scenario OOD autoencoder) that the App queries
+// one global serialization chain for all onnxruntime-web work (session creation and inference). The WASM EP runs
+// single-threaded and ships two models here (the cut-off surrogate + the scenario OOD autoencoder) that the App queries
 // together on every control change; without a global lock their concurrent create()/run() calls race the single WASM
 // runtime and throw "Session already started" / "Session mismatch". Serialising every op end-to-end removes the race.
 let ortChain: Promise<unknown> = Promise.resolve();
@@ -42,7 +42,7 @@ async function runSerial(_file: string, s: ort.InferenceSession, feeds: Record<s
   return serial(() => s.run(feeds));
 }
 
-/** Build the standardized feature vector (the SOURCE-OF-TRUTH order in cglab/model/learned.py). */
+/** Build the standardized feature vector (the source-of-truth order in cglab/model/learned.py). */
 export function featureVec(econ: Economics, deposit: Deposit): Float32Array {
   const f: Record<string, number> = {
     grade_mean: deposit.gradeMean, grade_cv: deposit.gradeCv, log_tonnage: Math.log(deposit.tonnageMt),
