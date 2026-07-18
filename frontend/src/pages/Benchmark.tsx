@@ -58,7 +58,7 @@ export default function Benchmark() {
       ) : learnedLoading ? (
         <p className="cg-note">{es ? 'Cargando modelos aprendidos…' : 'Loading learned models…'}</p>
       ) : (
-        <p className="cg-note">{es ? 'Modelos aprendidos no entrenados, re-genéralos con el paso de re-entrenamiento del precómputo. El optimizador EXACTO de Lane corre en vivo mientras tanto.' : 'Learned models not trained, regenerate them with the precompute retrain step. The EXACT Lane optimizer runs live meanwhile.'}</p>
+        <p className="cg-note">{es ? 'Modelos aprendidos no entrenados, re-genéralos con el paso de re-entrenamiento del precómputo. El optimizador exacto de Lane corre en vivo mientras tanto.' : 'Learned models not trained, regenerate them with the precompute retrain step. The EXACT Lane optimizer runs live meanwhile.'}</p>
       )}
       <Refs ids={['lane1988', 'hall2014', 'rendu2014']} label="Refs" />
     </article>

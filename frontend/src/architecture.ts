@@ -48,7 +48,7 @@ export const architecture: ArchitectureConfig = {
       body_es:
         'Tres carriles, y la división es lo central. WEB (en vivo, en el navegador): el optimizador de Lane en ' +
         'TypeScript re-corre con cada control y onnxruntime-web ejecuta el cutoff surrogate como modelo ONNX, sin ' +
-        'servidor. OFFLINE / CÓMPUTO (tu máquina, un entorno Python aislado): el pipeline Python hornea los artefactos canónicos por ' +
+        'servidor. offline / CÓMPUTO (tu máquina, un entorno Python aislado): el pipeline Python hornea los artefactos canónicos por ' +
         'caso y el carril pesado (el paso de precómputo/reentrenamiento, torch) entrena el surrogate + el OOD-AE de escenarios y ' +
         'los exporta a ONNX. REPLAY: los artefactos pequeños y versionados se superponen al SPA en el build ' +
         'y se cargan en vivo; un contrato tipado espejo rompe el build si la web y el pipeline divergen.',

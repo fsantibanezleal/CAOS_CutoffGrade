@@ -88,7 +88,7 @@ export default function Introduction() {
 
       <Callout variant="honest" title={es ? 'Honestidad' : 'Honesty'}>
         {es
-          ? 'Los depósitos + economía son SINTÉTICOS (un caso base tipo pórfido cuprífero), declarado abiertamente; C-UNIFORM y C-BREAKEVEN son controles de forma cerrada. El surrogate aprendido se mide contra el optimizador EXACTO de Lane, sin victorias fabricadas; el optimizador exacto es la autoridad.'
+          ? 'Los depósitos + economía son SINTÉTICOS (un caso base tipo pórfido cuprífero), declarado abiertamente; C-UNIFORM y C-BREAKEVEN son controles de forma cerrada. El surrogate aprendido se mide contra el optimizador exacto de Lane, sin victorias fabricadas; el optimizador exacto es la autoridad.'
           : 'The deposits + economics are SYNTHETIC (a porphyry-copper-like base case), stated openly; C-UNIFORM and C-BREAKEVEN are closed-form controls. The learned surrogate is measured against the EXACT Lane optimizer, no fabricated wins; the exact optimizer is the authority.'}
       </Callout>
 
