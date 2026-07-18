@@ -28,11 +28,11 @@ plus three **balancing** cut-offs (mine-mill, mill-market, mine-market) that equ
 
 ## 3. The NPV fixed-point optimization (`optimize.ts`)
 
-Because F appears in the cut-off AND the cut-off sets the cashflows that set F, the optimum is a **fixed point** solved
+Because F appears in the cut-off and the cut-off sets the cashflows that set F, the optimum is a **fixed point** solved
 over the mine life by an exact year-by-year simulator: NPV = Σ C_t/(1+δ)^t with C_t = ore·ḡ·y(p−k) − ore·h − Q·m − f,
 and the year's throughput Q is limited by the binding stage (`min(M, H/φ, K/(φ·ḡ·y), R)`). The result is the
 **declining** optimal cut-off trajectory, higher early (high-grading while the remaining reserve is most valuable),
-falling to break-even as the reserve depletes ([Lane 1988](#refs), [Asad & Topal 2011](#refs)). The best CONSTANT
+falling to break-even as the reserve depletes ([Lane 1988](#refs), [Asad & Topal 2011](#refs)). The best constant
 cut-off (a 1-D search refined by golden-section) is the verifiable baseline the declining policy is ≥.
 
 ## 4. Two operating conventions that diverge from textbook Lane (honest qualifier)

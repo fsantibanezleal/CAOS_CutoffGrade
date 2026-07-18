@@ -18,13 +18,13 @@ Both are trained offline (`science/train_lane.py`, torch) and reported next to t
 
 | Model | Task | Baseline | Held-out metric (this build) |
 |---|---|---|---|
-| `cutoff-surrogate` | 12 features → [cut-off, NPV, life] | the EXACT Lane optimizer | **NPV err 6.8%** · cut-off err 10.9% (downstream, on 400 held-out) |
-| `scenario-ood` | features → reconstruction (MSE = OOD score) |, (separates in-envelope vs out-of-envelope) | **AUC 0.999** |
+| `cutoff-surrogate` | 12 features → [cut-off, NPV, life] | the exact Lane optimizer | **NPV err 6.8%** · cut-off err 10.9% (downstream, on 400 held-out) |
+| `scenario-ood` | features → reconstruction (MSE = OOD score) | reconstruction MSE (separates in-envelope vs out-of-envelope) | **AUC 0.999** |
 
-**Honesty.** The surrogate's NPV error is measured DOWNSTREAM (`eval_lane.mjs`): its predicted cut-off is run as a
-constant policy through the EXACT simulator, and the NPV is compared to the exact optimum. ~7% NPV error reflects that
+**Honesty.** The surrogate's NPV error is measured downstream (`eval_lane.mjs`): its predicted cut-off is run as a
+constant policy through the exact simulator, and the NPV is compared to the exact optimum. ~7% NPV error reflects that
 the NPV surface is fairly flat near the optimum (so a ~11% cut-off error costs only ~7% NPV), an honest property, not a
-fabricated win. The exact optimizer is the authority and runs live by default; the surrogate earns its place on speed , 
+fabricated win. The exact optimizer is the authority and runs live by default; the surrogate earns its place on speed:
 today the single-scenario What-if comparison in the App (mass Monte-Carlo / batch sweeps are the roadmap stochastic
 tier). The OOD AUC (0.999) is high because the out-of-envelope scenarios are pushed well off the
 training manifold; we say so.

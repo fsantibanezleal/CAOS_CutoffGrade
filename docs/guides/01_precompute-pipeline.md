@@ -4,7 +4,7 @@
 ./scripts/setup.sh            # or scripts/setup.ps1, builds .venv-pipeline + .venv, installs, editable pkg
 ./scripts/precompute.sh       # all cases   (or:  ./scripts/precompute.sh S-BASE --seed 7)
 .venv-pipeline/bin/python -m pytest        # (Scripts/python.exe on Windows)
-./scripts/smoke.sh            # CONTRACT 2 check: index <-> manifests <-> artifacts consistent
+./scripts/smoke.sh            # Contract 2 check: index <-> manifests <-> artifacts consistent
 ```
 
 Outputs land in `data/derived/<case>/trace.json` + `data/derived/manifests/<case>.json` + `index.json`. The run is

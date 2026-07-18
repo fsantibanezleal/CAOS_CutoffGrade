@@ -29,14 +29,14 @@ with the in-app ⓘ **Architecture modal** ([ADR-0058](docs/frameworks/02_viz.md
   (torch → ONNX), run **live** (onnxruntime-web), measured downstream vs the exact optimizer. Today it powers the
   single-scenario What-if comparison in the App; mass Monte-Carlo sweeps are the roadmap stochastic tier.
 - **scenario OOD-AE (learned)**, flags economic scenarios outside the training envelope.
-- **Bring your own deposit (offline pipeline)**, CONTRACT 1 validates `{grade_mean, grade_cv, tonnage, price, the
+- **Bring your own deposit (offline pipeline)**, Contract 1 validates `{grade_mean, grade_cv, tonnage, price, the
   costs, recovery, the 3 capacities, discount_rate}` before the bake. There is no in-app upload; see
   [docs/guides/02_bring-your-own-data.md](docs/guides/02_bring-your-own-data.md).
 
 ## Honesty
 
 The deposits + economics are **synthetic** (a porphyry-copper-like base case), stated openly. The exact Lane optimizer
-is the authority and runs live by default; the surrogate is measured DOWNSTREAM (its predicted cut-off run through the
+is the authority and runs live by default; the surrogate is measured downstream (its predicted cut-off run through the
 exact simulator): **NPV error 6.8%** / cut-off error 10.9% on held-out scenarios; the scenario OOD-AE scores **AUC
 0.999**. `C-UNIFORM`/`C-BREAKEVEN` are closed-form analytic controls (the break-even oracle: the optimal cut-off equals
 `h/((p−k)·y)` when there is no time cost). No fabricated wins.
@@ -47,7 +47,7 @@ exact simulator): **NPV error 6.8%** / cut-off error 10.9% on held-out scenarios
 # light lane (numpy only), rebuild the replay artifacts + run the checks
 python -m venv .venv-pipeline && .venv-pipeline/Scripts/pip install -r data-pipeline/requirements.txt -r requirements-dev.txt -e .
 .venv-pipeline/Scripts/python -m cglab.pipeline all      # 10 cases -> traces + manifests
-.venv-pipeline/Scripts/python scripts/check_artifacts.py # CONTRACT 2 OK
+.venv-pipeline/Scripts/python scripts/check_artifacts.py # Contract 2 OK
 
 # the SPA (the Lane optimizer + the surrogate run live in the browser)
 cd frontend && npm ci && npm run dev                     # http://localhost:5173

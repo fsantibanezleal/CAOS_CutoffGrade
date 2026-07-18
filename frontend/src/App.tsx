@@ -1,4 +1,4 @@
-// Commit-3 placeholder App, proves the Lane engine runs LIVE in the browser. The full 6-page SPA (the App with the
+// Commit-3 placeholder App, proves the Lane engine runs live in the browser. The full 6-page SPA (the App with the
 // grade-tonnage curve, the optimal cut-off trajectory, the cashflow profile and the economic sliders, on the shared
 // caos-app-shell) lands in commit 4.
 import { analyze } from './lane/index';

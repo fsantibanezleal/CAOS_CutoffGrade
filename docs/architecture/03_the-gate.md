@@ -15,4 +15,4 @@ A case is **live** iff it is client-side, its runtimes are a subset of the deplo
 `{ts-econ, onnxruntime-web}` (`LIVE_RUNTIMES`), a full optimization completes within the interaction budget
 (`RUN_MS_GATE = 1500 ms`), and its replay trace stays small (`TRACE_BYTES_GATE = 256 KB`). At teaching scale a full
 Lane fixed-point optimization + sensitivity is tens of milliseconds and the trace is a few KB, so **every case is
-LIVE**. The verdict + budgets go into the manifest; the raw wall-clock is used for the decision but never stored.
+live**. The verdict + budgets go into the manifest; the raw wall-clock is used for the decision but never stored.

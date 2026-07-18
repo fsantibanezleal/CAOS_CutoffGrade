@@ -1,29 +1,29 @@
 # Framework, the learned models (torch → ONNX → onnxruntime-web)
 
-Two honest learned models, trained offline and run live. The EXACT Lane optimizer is always the authority; these are a
+Two honest learned models, trained offline and run live. The exact Lane optimizer is always the authority; these are a
 fast surrogate of it + an out-of-envelope flag.
 
 ## Training (`science/train_lane.py`, torch, `.venv-precompute`)
 
 | Model | Architecture | Trained on | Scored against | Export |
 |---|---|---|---|---|
-| `cutoff-surrogate` | MLP 12 → 64 → 64 → 3, standardisation folded into the export | random scenarios SOLVED by the EXACT optimizer (`gen_train.mjs`) | the EXACT optimizer, DOWNSTREAM (`eval_lane.mjs`) | `cutoff-surrogate.onnx` (x → [cut-off, NPV, life]) |
+| `cutoff-surrogate` | MLP 12 → 64 → 64 → 3, standardisation folded into the export | random scenarios solved by the exact optimizer (`gen_train.mjs`) | the exact optimizer, downstream (`eval_lane.mjs`) | `cutoff-surrogate.onnx` (x → [cut-off, NPV, life]) |
 | `scenario-ood` | autoencoder 12 → 8 → 3 → 8 → 12 | in-distribution feature vectors | reconstruction MSE separates out-of-envelope | `scenario-ood.onnx` (x → xr) |
 
-`gen_train.mjs` runs the SAME TS engine the browser runs, so the surrogate trains on exactly the optimizer the App uses.
-The standardisation (mean/std of the features AND the targets) is folded into the export wrapper, so the ONNX takes RAW
-features and returns RAW [cut-off, NPV, life].
+`gen_train.mjs` runs the same TS engine the browser runs, so the surrogate trains on exactly the optimizer the App uses.
+The standardisation (mean/std of the features and the targets) is folded into the export wrapper, so the ONNX takes raw
+features and returns raw [cut-off, NPV, life].
 
 ## The honest downstream eval (`eval_lane.mjs`)
 
-The surrogate predicts a cut-off; `eval_lane.mjs` runs THAT cut-off as a constant policy through the EXACT simulator
+The surrogate predicts a cut-off; `eval_lane.mjs` runs that cut-off as a constant policy through the exact simulator
 (onnxruntime-web in Node) and compares the NPV to the exact optimum, the honest **downstream** skill, in the engine's
 own language. (Raw regression error would flatter the model; the downstream NPV error is what matters.)
 
 ## Inference (`frontend/src/lib/ort.ts`, onnxruntime-web)
 
 WASM execution provider, single-threaded; the npm package and the CDN `wasmPaths` are pinned to the same version (1.27).
-The loader is **graceful**, if the model is absent the App uses the EXACT optimizer (cheap, runs live) + shows the
+The loader is **graceful**, if the model is absent the App uses the exact optimizer (cheap, runs live) + shows the
 honest "pending training" state. Runs are serialised per session (not re-entrant).
 
 ## Honesty

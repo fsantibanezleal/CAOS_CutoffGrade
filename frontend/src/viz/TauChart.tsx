@@ -3,7 +3,7 @@ import type uPlot from 'uplot';
 import { type SchedulePointRec } from '../lib/contract.types.ts';
 import { themeColors, UPlotChart } from './UPlotChart.tsx';
 
-/** The opportunity-cost trajectory τ(t) = f + F(t)·δ over the mine life, the DRIVER of high-grading.
+/** The opportunity-cost trajectory τ(t) = f + F(t)·δ over the mine life, the driver of high-grading.
  * F(t) is the NPV of the remaining operation from year t (Σ future cashflows discounted to t); occupying a year of
  * the binding capacity forgoes that, so the cut-off is raised by τ. As the reserve depletes F→0 and τ→f, which is why
  * the optimal cut-off declines to break-even. Computed live from the schedule cashflows, reacts to every slider. */

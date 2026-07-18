@@ -18,7 +18,7 @@ The cut-off/NPV surrogate runs via **onnxruntime-web** (`frontend/src/lib/ort.ts
 package and the CDN wasmPaths are pinned to the same version (1.27). `runSurrogate` builds the standardized feature
 vector (the order in `lane/learned.ts`, mirroring `cglab/model/learned.py`) and runs the ONNX in one call; runs are
 serialised per session (the session is not re-entrant). If the model is absent (not yet trained) the loader resolves to
-`null` and the App uses the EXACT optimizer (cheap, runs live anyway).
+`null` and the App uses the exact optimizer (cheap, runs live anyway).
 
 ## Live re-optimize in the App
 
