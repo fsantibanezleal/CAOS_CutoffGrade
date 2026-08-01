@@ -15,7 +15,7 @@ if (-not (Test-Path ".venv-pipeline")) { & $py -m venv .venv-pipeline }
 $vp = Get-VenvPy ".venv-pipeline"
 & $vp -m pip install --upgrade pip -q
 & $vp -m pip install -q -r data-pipeline/requirements.txt -r requirements-dev.txt
-& $vp -m pip install -q -e .
+& $vp -m pip install -q
 Write-Host "[setup] .venv-pipeline ready."
 
 Write-Host "[setup] .venv (runtime/live-thin lane)..."

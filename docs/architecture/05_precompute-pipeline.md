@@ -4,7 +4,7 @@ CutoffGrade's offline lane is **two-language** (like FragmentIQ / CoreLog / PitF
 TypeScript engine the browser runs, driven from Node via `tsx`; Python only orchestrates + reshapes. This avoids ever
 re-implementing the economics in Python.
 
-## The named stages (`cglab/stages/`)
+## The named stages (`pipeline/stages/`)
 
 | Stage | What (heavy lane) |
 |---|---|
@@ -15,11 +15,11 @@ re-implementing the economics in Python.
 | `evaluate` | the surrogate's downstream NPV/cut-off error vs the exact optimizer (`science/eval_lane.mjs`) + the OOD AUC |
 | `export` | build the compact per-case trace + manifest (Contract 2), the light, numpy-only step |
 
-## The two lanes of `cglab.pipeline`
+## The two lanes of `pipeline.pipeline`
 
 ```bash
-python -m cglab.pipeline all              # light (numpy): reshape the committed case-results.json -> traces + manifests
-python -m cglab.pipeline all --retrain    # heavy: bake -> gen_train -> train_lane -> eval_lane, then reshape
+python data-pipeline/run.py all              # light (numpy): reshape the committed case-results.json -> traces + manifests
+python data-pipeline/run.py all --retrain    # heavy: bake -> gen_train -> train_lane -> eval_lane, then reshape
 ```
 
 The **default is light**: the committed `data/derived/case-results.json` + `cg-learned.json` + the two `.onnx` are the

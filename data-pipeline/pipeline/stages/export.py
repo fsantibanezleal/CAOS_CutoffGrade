@@ -2,7 +2,7 @@
 baked by the SAME TS engine the browser runs) + the learned-model metrics (cg-learned.json, when trained), run the lane
 gate, and write the manifest. No torch/node, so the contract + replay regenerate deterministically anywhere, and CI
 stays fast. The HEAVY export (baking case-results.json + training the ONNX) is done by the preserved science
-(cglab/science/bake_cases.mjs + train_lane.py), invoked by pipeline.retrain."""
+(pipeline/science/bake_cases.mjs + train_lane.py), invoked by pipeline.retrain."""
 from __future__ import annotations
 
 from pathlib import Path

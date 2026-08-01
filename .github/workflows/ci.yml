@@ -16,13 +16,13 @@ jobs:
           python-version: "3.12"
           cache: pip
       - name: Install (offline lane + dev + editable pkg)
-        run: pip install -r data-pipeline/requirements.txt -r requirements-dev.txt -e .
+        run: pip install -r data-pipeline/requirements.txt -r requirements-dev.txt
       - name: Lint
         run: ruff check data-pipeline tests
       - name: Tests
         run: pytest
       - name: Pipeline smoke (regenerate one case)
-        run: python -m cglab.pipeline K-MILL
+        run: python data-pipeline/run.py K-MILL
       - name: CONTRACT 2, manifests <-> artifacts consistent (no drift)
         run: python scripts/check_artifacts.py
 

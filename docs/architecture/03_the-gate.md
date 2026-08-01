@@ -1,6 +1,6 @@
 # The live / precompute gate
 
-`cglab/core/gate.py` records, per case, whether it runs **live** (client-side) or falls back to **replay** of the
+`pipeline/core/gate.py` records, per case, whether it runs **live** (client-side) or falls back to **replay** of the
 committed trace (ADR-0054). It is a **measurement written into the manifest**, never a hand-wave; `scripts/
 check_artifacts.py` + CI fail on a mislabelled lane.
 
