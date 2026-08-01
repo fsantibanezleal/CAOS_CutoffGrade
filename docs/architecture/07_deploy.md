@@ -10,6 +10,6 @@ The VPS path (systemd + nginx, in `deploy/`) is **dormant**, activated only when
 guards that fail on a tracked `.env`/venv/native-or-heavy binary/raw data/leaked machine path.
 
 **Pages gotchas (applied up front):** enable Pages with `build_type=workflow`; the repo default branch is `main` (so
-the `github-pages` environment allows it); the `examplelab → pipeline` rename covers the `.yml` workflows + the `.sh`/`.ps1`
+the `github-pages` environment allows it); the pipeline is invoked by path (`python data-pipeline/run.py`) from the `.yml` workflows + the `.sh`/`.ps1`
 scripts; the custom domain is set via `gh api -X PUT repos/.../pages -f cname=cutoffgrade.fasl-work.com` (a `CNAME`
 file alone does not set it for Actions deploys).
