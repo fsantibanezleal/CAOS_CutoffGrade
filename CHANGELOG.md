@@ -3,6 +3,30 @@
 All notable changes to CutoffGrade Studio. Format: `X.XX.XXX` (display), see `cglab.__version__`. Keep `0.x` while on
 synthetic data. Tag every release.
 
+## [0.09.000] · 2026-08-01
+
+### Changed - ADR-0071 layout and one row of tabs
+
+Rows are sized by the ROW rather than by their content, the rail scrolls itself, and the ten flat tabs are
+now FIVE groups on one 45px row (Deposit, Policy, Economics, Capacity, Analysis) with sub-views revealed on
+hover. Prose routes get their own scroll (floor v2).
+
+### Added - ADR-0070 focus mode
+
+A full-viewport view of the selected deposit, re-solving with the SAME Lane analysis the App runs.
+
+The stage is the CUT-OFF TRAJECTORY, not the grade-tonnage curve: Lane's whole result is that the optimal
+cut-off DECLINES over the life of the mine, and that is only meaningful against the best CONSTANT cut-off,
+so the constant is drawn as a dashed reference on the same axes and the gap between them is the method's
+real gain. Showing the deposit curve instead would be showing the input.
+
+The state NAMED on the stage is WHICH capacity binds (mine, mill or market), taken from `Analysis.binding`,
+because that is the one fact the solve produces that tells you where more capacity would actually buy NPV.
+
+`UPlotChart` can fill its container now, re-measuring on resize rather than capturing a height on the first
+frame: a chart pinned to 240px inside a full-height stage leaves the rest of the stage empty, which defeats
+the point of the view.
+
 ## [0.08.000] · 2026-07-30
 
 ### Fixed

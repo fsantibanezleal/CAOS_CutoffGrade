@@ -4,8 +4,11 @@ import 'uplot/dist/uPlot.min.css';
 import { useThemeStore } from '@fasl-work/caos-app-shell';
 
 /** Interactive uPlot chart: wheel/drag zoom + pan, crosshair value readout, theme-aware, responsive. */
-export function UPlotChart({ data, build, height = 240 }: {
+export function UPlotChart({ data, build, height = 240, fill = false, minHeight = 200 }: {
   data: uPlot.AlignedData; build: (width: number, height: number) => uPlot.Options; height?: number;
+  /** Fill the parent's height instead of taking a fixed one. A chart pinned to 240px inside a
+   *  full-height focus stage leaves the rest of the stage empty, which defeats the point of the view. */
+  fill?: boolean; minHeight?: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const theme = useThemeStore((s) => s.theme);
@@ -14,11 +17,14 @@ export function UPlotChart({ data, build, height = 240 }: {
     if (!el) return;
     const width = el.clientWidth || 600;
     const u = new uPlot(build(width, height), data, el);
-    const ro = new ResizeObserver(() => u.setSize({ width: el.clientWidth || width, height }));
+    // With fill, the height comes from the PARENT and the parent lays out after mount, so it must be
+    // re-measured on resize rather than captured on the first frame.
+    const measure = () => (fill ? Math.max(minHeight, el.parentElement ? el.parentElement.clientHeight - 8 : minHeight) : height);
+    const ro = new ResizeObserver(() => u.setSize({ width: el.clientWidth || width, height: measure() }));
     ro.observe(el);
     return () => { ro.disconnect(); u.destroy(); };
   }, [theme, data, build, height]);
-  return <div ref={ref} className="uplot-host" style={{ width: '100%', height }} />;
+  return <div ref={ref} className="uplot-host" style={fill ? { width: '100%', flex: '1 1 auto', minHeight: 0 } : { width: '100%', height }} />;
 }
 
 export function themeColors() {
