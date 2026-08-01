@@ -1,24 +1,8 @@
+# Repo-local tool configuration ONLY. This product declares NO package: per
+# conventions/no-internal-packages.md a package means a separate repo with a valid PyPI project.
 # CutoffGrade Studio, the offline pipeline package (ADR-0057 product-repo archetype).
 # The default lane is numpy-only on purpose (the committed case-results are baked by the TS engine, so replay
 # installs instantly); the heavy torch retrain lane pins in data-pipeline/requirements-precompute.txt.
-[build-system]
-requires = ["setuptools>=68"]
-build-backend = "setuptools.build_meta"
-
-[project]
-name = "cglab"
-# PEP 440 form of the display version X.XX.XXX (see CHANGELOG.md + cglab.__version__).
-version = "0.9.0"
-description = "CutoffGrade Studio offline pipeline (cglab), two data contracts + staged pipeline + learned-model lane (the Lane engine itself is TypeScript, in frontend/)."
-readme = "README.md"
-requires-python = ">=3.11"
-license = { text = "MIT" }
-authors = [{ name = "Felipe Santibáñez-Leal" }]
-dependencies = ["numpy>=1.26"]
-
-[tool.setuptools.packages.find]
-where = ["data-pipeline"]
-
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"

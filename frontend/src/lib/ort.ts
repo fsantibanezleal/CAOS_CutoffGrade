@@ -42,7 +42,7 @@ async function runSerial(_file: string, s: ort.InferenceSession, feeds: Record<s
   return serial(() => s.run(feeds));
 }
 
-/** Build the standardized feature vector (the source-of-truth order in cglab/model/learned.py). */
+/** Build the standardized feature vector (the source-of-truth order in pipeline/model/learned.py). */
 export function featureVec(econ: Economics, deposit: Deposit): Float32Array {
   const f: Record<string, number> = {
     grade_mean: deposit.gradeMean, grade_cv: deposit.gradeCv, log_tonnage: Math.log(deposit.tonnageMt),

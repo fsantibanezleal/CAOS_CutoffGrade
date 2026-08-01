@@ -1,7 +1,7 @@
 // Generate the learned-model training data by running the SAME TypeScript engine the browser runs, so the surrogate
 // trains on EXACTLY the Lane optimizer the App uses, and is benchmarked against it. Writes to data/raw/ (git-ignored,
 // regenerable). Invoked by pipeline.retrain before train_lane.py. Run (from frontend/ so tsx resolves):
-//   node --import tsx ../data-pipeline/cglab/science/gen_train.mjs
+//   node --import tsx ../data-pipeline/pipeline/science/gen_train.mjs
 //
 // 1. lane-train.json: N in-envelope scenarios, each SOLVED by the exact Lane optimizer -> the (12-feature vector ->
 //    [optimal initial cut-off, NPV, life]) labels for the surrogate, + the in-distribution feature vectors for the
@@ -54,7 +54,7 @@ function sampleScenario(env) {
   return { v, deposit, econ };
 }
 
-// feature vector in the SOURCE-OF-TRUTH order (cglab/model/learned.py :: FEATURES)
+// feature vector in the SOURCE-OF-TRUTH order (pipeline/model/learned.py :: FEATURES)
 function featureVec(v) {
   const f = {
     grade_mean: v.grade_mean, grade_cv: v.grade_cv, log_tonnage: Math.log(v.tonnage_mt), price: v.price,

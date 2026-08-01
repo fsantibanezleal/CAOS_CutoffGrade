@@ -24,8 +24,8 @@ jobs:
           python-version: "3.12"
       - name: Regenerate artifacts (fresh deterministic replay outputs)
         run: |
-          pip install -r data-pipeline/requirements.txt -e .
-          python -m cglab.pipeline all
+          pip install -r data-pipeline/requirements.txt
+          python data-pipeline/run.py all
       - uses: actions/setup-node@v4
         with:
           node-version: "20"

@@ -3,7 +3,7 @@
 // simulator (simulateLife) and compare the resulting NPV to the exact optimum. The surrogate's cut-off + NPV error are
 // the honest skill numbers. Then we assemble the final data/derived/cg-learned.json by merging the OOD-AE AUC +
 // honesty that train_lane.py wrote to data/raw/learned-partial.json.
-//   node --import tsx ../data-pipeline/cglab/science/eval_lane.mjs   (run from frontend/ so onnxruntime-web resolves)
+//   node --import tsx ../data-pipeline/pipeline/science/eval_lane.mjs   (run from frontend/ so onnxruntime-web resolves)
 import { createRequire } from 'node:module';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';

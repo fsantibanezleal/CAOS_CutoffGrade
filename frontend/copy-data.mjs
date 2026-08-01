@@ -11,7 +11,7 @@ const PUB = join(HERE, 'public');
 const derived = join(ROOT, 'data', 'derived');
 
 if (!existsSync(derived)) {
-  console.warn('[copy-data] no data/derived, run `npm run bake` (or `python -m cglab.pipeline all`) first');
+  console.warn('[copy-data] no data/derived, run `npm run bake` (or `python data-pipeline/run.py all`) first');
 } else {
   mkdirSync(join(PUB, 'data'), { recursive: true });
   cpSync(derived, join(PUB, 'data'), { recursive: true });

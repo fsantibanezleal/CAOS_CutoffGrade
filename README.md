@@ -45,8 +45,8 @@ exact simulator): **NPV error 6.8%** / cut-off error 10.9% on held-out scenarios
 
 ```bash
 # light lane (numpy only), rebuild the replay artifacts + run the checks
-python -m venv .venv-pipeline && .venv-pipeline/Scripts/pip install -r data-pipeline/requirements.txt -r requirements-dev.txt -e .
-.venv-pipeline/Scripts/python -m cglab.pipeline all      # 10 cases -> traces + manifests
+python -m venv .venv-pipeline && .venv-pipeline/Scripts/pip install -r data-pipeline/requirements.txt -r requirements-dev.txt
+.venv-pipeline/Scripts/python data-pipeline/run.py all      # 10 cases -> traces + manifests
 .venv-pipeline/Scripts/python scripts/check_artifacts.py # Contract 2 OK
 
 # the SPA (the Lane optimizer + the surrogate run live in the browser)
@@ -55,14 +55,14 @@ npm test                                                 # lane 8 + contract 6
 
 # heavy lane (local only), re-bake + train the learned models (torch -> ONNX)
 python -m venv .venv-precompute && .venv-precompute/Scripts/pip install -r data-pipeline/requirements-precompute.txt
-.venv-pipeline/Scripts/python -m cglab.pipeline all --retrain
+.venv-pipeline/Scripts/python data-pipeline/run.py all --retrain
 ```
 
 ## Layout
 
 See [STRUCTURE.md](STRUCTURE.md) and the wiki in [docs/](docs/README.md). The optimization engine is the TypeScript code
 in [`frontend/src/lane/`](frontend/src/lane/) (it runs in the browser **and** in the offline Node bake, no Python
-re-port); `data-pipeline/cglab/` is the two contracts + the staged pipeline + the lane gate.
+re-port); `data-pipeline/pipeline/` is the two contracts + the staged pipeline + the lane gate.
 
 ## License
 

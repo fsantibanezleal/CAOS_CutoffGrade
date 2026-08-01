@@ -15,7 +15,7 @@ mkvenv .venv-pipeline
 VP="$(venvpy .venv-pipeline)"
 "$VP" -m pip install --upgrade pip -q
 "$VP" -m pip install -q -r data-pipeline/requirements.txt -r requirements-dev.txt
-"$VP" -m pip install -q -e .
+"$VP" -m pip install -q
 echo "[setup] .venv-pipeline ready."
 
 echo "[setup] .venv (runtime/live-thin lane)…"
