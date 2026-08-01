@@ -1,5 +1,5 @@
 // Contract 2 mirror (frontend side). Must stay in lock-step with the Python schemas in
-// data-pipeline/cglab/core/{trace.py, manifest.py} + the bake (cglab/science/bake_cases.mjs). A drift here makes
+// data-pipeline/pipeline/core/{trace.py, manifest.py} + the bake (pipeline/science/bake_cases.mjs). A drift here makes
 // `tsc` fail -> the contract is enforced at build time (the web cannot ship reading a shape the pipeline does not
 // produce).
 

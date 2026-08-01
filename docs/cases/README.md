@@ -1,6 +1,6 @@
 # Cases + categories
 
-Each case (`data-pipeline/cglab/cases/lane_cases.py`, mirrored in `frontend/src/lane/cases.ts`) declares a **category**,
+Each case (`data-pipeline/pipeline/cases/lane_cases.py`, mirrored in `frontend/src/lane/cases.ts`) declares a **category**,
 its deposit + economics, an **expected band** (what a domain reader should see), a **validation anchor** (a property the
 result must satisfy, checked in `frontend/test/{lane,contract}.test.ts`), and a real|synthetic flag. The **App shows
 one selected case**; **Experiments/Benchmark show cross-case summaries** (never mixed into the App). All deposits are

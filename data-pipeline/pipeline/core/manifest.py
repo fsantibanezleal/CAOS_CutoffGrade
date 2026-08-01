@@ -46,7 +46,7 @@ def build_case_manifest(*, case: Any, seed: int, artifact_rel: str, trace_bytes:
         "real_or_synthetic": case.real_or_synthetic,
         "expected_band": case.expected_band,
         "validation_anchor": case.validation_anchor,
-        "engine": {"package": "cglab", "version": __version__, "model": ENGINE_NOTE},
+        "engine": {"package": "pipeline", "version": __version__, "model": ENGINE_NOTE},
         "seed": seed,
         "shared": shared_artifacts(),
         "artifact": {"path": artifact_rel, "format": "json", "trace_schema": TRACE_SCHEMA, "bytes": trace_bytes},

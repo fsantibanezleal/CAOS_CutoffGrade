@@ -14,8 +14,8 @@ onnxruntime-web, so the App re-optimizes on every price, cost, capacity or disco
 | Lane | Where | Deps | Notes |
 |---|---|---|---|
 | **Live (client-side)** | `frontend/src/lane/` (grade-tonnage + Lane cut-offs + NPV optimizer) + onnxruntime-web (the surrogate) | web npm | the interactive core; re-optimizes on every control change |
-| **Offline (precompute)** | `cglab/science/`, Node bake of the same TS engine + torch training | `data-pipeline/requirements-precompute.txt` | bakes `case-results.json` + the ONNX |
-| **Replay (light)** | `cglab.pipeline` (numpy) | `data-pipeline/requirements.txt` | reshapes the committed bake → per-case traces + manifests |
+| **Offline (precompute)** | `pipeline/science/`, Node bake of the same TS engine + torch training | `data-pipeline/requirements-precompute.txt` | bakes `case-results.json` + the ONNX |
+| **Replay (light)** | `pipeline.pipeline` (numpy) | `data-pipeline/requirements.txt` | reshapes the committed bake → per-case traces + manifests |
 | **API (backend)** | `app/` (FastAPI) | `requirements-api.txt` | dormant; activate only on an ADR-0002 trigger |
 
 A measured **[gate](03_the-gate.md)** records the live-vs-replay verdict per case (at teaching scale every case is live).

@@ -2,8 +2,8 @@
 reason; an impossible margin / a never-binding mill / a high discount rate is flagged; the committed example passes."""
 from pathlib import Path
 
-from cglab.io.contract import validate_deposit, validate_records
-from cglab.io.formats import read_csv_rows
+from pipeline.io.contract import validate_deposit, validate_records
+from pipeline.io.formats import read_csv_rows
 
 
 def _row(**over):

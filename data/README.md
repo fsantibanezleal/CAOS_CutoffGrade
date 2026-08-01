@@ -14,7 +14,7 @@ This folder is governed by the **two data contracts** of ADR-0057.
 
 ## CONTRACT 1, ingestion (raw → pipeline), the *bring-your-own-deposit* gate
 
-Defined in `data-pipeline/cglab/io/contract.py` (`validate_records` / `validate_deposit`). A deposit + economics
+Defined in `data-pipeline/pipeline/io/contract.py` (`validate_records` / `validate_deposit`). A deposit + economics
 record is **accepted** iff it satisfies the schema; **rejected** with a reason otherwise (never silently coerced);
 plausible-but-extreme records are **flagged** (accepted; the flag travels into the manifest). This gate runs in the
 **offline pipeline**, there is no in-app upload.
