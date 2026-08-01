@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Tabs, useShellLang } from '@fasl-work/caos-app-shell';
+import { useEffect, useMemo, useState , useRef} from 'react';
+import { Link } from 'react-router-dom';
+import { useShellLang } from '@fasl-work/caos-app-shell';
 import { analyze, type Economics } from '../lane/index.ts';
 import { CASES, caseById, type CGCase } from '../lane/cases.ts';
 import { runOod, runSurrogate, surrogateAvailable } from '../lib/ort.ts';
@@ -22,10 +23,24 @@ const CATS = [
 const pct = (g: number, n = 3) => `${(g * 100).toFixed(n)}%`;
 const money = (v: number) => `$${Math.round(v).toLocaleString()}M`;
 
+
+/** ADR-0071 rules 4+5. Ten flat sibling tabs is a list, not an architecture. Grouped by the question
+ *  being asked; the sub-views are revealed from the same tab. */
+const TAB_GROUPS: { id: string; en: string; es: string; members: string[] }[] = [
+  { id: 'deposit',  en: 'Deposit',   es: 'Yacimiento', members: ['gt'] },
+  { id: 'policy',   en: 'Policy',    es: 'Politica',   members: ['traj', 'lane', 'vs'] },
+  { id: 'economics',en: 'Economics', es: 'Economia',   members: ['cash', 'tau'] },
+  { id: 'capacity', en: 'Capacity',  es: 'Capacidad',  members: ['util'] },
+  { id: 'analysis', en: 'Analysis',  es: 'Analisis',   members: ['sens', 'whatif', 'anomaly'] },
+];
+
 export default function Tool() {
   const lang = useShellLang();
   const es = lang === 'es';
   const [caseId, setCaseId] = useState('S-BASE');
+  const [activeTab, setActiveTab] = useState('gt');
+  const [openMenu, setOpenMenu] = useState<string | null>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [priceMul, setPriceMul] = useState(1);
   const [costMul, setCostMul] = useState(1);
   const [millMul, setMillMul] = useState(1);
@@ -250,6 +265,13 @@ export default function Tool() {
   return (
     <div className="page-body cg-layout">
       <aside className="cg-side">
+        {/* ADR-0070 entry: without a visible control the focus route is an orphan. Carries the case. */}
+        <Link className="cg-focus-enter" to={`/focus/${caseId}`}>
+          <span className="cg-focus-enter-t">{es ? 'Modo enfoque' : 'Focus mode'}</span>
+          <span className="cg-focus-enter-d">
+            {es ? 'Abrir este yacimiento a pantalla completa' : 'Open this deposit full screen'}
+          </span>
+        </Link>
         <div className="cg-card">
           <div className="cg-card-t">{es ? 'Caso' : 'Case'}</div>
           {CATS.map((cat) => (
@@ -282,7 +304,45 @@ export default function Tool() {
         </div>
       </aside>
       <main className="cg-main">
-        <Tabs tabs={tabs.map((t) => ({ ...t, content: <PanelBoundary key={`${caseId}-${t.id}`} lang={es ? 'es' : 'en'}>{t.content}</PanelBoundary> }))} ariaLabel={es ? 'vistas de la optimización' : 'optimization views'} />
+        <div className="cg-tabrow" role="tablist" aria-label={es ? 'vistas de la optimizacion' : 'optimization views'}>
+          {TAB_GROUPS.filter((g) => tabs.some((x) => g.members.includes(x.id))).map((g) => {
+            const mine = tabs.filter((x) => g.members.includes(x.id));
+            const activeHere = mine.some((x) => x.id === activeTab);
+            const shown = activeHere ? mine.find((x) => x.id === activeTab)! : mine[0];
+            const multi = mine.length > 1;
+            return (
+              <div key={g.id} className="cg-tabwrap"
+                   onPointerEnter={() => { if (multi) { if (closeTimer.current) clearTimeout(closeTimer.current); setOpenMenu(g.id); } }}
+                   onPointerLeave={() => {
+                     if (closeTimer.current) clearTimeout(closeTimer.current);
+                     closeTimer.current = setTimeout(() => setOpenMenu((mm) => (mm === g.id ? null : mm)), 240);
+                   }}>
+                <button role="tab" aria-selected={activeHere} className={`cg-tab ${activeHere ? 'on' : ''}`}
+                        onClick={() => {
+                          if (!multi) { setActiveTab(mine[0].id); setOpenMenu(null); return; }
+                          setOpenMenu(openMenu === g.id ? null : g.id);
+                          if (!activeHere) setActiveTab(shown.id);
+                        }}>
+                  {activeHere ? shown.label : (es ? g.es : g.en)}{multi ? <span className="cg-caret">v</span> : null}
+                </button>
+                {multi && openMenu === g.id && (
+                  <div className="cg-tabmenu" role="menu">
+                    {mine.map((x) => (
+                      <button key={x.id} role="menuitem" className={x.id === activeTab ? 'on' : ''}
+                              onClick={() => { setActiveTab(x.id); setOpenMenu(null); }}>{x.label}</button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+        <div className="cg-tabpanel">
+          {(() => {
+            const cur = tabs.find((x) => x.id === activeTab) ?? tabs[0];
+            return cur ? <PanelBoundary key={`${caseId}-${cur.id}`} lang={es ? 'es' : 'en'}>{cur.content}</PanelBoundary> : null;
+          })()}
+        </div>
       </main>
     </div>
   );

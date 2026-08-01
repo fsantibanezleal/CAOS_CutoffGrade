@@ -12,6 +12,7 @@ import Introduction from './pages/Introduction.tsx';
 import Methodology from './pages/Methodology.tsx';
 import Implementation from './pages/Implementation.tsx';
 import Experiments from './pages/Experiments.tsx';
+import Focus from './pages/Focus.tsx';
 import Benchmark from './pages/Benchmark.tsx';
 
 applyTheme(readTheme());
@@ -35,6 +36,10 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
       <CitationsProvider items={CITATIONS}>
+        <Routes>
+          {/* ADR-0070: the focus view renders OUTSIDE the shell. */}
+          <Route path="/focus/:caseId" element={<Focus />} />
+          <Route path="*" element={
         <AppShell config={config}>
           <Routes>
             <Route path="/" element={<Tool />} />
@@ -46,6 +51,8 @@ createRoot(document.getElementById('root')!).render(
             <Route path="*" element={<Tool />} />
           </Routes>
         </AppShell>
+          } />
+        </Routes>
       </CitationsProvider>
     </BrowserRouter>
   </StrictMode>,
