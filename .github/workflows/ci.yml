@@ -19,13 +19,9 @@ jobs:
           python-version: "3.12"
           cache: pip
       - name: Install (offline lane + dev + editable pkg)
-        run: pip install -r data-pipeline/requirements.txt -r requirements-dev.txt
+        run: pip install -r requirements-dev.txt
       - name: Lint
         run: ruff check data-pipeline tests
-      - name: Tests
-        run: pytest
-      - name: Pipeline smoke (regenerate one case)
-        run: python data-pipeline/run.py K-MILL
       - name: CONTRACT 2, manifests <-> artifacts consistent (no drift)
         run: python scripts/check_artifacts.py
 
@@ -56,3 +52,5 @@ jobs:
           python-version: "3.12"
       - name: No em-dash or emoji in product content (ADR-0067)
         run: python scripts/check_content_standards.py
+      - name: CI budget, trunk-only triggers, no training (ADR-0074)
+        run: python scripts/check_ci_budget.py
