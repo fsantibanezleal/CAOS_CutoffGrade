@@ -27,7 +27,14 @@ export interface Analysis {
     trajectory: number[];
   };
   constant: { cutoff: number; npv: number };
+  /** The stage that limits production in the most operating years of the optimal schedule: mine, mill, market or
+   *  reserve. Until 0.09.001 this field held Lane's balancing pair ("mine↔mill"), which is not a stage, so the
+   *  mine-limited and mill-limited cases read the same and the stage view called K-MINE mill-limited. */
   binding: string;
+  /** operating years in which each stage limits production, over the full (not decimated) schedule. */
+  bindingYears: Record<string, number>;
+  /** the Dagdelen balancing pair that gives the start-of-life effective cut-off (LaneCutoffs.binding). */
+  balancedPair: string;
   npvUpliftPct: number;          // the high-grading uplift of the Lane policy over the best constant
   sensitivity: SensitivityRow[];
 }
@@ -40,6 +47,21 @@ function decimate<T>(arr: T[], maxN: number): T[] {
 
 const r = (x: number, n = 4): number => Math.round(x * 10 ** n) / 10 ** n;
 
+const STAGE_ORDER = ['mine', 'mill', 'market', 'reserve'];
+
+/** The stage that limits the most years, and the count per stage. Ties go to the earlier stage in STAGE_ORDER. */
+export function dominantBinding(schedule: SchedulePoint[]): { stage: string; years: Record<string, number> } {
+  const years: Record<string, number> = {};
+  for (const point of schedule) years[point.binding] = (years[point.binding] ?? 0) + 1;
+  let stage = 'none';
+  let most = 0;
+  for (const s of STAGE_ORDER) {
+    const n = years[s] ?? 0;
+    if (n > most) { most = n; stage = s; }
+  }
+  return { stage, years };
+}
+
 /** Run one (deposit, economics) through the whole Lane optimization. */
 export function analyze(econ: Economics, deposit: Deposit): Analysis {
   const be = breakEven(econ);
@@ -49,6 +71,7 @@ export function analyze(econ: Economics, deposit: Deposit): Analysis {
   // the start-of-life opportunity cost uses F ≈ the operation's NPV
   const cutoffs = laneCutoffs(econ, deposit, lane.npv);
   const npvUpliftPct = constant.result.npv > 0 ? (100 * (lane.npv - constant.result.npv)) / constant.result.npv : 0;
+  const limiting = dominantBinding(lane.schedule);
 
   // sensitivity: ±relative shocks to the headline economics
   const sweep = (param: string, mut: (f: number) => Economics, deltas: [number, number]): SensitivityRow => {
@@ -80,7 +103,9 @@ export function analyze(econ: Economics, deposit: Deposit): Analysis {
       trajectory: lane.trajectory.map((g) => r(g, 6)),
     },
     constant: { cutoff: r(constant.cutoff, 6), npv: r(constant.result.npv, 1) },
-    binding: cutoffs.binding,
+    binding: limiting.stage,
+    bindingYears: limiting.years,
+    balancedPair: cutoffs.binding,
     npvUpliftPct: r(npvUpliftPct, 2),
     sensitivity,
   };

@@ -37,6 +37,8 @@ def build_trace(case: Any, *, case_result: dict, learned: dict | None) -> dict:
         "optimal": case_result.get("optimal"),
         "constant": case_result.get("constant"),
         "binding": case_result.get("binding"),
+        "binding_years": case_result.get("bindingYears"),
+        "balanced_pair": case_result.get("balancedPair"),
         "npv_uplift_pct": case_result.get("npvUpliftPct"),
         "sensitivity": case_result.get("sensitivity"),
         "learned": _learned_block(learned),

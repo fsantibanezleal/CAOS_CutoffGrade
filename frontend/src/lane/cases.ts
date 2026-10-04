@@ -57,7 +57,7 @@ export const CASES: CGCase[] = [
   // ---- economic scenario ----
   { id: 'S-BASE', name: 'Base case', category: CAT_SCENARIO,
     deposit: dep('S-BASE'), econ: econ(), realOrSynthetic: 'synthetic',
-    expectedBand: 'the reference economics', validationAnchor: 'NPV > 0; a sensible 15–30 yr life' },
+    expectedBand: 'the reference economics', validationAnchor: 'NPV > 0; a sensible 10–30 yr life' },
   { id: 'S-HIGHPRICE', name: 'High price (+40%)', category: CAT_SCENARIO,
     deposit: dep('S-HIGHPRICE'), econ: econ({ price: 12600 }), realOrSynthetic: 'synthetic',
     expectedBand: 'higher price → lower break-even → more is ore → higher NPV', validationAnchor: 'NPV(high price) > NPV(base)' },

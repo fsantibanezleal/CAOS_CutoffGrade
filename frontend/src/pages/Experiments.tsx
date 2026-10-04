@@ -3,8 +3,9 @@ import { Cite, Refs, useShellLang } from '@fasl-work/caos-app-shell';
 import { loadCaseResults } from '../lib/artifacts.ts';
 import type { CaseResultsFile } from '../lib/contract.types.ts';
 
-const pct = (g: number) => `${(g * 100).toFixed(3)}%`;
-const money = (v: number) => `$${Math.round(v).toLocaleString()}M`;
+import { bindingText, money, pct as pctOf } from '../lib/format.ts';
+
+const pct = (g: number) => pctOf(g, 3);
 
 export default function Experiments() {
   const es = useShellLang() === 'es';
@@ -21,7 +22,7 @@ export default function Experiments() {
         <thead><tr>
           <th>{es ? 'caso' : 'case'}</th><th>{es ? 'categoría' : 'category'}</th>
           <th>break-even</th><th>{es ? 'corte medio' : 'mean cut-off'}</th><th>VAN</th><th>{es ? 'vida' : 'life'}</th>
-          <th>{es ? 'restricción' : 'binding'}</th><th>{es ? 'uplift' : 'uplift'}</th>
+          <th>{es ? 'etapa que limita' : 'binding stage'}</th><th>{es ? 'uplift' : 'uplift'}</th>
         </tr></thead>
         <tbody>
           {Object.entries(data.cases).map(([id, c]) => (
@@ -32,7 +33,7 @@ export default function Experiments() {
               <td>{pct(c.optimal.meanCutoff)}</td>
               <td>{money(c.optimal.npv)}</td>
               <td>{c.optimal.lifeYears}</td>
-              <td>{c.binding}</td>
+              <td data-binding={c.binding}>{bindingText(c.binding, c.bindingYears)}</td>
               <td>{c.npvUpliftPct.toFixed(2)}%</td>
             </tr>
           ))}

@@ -11,6 +11,7 @@ import { CashChart } from '../viz/CashChart.tsx';
 import { TauChart } from '../viz/TauChart.tsx';
 import { UtilChart } from '../viz/UtilChart.tsx';
 import { PanelBoundary } from '../viz/PanelBoundary.tsx';
+import { bindingText, money, pct as pctOf, price } from '../lib/format.ts';
 
 // `key` matches each case's `category` field (the data join); `en`/`es` are the bilingual sidebar labels.
 const CATS = [
@@ -20,8 +21,7 @@ const CATS = [
   { key: 'oracle control (closed-form check)', en: 'oracle control', es: 'control oráculo' },
 ];
 
-const pct = (g: number, n = 3) => `${(g * 100).toFixed(n)}%`;
-const money = (v: number) => `$${Math.round(v).toLocaleString()}M`;
+const pct = (g: number, n = 3) => pctOf(g, n);
 
 
 /** ADR-0071 rules 4+5. Ten flat sibling tabs is a list, not an architecture. Grouped by the question
@@ -92,7 +92,7 @@ export default function Tool() {
             <Kpi label={es ? 'vida (años)' : 'life (yr)'} value={`${a.optimal.lifeYears}`} />
             <Kpi label={es ? 'corte medio' : 'mean cut-off'} value={pct(a.optimal.meanCutoff)} />
             <Kpi label="break-even" value={pct(a.breakEven)} />
-            <Kpi label={es ? 'restricción' : 'binding'} value={a.binding} />
+            <Kpi label={es ? 'etapa que limita' : 'binding stage'} value={bindingText(a.binding, a.bindingYears)} />
           </div>
         </div>
       ),
@@ -137,8 +137,8 @@ export default function Tool() {
           <div className="cg-plot-t">{es ? 'Utilización por año de las tres etapas (mina · molino · mercado). La etapa saturada (en 100%) es la que limita ese año y fija el corte; las otras tienen holgura.' : 'Per-year utilisation of the three stages (mine · mill · market). The saturated stage (at 100%) is the one binding that year and setting the cut-off; the others have slack.'}</div>
           <UtilChart schedule={a.optimal.schedule} mineCapacity={econ.mineCapacity} millCapacity={econ.millCapacity} marketCapacity={econ.marketCapacity} recovery={econ.recovery} lang={lang} />
           <p className="cg-note">{es
-            ? `Restricción global del caso: ${a.binding}. Cuando cambia la etapa que limita (al mover la capacidad del molino), el corte óptimo salta, eso es la lógica de "qué etapa limita" de Lane.`
-            : `Case-wide binding stage: ${a.binding}. When the binding stage changes (move the mill capacity), the optimal cut-off jumps, that is Lane's "which stage binds" logic.`}</p>
+            ? `Etapa que limita en el caso: ${bindingText(a.binding, a.bindingYears)}. Cuando cambia la etapa que limita (al mover la capacidad del molino), el corte óptimo salta: es la lógica de "qué etapa limita" de Lane.`
+            : `Case-wide binding stage: ${bindingText(a.binding, a.bindingYears)}. When the binding stage changes (move the mill capacity), the optimal cut-off jumps, that is Lane's "which stage binds" logic.`}</p>
         </div>
       ),
     },
@@ -157,7 +157,7 @@ export default function Tool() {
           </table>
           <div className="cg-kpis">
             <Kpi label={es ? 'corte efectivo' : 'effective cut-off'} value={pct(cut.effective)} />
-            <Kpi label={es ? 'restricción' : 'binding'} value={cut.binding} />
+            <Kpi label={es ? 'par balanceado' : 'balancing pair'} value={cut.binding} />
             <Kpi label="break-even" value={pct(a.breakEven)} />
           </div>
         </div>
@@ -289,7 +289,7 @@ export default function Tool() {
         </div>
         <div className="cg-card">
           <div className="cg-card-t">{es ? 'Economía (en vivo)' : 'Economics (live)'}</div>
-          <label className="cg-ctl">{es ? 'precio' : 'price'}: ${Math.round(econ.price).toLocaleString()}/t (×{priceMul.toFixed(2)})
+          <label className="cg-ctl">{es ? 'precio' : 'price'}: {price(econ.price)} (×{priceMul.toFixed(2)})
             <input className="range" type="range" min={0.5} max={1.6} step={0.02} value={priceMul} onChange={(e) => setPriceMul(+e.target.value)} />
           </label>
           <label className="cg-ctl">{es ? 'costo proceso' : 'processing cost'}: ×{costMul.toFixed(2)}
