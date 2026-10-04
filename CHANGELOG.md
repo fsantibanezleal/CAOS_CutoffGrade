@@ -3,6 +3,37 @@
 All notable changes to CutoffGrade Studio. Format: `X.XX.XXX` (display), see `cglab.__version__`. Keep `0.x` while on
 synthetic data. Tag every release.
 
+## [0.09.001] · 2026-10-04
+
+Fixes from the 2026-10-02 pre-publication review (#46). The case results were rebaked with the same engine; no model
+was retrained.
+
+### Fixed
+
+- **The binding label is the binding stage.** The case-level `binding` held the pair whose Dagdelen median won
+  ("mine↔mill"), not the stage that limits production, so the Benchmark's "Cut-off vs the binding stage" table showed
+  the same value for K-MINE and K-MILL and the focus view called K-MINE mill-limited. `binding` is now the stage that
+  limits the most operating years, with the count per stage (`bindingYears`): K-MINE mine (28 of 29 years), K-MILL
+  mill (14 of 15), K-MARKET market (16 of 17). The pair is kept as `balancedPair` and shown as the balancing pair on
+  the Lane cut-offs view. Case results schema `cutoffgrade.case-results/v2`; a contract test holds the three
+  capacity cases apart.
+- **The best constant cut-off is found on the right arc.** NPV against a constant cut-off is a chain of arcs, one per
+  whole-year mine life, and refining around the single best point of a 120-point grid stopped on the wrong one for
+  S-BASE (7676.2 at 0.535% where 7678.2 at 0.571% exists). A 480-point grid refined around its best four peaks finds
+  it. Lane's policy is the better of its trajectory and that constant, so S-BASE's reported policy also improves:
+  NPV 7855.7 to 7866.8, life 15 to 14 years, uplift over the best constant 2.34% to 2.46%. Every other case's NPV, life,
+  constant and uplift is unchanged; sensitivity NPVs move by at most 0.3%. S-BASE's validation anchor said "a
+  sensible 15–30 yr life", a sanity band written for the earlier result; it now says 10–30.
+- **Numbers follow the chosen language.** Prices, NPVs, percentages and every chart tick and readout were formatted
+  with the browser's locale, so an English page on a Spanish-locale browser printed "$9.000/t". They now use en-US or
+  es-CL by the interface language.
+- **The grade-tonnage legend is visible.** The chart host had a fixed height and the legend uPlot draws below the
+  plot overflowed under the KPI cards; the host now grows to hold it.
+- **Deep links answer 200.** Each route and each case's focus view gets its own `index.html` (15 documents); only
+  `404.html` existed, so every deep link rendered with HTTP 404.
+- **`<html lang>` follows the interface language** on every route, the focus view included.
+- **The footer prints the release** from the VERSION file; it was a literal still reading 0.07.001.
+
 ## [0.09.000] · 2026-08-01
 
 ### Changed - ADR-0071 layout and one row of tabs
