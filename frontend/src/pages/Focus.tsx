@@ -13,37 +13,48 @@ import { Link, useParams } from 'react-router-dom';
 import { useShellLang } from '@fasl-work/caos-app-shell';
 import { CASES, caseById, type CGCase } from '../lane/cases.ts';
 import { analyze, type Economics } from '../lane/index.ts';
+import { num } from '../lib/format.ts';
 import { themeColors, UPlotChart } from '../viz/UPlotChart.tsx';
 
 /** Which capacity is binding, said in plain language on the stage.
  *
  *  Lane's three-stage problem is bounded by mine, mill or market, and WHICH one binds is the single most
  *  actionable fact the solve produces: it tells you where more capacity would actually buy NPV. The engine
- *  already reports it as `Analysis.binding`; this only names it in words. */
+ *  already reports it as `Analysis.binding`; this only names it in words.
+ *
+ *  `binding` is the stage that limits the most operating years. Until 0.09.001 it held Lane's balancing pair
+ *  ("mine↔mill"), which this matched by substring, so the mine-limited case K-MINE read as mill-limited here. */
 function bindingState(binding: string, gain: number, es: boolean): { label: string; text: string } {
-  const pct = (gain * 100).toFixed(1);
-  const which = binding.toLowerCase();
-  if (which.includes('mill') || which.includes('planta')) {
+  const pct = num(gain * 100, 1);
+  if (binding === 'mill') {
     return {
       label: es ? 'Limitado por la planta' : 'Mill-limited',
       text: es
-        ? `La planta es la restriccion activa: el corte optimo sube para llenarla con el mejor mineral disponible. Ampliar la planta es lo unico que compra NPV aqui. La politica de Lane vale ${pct}% de NPV sobre el mejor corte constante.`
+        ? `La planta es la restricción activa: el corte óptimo sube para llenarla con el mejor mineral disponible. Ampliar la planta es lo único que compra VAN aquí. La política de Lane vale ${pct}% de VAN sobre el mejor corte constante.`
         : `The mill is the active constraint: the optimal cut-off rises to fill it with the best available ore. Mill capacity is the only expansion that buys NPV here. Lane's declining policy is worth ${pct}% of NPV over the best constant cut-off.`,
     };
   }
-  if (which.includes('mine') || which.includes('mina')) {
+  if (binding === 'mine') {
     return {
       label: es ? 'Limitado por la mina' : 'Mine-limited',
       text: es
-        ? `El movimiento de mina es la restriccion activa: el corte baja para enviar mas de lo que ya se extrajo. La politica de Lane vale ${pct}% de NPV sobre el mejor corte constante.`
+        ? `El movimiento de mina es la restricción activa: el corte baja para enviar más de lo que ya se extrajo. La política de Lane vale ${pct}% de VAN sobre el mejor corte constante.`
         : `Mine movement is the active constraint: the cut-off falls to send more of what has already been dug. Lane's declining policy is worth ${pct}% of NPV over the best constant cut-off.`,
     };
   }
+  if (binding === 'market') {
+    return {
+      label: es ? 'Limitado por el mercado' : 'Market-limited',
+      text: es
+        ? `El mercado es la restricción activa: producir más metal no lo vende. La política de Lane vale ${pct}% de VAN sobre el mejor corte constante.`
+        : `The market is the active constraint: producing more metal does not sell it. Lane's declining policy is worth ${pct}% of NPV over the best constant cut-off.`,
+    };
+  }
   return {
-    label: es ? 'Limitado por el mercado' : 'Market-limited',
+    label: es ? 'Limitado por la reserva' : 'Reserve-limited',
     text: es
-      ? `El mercado es la restriccion activa: producir mas metal no lo vende. La politica de Lane vale ${pct}% de NPV sobre el mejor corte constante.`
-      : `The market is the active constraint: producing more metal does not sell it. Lane's declining policy is worth ${pct}% of NPV over the best constant cut-off.`,
+      ? `La reserva se agota antes de que una capacidad limite: el corte no tiene costo de oportunidad que pagar. La política de Lane vale ${pct}% de VAN sobre el mejor corte constante.`
+      : `The reserve runs out before any capacity limits: the cut-off has no opportunity cost to pay. Lane's declining policy is worth ${pct}% of NPV over the best constant cut-off.`,
   };
 }
 

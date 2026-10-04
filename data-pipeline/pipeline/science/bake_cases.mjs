@@ -30,11 +30,13 @@ for (const c of CASES) {
     optimal: a.optimal,
     constant: a.constant,
     binding: a.binding,
+    bindingYears: a.bindingYears,
+    balancedPair: a.balancedPair,
     npvUpliftPct: a.npvUpliftPct,
     sensitivity: a.sensitivity,
   };
 }
 
-const out = { schema: 'cutoffgrade.case-results/v1', nCases: CASES.length, cases };
+const out = { schema: 'cutoffgrade.case-results/v2', nCases: CASES.length, cases };
 writeFileSync(resolve(DERIVED, 'case-results.json'), JSON.stringify(out), 'utf-8');
 console.log(`baked ${CASES.length} cases -> ${resolve(DERIVED, 'case-results.json')}`);

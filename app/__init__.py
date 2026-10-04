@@ -2,4 +2,4 @@
 never run this. Activate only on an ADR-0002 trigger. A thin read-only layer over data/derived, never a
 re-implementation of the engine."""
 
-__version__ = "0.01.000"
+__version__ = "0.09.001"

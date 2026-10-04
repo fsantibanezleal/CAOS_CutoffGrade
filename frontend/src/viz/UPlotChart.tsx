@@ -1,7 +1,19 @@
 import { useEffect, useRef } from 'react';
 import uPlot from 'uplot';
 import 'uplot/dist/uPlot.min.css';
-import { useThemeStore } from '@fasl-work/caos-app-shell';
+import { useShellLang, useThemeStore } from '@fasl-work/caos-app-shell';
+import { tick } from '../lib/format.ts';
+
+/** Ticks and readouts in the page's language. uPlot formats both with the BROWSER's locale, so an English page on a
+ *  Spanish-locale browser drew "0,2" on its axes. An axis or series that sets its own formatter keeps it. */
+function localised(opts: uPlot.Options, lang: 'en' | 'es'): uPlot.Options {
+  const fmt = (v: number | null | undefined) => (v == null ? '-' : tick(v, lang));
+  return {
+    ...opts,
+    axes: opts.axes?.map((a) => (a.values ? a : { ...a, values: (_u: uPlot, splits: number[]) => splits.map(fmt) })),
+    series: opts.series.map((s, i) => (i === 0 || s.value ? s : { ...s, value: (_u: uPlot, v: number | null) => fmt(v) })),
+  };
+}
 
 /** Interactive uPlot chart: wheel/drag zoom + pan, crosshair value readout, theme-aware, responsive. */
 export function UPlotChart({ data, build, height = 240, fill = false, minHeight = 200 }: {
@@ -12,19 +24,23 @@ export function UPlotChart({ data, build, height = 240, fill = false, minHeight 
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const theme = useThemeStore((s) => s.theme);
+  const lang = useShellLang() === 'es' ? 'es' : 'en';
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
     const width = el.clientWidth || 600;
-    const u = new uPlot(build(width, height), data, el);
+    const u = new uPlot(localised(build(width, height), lang), data, el);
     // With fill, the height comes from the PARENT and the parent lays out after mount, so it must be
     // re-measured on resize rather than captured on the first frame.
     const measure = () => (fill ? Math.max(minHeight, el.parentElement ? el.parentElement.clientHeight - 8 : minHeight) : height);
     const ro = new ResizeObserver(() => u.setSize({ width: el.clientWidth || width, height: measure() }));
     ro.observe(el);
     return () => { ro.disconnect(); u.destroy(); };
-  }, [theme, data, build, height]);
-  return <div ref={ref} className="uplot-host" style={fill ? { width: '100%', flex: '1 1 auto', minHeight: 0 } : { width: '100%', height }} />;
+  }, [theme, lang, data, build, height]);
+  // A fixed height clipped nothing but let the legend, which uPlot draws BELOW the plot inside this element, overflow
+  // the host: the KPI cards under the grade-tonnage chart covered it in both themes. The plot keeps its height; the
+  // host grows to hold the legend (CAOS_MANAGE conventions/shell-known-defects.md, entry 3, same class).
+  return <div ref={ref} className="uplot-host" style={fill ? { width: '100%', flex: '1 1 auto', minHeight: 0 } : { width: '100%', minHeight: height }} />;
 }
 
 export function themeColors() {
