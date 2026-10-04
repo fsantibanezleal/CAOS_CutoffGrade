@@ -68,34 +68,49 @@ export function simulateLife(cutoffFn: (year: number, remainingMt: number) => nu
   };
 }
 
-/** The constant cut-off that maximises NPV: a coarse grid, then a golden-section refinement around the best grid point
- * so the argmax is accurate regardless of the grid resolution (the C-BREAKEVEN oracle needs this precision). */
-export function optimalConstantCutoff(econ: Economics, deposit: Deposit, nGrid = 120): { cutoff: number; result: LifeResult } {
+/** The constant cut-off that maximises NPV: a grid, then a golden-section refinement around each of the best grid
+ * peaks, so the argmax is accurate regardless of the grid resolution (the C-BREAKEVEN oracle needs this precision).
+ *
+ * NPV(g) is not unimodal. The mine life is a whole number of years, so the curve is a chain of arcs, one per life
+ * length, each with its own local maximum. Until 0.09.001 the search refined around the single best point of a
+ * 120-point grid and could land on the wrong arc: on S-BASE it stopped at 7676.2 (0.535%) where 7678.2 (0.571%) is
+ * available. It now uses a finer grid and refines around every grid peak among the best few, keeping the best. */
+export function optimalConstantCutoff(econ: Economics, deposit: Deposit, nGrid = 480, nPeaks = 4): { cutoff: number; result: LifeResult } {
   const gMax = gMaxOf(deposit);
   const npvAt = (g: number): number => simulateLife(() => g, econ, deposit).npv;
-  let bestG = 0;
-  let bestNpv = npvAt(0);
   const step = gMax / nGrid;
-  for (let i = 1; i <= nGrid; i++) {
-    const g = step * i;
-    const v = npvAt(g);
-    if (v > bestNpv) { bestNpv = v; bestG = g; }
-  }
-  // golden-section refine in [bestG−step, bestG+step]
+  const grid = Array.from({ length: nGrid + 1 }, (_, i) => step * i);
+  const values = grid.map(npvAt);
+  let bestG = 0;
+  let bestNpv = values[0];
+  values.forEach((v, i) => { if (v > bestNpv) { bestNpv = v; bestG = grid[i]; } });
+
+  // the grid's local maxima, best first
+  const peaks = grid
+    .map((g, i) => ({ g, v: values[i], i }))
+    .filter(({ i }) => (i === 0 || values[i] >= values[i - 1]) && (i === nGrid || values[i] >= values[i + 1]))
+    .sort((x, y) => y.v - x.v)
+    .slice(0, nPeaks);
+
   const phi = (Math.sqrt(5) - 1) / 2;
-  let a = Math.max(0, bestG - step);
-  let b = bestG + step;
-  let c = b - phi * (b - a);
-  let d = a + phi * (b - a);
-  let fc = npvAt(c);
-  let fd = npvAt(d);
-  for (let i = 0; i < 30 && b - a > 1e-7 * gMax; i++) {
-    if (fc > fd) { b = d; d = c; fd = fc; c = b - phi * (b - a); fc = npvAt(c); }
-    else { a = c; c = d; fc = fd; d = a + phi * (b - a); fd = npvAt(d); }
+  for (const peak of peaks) {
+    // golden-section refine in [g−step, g+step]
+    let a = Math.max(0, peak.g - step);
+    let b = peak.g + step;
+    let c = b - phi * (b - a);
+    let d = a + phi * (b - a);
+    let fc = npvAt(c);
+    let fd = npvAt(d);
+    for (let i = 0; i < 30 && b - a > 1e-7 * gMax; i++) {
+      if (fc > fd) { b = d; d = c; fd = fc; c = b - phi * (b - a); fc = npvAt(c); }
+      else { a = c; c = d; fc = fd; d = a + phi * (b - a); fd = npvAt(d); }
+    }
+    for (const g of [(a + b) / 2, c, d]) {
+      const v = npvAt(g);
+      if (v > bestNpv) { bestNpv = v; bestG = g; }
+    }
   }
-  const g = (a + b) / 2;
-  const refined = npvAt(g);
-  const cutoff = refined >= bestNpv ? g : bestG;
+  const cutoff = bestG;
   return { cutoff, result: simulateLife(() => cutoff, econ, deposit) };
 }
 

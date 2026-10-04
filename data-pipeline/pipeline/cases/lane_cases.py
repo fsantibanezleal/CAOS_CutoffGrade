@@ -51,7 +51,7 @@ CASES: list[Case] = [
        band="the market binds -> the cut-off is raised to lift the average grade",
        anchor="mean cut-off > break-even; market is the binding stage early"),
     _c("S-BASE", "Base case", CAT_SCENARIO,
-       band="the reference economics", anchor="NPV > 0; a sensible 15-30 yr life"),
+       band="the reference economics", anchor="NPV > 0; a sensible 10-30 yr life"),
     _c("S-HIGHPRICE", "High price (+40%)", CAT_SCENARIO, econ={"price": 12600.0},
        band="higher price -> lower break-even -> more is ore -> higher NPV", anchor="NPV(high price) > NPV(base)"),
     _c("S-LOWPRICE", "Low price (-30%)", CAT_SCENARIO, econ={"price": 6300.0},

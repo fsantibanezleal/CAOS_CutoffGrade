@@ -58,7 +58,8 @@ export interface LaneCutoffs {
   gMineMill: number;
   gMillMarket: number;
   gMineMarket: number;
-  /** which stage (or pair) actually binds at the effective cut-off. */
+  /** the pair of stages whose Dagdelen balancing construction gives the effective cut-off (e.g. "mine↔mill").
+   *  This is a balancing pair, not the stage that limits production: see Analysis.binding. */
   binding: string;
   /** the effective optimum cut-off for the current state. */
   effective: number;

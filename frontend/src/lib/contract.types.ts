@@ -35,7 +35,9 @@ export interface LearnedMetrics {
   ood: { auc: number; nEval: number } | null;
 }
 
-// ---------- the baked case-results.json (cutoffgrade.case-results/v1) ----------
+// ---------- the baked case-results.json (cutoffgrade.case-results/v2) ----------
+// v2 (0.09.001): `binding` is the stage that limits the most operating years (mine, mill, market, reserve), with
+// `bindingYears` per stage; the Dagdelen balancing pair it used to hold is `balancedPair`.
 
 export interface CaseResult {
   name: string;
@@ -51,12 +53,14 @@ export interface CaseResult {
   optimal: OptimalRec;
   constant: ConstantRec;
   binding: string;
+  bindingYears: Record<string, number>;
+  balancedPair: string;
   npvUpliftPct: number;
   sensitivity: SensitivityRec[];
 }
 
 export interface CaseResultsFile {
-  schema: string; // "cutoffgrade.case-results/v1"
+  schema: string; // "cutoffgrade.case-results/v2"
   nCases: number;
   cases: Record<string, CaseResult>;
 }
@@ -78,6 +82,8 @@ export interface CaseTrace {
   optimal: OptimalRec;
   constant: ConstantRec;
   binding: string;
+  binding_years: Record<string, number>;
+  balanced_pair: string;
   npv_uplift_pct: number;
   sensitivity: SensitivityRec[];
   learned: LearnedMetrics;

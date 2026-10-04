@@ -13,7 +13,7 @@ synthetic (a porphyry-copper-like base case); `C-UNIFORM` and `C-BREAKEVEN` are 
 | `K-MILL` | capacity regime | mill binds (mill < mine, ample market) | mean cut-off > break-even; the cut-off declines over the life |
 | `K-MINE` | capacity regime | mining binds | mean cut-off ≈ break-even (mill time is free) |
 | `K-MARKET` | capacity regime | the market binds | mean cut-off > break-even (raise the average grade) |
-| `S-BASE` | economic scenario | the reference economics | NPV > 0; a sensible 15–30 yr life |
+| `S-BASE` | economic scenario | the reference economics | NPV > 0; a sensible 10–30 yr life |
 | `S-HIGHPRICE` | economic scenario | price +40% | NPV(high price) > NPV(base) |
 | `S-LOWPRICE` | economic scenario | price −30% | NPV(low price) < NPV(base) |
 | `D-HIVAR` | deposit type | grade CV 1.0 (fat tail) | NPV(Lane) ≥ NPV(constant); a strong declining cut-off |
