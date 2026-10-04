@@ -3,8 +3,9 @@ import { Cite, Refs, useShellLang } from '@fasl-work/caos-app-shell';
 import { loadCaseResults, loadLearned, type LearnedFile } from '../lib/artifacts.ts';
 import type { CaseResultsFile } from '../lib/contract.types.ts';
 
-const pct = (g: number) => `${(g * 100).toFixed(3)}%`;
-const money = (v: number) => `$${Math.round(v).toLocaleString()}M`;
+import { bindingText, money, pct as pctOf, price } from '../lib/format.ts';
+
+const pct = (g: number) => pctOf(g, 3);
 
 export default function Benchmark() {
   const es = useShellLang() === 'es';
@@ -29,18 +30,18 @@ export default function Benchmark() {
         <thead><tr><th>{es ? 'escenario' : 'scenario'}</th><th>{es ? 'precio' : 'price'}</th><th>VAN</th><th>{es ? 'corte medio' : 'mean cut-off'}</th><th>{es ? 'vida' : 'life'}</th></tr></thead>
         <tbody>
           {scen.map((id) => cases[id] && (
-            <tr key={id}><td><b>{id}</b></td><td>${Math.round(cases[id].econ.price).toLocaleString()}/t</td><td>{money(cases[id].optimal.npv)}</td><td>{pct(cases[id].optimal.meanCutoff)}</td><td>{cases[id].optimal.lifeYears}</td></tr>
+            <tr key={id}><td><b>{id}</b></td><td>{price(cases[id].econ.price)}</td><td>{money(cases[id].optimal.npv)}</td><td>{pct(cases[id].optimal.meanCutoff)}</td><td>{cases[id].optimal.lifeYears}</td></tr>
           ))}
         </tbody>
       </table>
       <p className="cg-note">{es ? 'VAN monótono en precio (la propiedad de cordura). Un precio más alto baja el break-even → más es mineral → más VAN.' : 'NPV monotone in price (the sanity property). A higher price lowers the break-even → more is ore → more NPV.'}</p>
 
-      <h2>{es ? 'Corte vs restricción binding' : 'Cut-off vs the binding stage'}</h2>
+      <h2>{es ? 'Corte vs la etapa que limita' : 'Cut-off vs the binding stage'}</h2>
       <table className="cmp-table">
-        <thead><tr><th>{es ? 'caso' : 'case'}</th><th>{es ? 'restricción' : 'binding'}</th><th>break-even</th><th>{es ? 'corte medio' : 'mean cut-off'}</th><th>{es ? 'uplift high-grading' : 'high-grading uplift'}</th></tr></thead>
+        <thead><tr><th>{es ? 'caso' : 'case'}</th><th>{es ? 'etapa que limita (años)' : 'binding stage (years)'}</th><th>break-even</th><th>{es ? 'corte medio' : 'mean cut-off'}</th><th>{es ? 'uplift high-grading' : 'high-grading uplift'}</th></tr></thead>
         <tbody>
           {['K-MINE', 'K-MILL', 'K-MARKET'].map((id) => cases[id] && (
-            <tr key={id}><td><b>{id}</b></td><td>{cases[id].binding}</td><td>{pct(cases[id].breakEven)}</td><td>{pct(cases[id].optimal.meanCutoff)}</td><td>{cases[id].npvUpliftPct.toFixed(2)}%</td></tr>
+            <tr key={id}><td><b>{id}</b></td><td data-binding={cases[id].binding}>{bindingText(cases[id].binding, cases[id].bindingYears)}</td><td>{pct(cases[id].breakEven)}</td><td>{pct(cases[id].optimal.meanCutoff)}</td><td>{cases[id].npvUpliftPct.toFixed(2)}%</td></tr>
           ))}
         </tbody>
       </table>
